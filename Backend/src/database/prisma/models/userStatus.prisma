@@ -1,0 +1,11 @@
+model UserStatus {
+  id        String   @id @default(uuid())
+  type      String   @unique @db.VarChar(30)
+  title     String   @db.VarChar(50)
+  colorCode String?  @db.VarChar(20)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_statuses")
+}

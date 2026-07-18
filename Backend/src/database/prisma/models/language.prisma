@@ -1,0 +1,10 @@
+model Language {
+  id          String   @id @default(uuid())
+  type        String   @unique @db.VarChar(10)
+  name        String   @db.VarChar(100)
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@map("languages")
+}
