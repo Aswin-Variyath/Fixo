@@ -1,17 +1,32 @@
 model User {
-  id          String   @id @default(uuid())
-  firstName   String   @db.VarChar(100)
-  lastName    String  @db.VarChar(100)
-  email       String  @unique @db.VarChar(255)
-  phone       String  @unique @db.VarChar(20)
-  password    String
+  id           String   @id @default(uuid())
+  firstName    String   @db.VarChar(100)
+  lastName     String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  phone        String   @unique @db.VarChar(20)
+  password     String
   profileImage String?
-  roleId      String
-  languageId  String
-  statusId    String
-  lastLogin   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  roleId String
+  role   Role @relation(fields: [roleId], references: [id])
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  statusId String
+  status   UserStatus @relation(fields: [statusId], references: [id])
+
+  lastLogin DateTime?
+
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roleId])
+  @@index([languageId])
+  @@index([statusId])
+  @@index([deletedAt])
 
   @@map("users")
 }

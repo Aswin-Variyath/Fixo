@@ -1,11 +1,13 @@
 model Role {
-  id          String   @id @default(uuid())
-  type        String   @unique @db.VarChar(50)
-  title       String   @db.VarChar(100)
+  id        String   @id @default(uuid())
+  type      String   @unique @db.VarChar(50)
+  title     String   @db.VarChar(100)
   isSuper   Boolean  @default(false)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
 
   @@map("roles")
 }
