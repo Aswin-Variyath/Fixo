@@ -17,11 +17,6 @@ async function main() {
         isSuper: false,
       },
       {
-        type: "admin",
-        title: "Administrator",
-        isSuper: false,
-      },
-      {
         type: "super_admin",
         title: "Super Administrator",
         isSuper: true,
