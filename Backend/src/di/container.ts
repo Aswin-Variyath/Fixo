@@ -8,6 +8,6 @@ import {IUserQueryService} from "../modules/users/interfaces/user-query-service.
 
 export const container = new Container()
 
-container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository).inSingletonScope()
-container.bind<IUserQueryService>(TYPES.UserQueryService).to(UserQueryService).inSingletonScope()
+container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository).inSingletonScope();
+container.bind<IUserQueryService>(TYPES.UserQueryService).to(UserQueryService).inSingletonScope();
 container.bind<UserController>(TYPES.UserController).to(UserController).inSingletonScope();

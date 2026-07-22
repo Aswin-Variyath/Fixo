@@ -10,14 +10,9 @@ const app = express();
 // Parse JSON request bodies
 app.use(express.json());
 
-// Health check
-
 
 // API routes
-app.use(
-  "/users",
-  userRouter
-);
+app.use("/users",userRouter);
 
 // Error middleware must be registered after routes
 app.use(errorMiddleWare);

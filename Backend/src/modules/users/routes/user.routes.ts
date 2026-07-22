@@ -7,6 +7,6 @@ const router = Router()
 const userController = container.get<UserController>(TYPES.UserController)
 
 
-router.get("/",userController.listUser)
+router.get("/",userController.listUser);
 
 export default router;

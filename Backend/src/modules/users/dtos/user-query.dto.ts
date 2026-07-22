@@ -5,5 +5,5 @@ export interface UserQueryDto {
     role?:string;
     status?:string;
     sortBy?: "firstName" | "email" | "createdAt" | "updatedAt";
-    sortOrder?: "asc" | "desc"
+    sortOrder?: "asc" | "desc";
 }
