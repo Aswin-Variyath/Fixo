@@ -1,34 +1,30 @@
 export interface UserRoleResponseDto {
-    id: string;
     type: string;
-    tittle: string;
-    isSuper: string;
+    title: string;
 }
 
 export interface UserLanguageResponseDto {
-    id: string;
     type: string;
     name: string;
 }
 
-export interface userStatusResponseDto {
-    id:string;
-    type:string;
+export interface UserStatusResponseDto {
+    type: string;
     title: string;
-    colorCode: string;
+    colorCode: string | null;
 }
 
-export interface UserResponseDto {
+export interface UserListItemResponseDto {
     id: string;
     firstName: string;
     lastName: string;
     email: string;
-    phone:string;
+    phone: string;
     profileImage: string | null;
-    role: UserLanguageResponseDto
-    language: UserLanguageResponseDto
-    status: UserRoleResponseDto
-    lastLogin: Date | null
+    role: UserRoleResponseDto;
+    language: UserLanguageResponseDto;
+    status: UserStatusResponseDto;
+    lastLogin: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }

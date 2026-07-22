@@ -1,12 +1,9 @@
 import express from "express";
 
 import {
-  userRoutes,
-} from "./modules/users";
-
-import {
-  errorMiddleware,
+  errorMiddleWare,
 } from "./shared/middlewares/error.middleware";
+import { userRouter } from "./modules/users";
 
 const app = express();
 
@@ -14,20 +11,15 @@ const app = express();
 app.use(express.json());
 
 // Health check
-app.get("/health", (_req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is running",
-  });
-});
+
 
 // API routes
 app.use(
-  "/api/v1/users",
-  userRoutes
+  "/users",
+  userRouter
 );
 
 // Error middleware must be registered after routes
-app.use(errorMiddleware);
+app.use(errorMiddleWare);
 
 export default app;

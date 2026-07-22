@@ -1,46 +1,12 @@
-import {
-  Router,
-} from "express";
+import { Router } from "express"
+import { container, TYPES } from "../../../di"
+import { UserController } from "../controllers/user.controller"
 
-import { container } from "../../../di/container";
-import { TYPES } from "../../../di/identifiers";
+const router = Router()
 
-import {
-  UserController,
-} from "../controllers/user.controller";
-
-import {
-  validateParams,
-  validateQuery,
-} from "../../../shared/middlewares/validate.middleware";
-
-import {
-  listUsersQuerySchema,
-  userIdParamSchema,
-} from "../validations/user.validation";
+const userController = container.get<UserController>(TYPES.UserController)
 
 
-const router = Router();
-
-
-const userController =
-  container.get<UserController>(
-    TYPES.UserController
-  );
-
-
-router.get(
-  "/",
-  validateQuery(listUsersQuerySchema),
-  userController.listUsers
-);
-
-
-router.get(
-  "/:id",
-  validateParams(userIdParamSchema),
-  userController.getUserDetails
-);
-
+router.get("/",userController.listUser)
 
 export default router;

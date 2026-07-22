@@ -1,14 +1,5 @@
-import type {
-  PaginatedUsers,
-  UserSafeData,
-} from "../types/user.types";
-
-import type {
-  UserQueryDto,
-} from "../dtos/user-query.dto";
+import { UserListItemResponseDto } from "../dtos/user-response.dto";
 
 export interface IUserQueryService {
-  listUsers(query: UserQueryDto): Promise<PaginatedUsers>;
-
-  getUserDetails(id: string): Promise<UserSafeData>;
+    listUsers():Promise<UserListItemResponseDto[]>
 }

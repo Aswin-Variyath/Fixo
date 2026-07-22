@@ -1,137 +1,45 @@
-import { injectable } from "inversify";
 import prisma from "../../../database/prisma";
-import type { IUserRepository } from "../interfaces/user-repository.interface";
-import {
-  userSafeSelect,
-  type CreateUserData,
-  type UpdateUserData,
-  type UserListResult,
-  type UserRepositoryQuery,
-  type UserSafeData,
-} from "../types/user.types";
-
-import type { Prisma } from "../../../database/generated/prisma/client";
-
-@injectable()
+import { UserListItemResponseDto } from "../dtos/user-response.dto";
+import { IUserRepository } from "../interfaces/user-repository.interface";
 export class UserRepository implements IUserRepository {
-  async create(data: CreateUserData): Promise<UserSafeData> {
-    return prisma.user.create({ data, select: userSafeSelect });
-  }
-
-  async findById(id: string): Promise<UserSafeData | null> {
-    return prisma.user.findFirst({
+  async findAll(): Promise<UserListItemResponseDto[]> {
+    return prisma.user.findMany({
       where: {
-        id,
-        deletedAt: null,
+        deletedAt: null
       },
-      select: userSafeSelect,
-    });
-  }
-
-  async findByEmail(email: string): Promise<UserSafeData | null> {
-    return prisma.user.findFirst({
-      where: {
-        email,
-        deletedAt: null,
+      select: {
+        id:true,
+        firstName:true,
+        lastName:true,
+        email:true,
+        phone:true,
+        profileImage:true,
+        status:{
+          select: {
+            type:true,
+            title:true,
+            colorCode:true
+          }
+        },
+        role:{
+          select:{
+            type:true,
+            title:true
+          }
+        },
+        language: {
+          select:{
+            type:true,
+            name:true
+          }
+        },
+        lastLogin:true,
+        createdAt:true,
+        updatedAt:true
       },
-      select: userSafeSelect,
-    });
-  }
-
-  async findByPhone(phone: string): Promise<UserSafeData | null> {
-    return prisma.user.findFirst({
-      where: {
-        phone,
-        deletedAt: null,
-      },
-      select: userSafeSelect,
-    });
-  }
-
-  async findMany(query: UserRepositoryQuery): Promise<UserListResult> {
-    const { skip, take, search, role, status, sortBy, sortOrder } = query;
-    const where: Prisma.UserWhereInput = {
-      deletedAt: null,
-    };
-    if (search) {
-      where.OR = [
-        {
-          firstName: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-
-        {
-          lastName: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-
-        {
-          email: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-
-        {
-          phone: {
-            contains: search,
-          },
-        },
-      ];
-    }
-
-    if (role) {
-      where.role = {
-        type: role,
-      };
-    }
-
-    if (status) {
-      where.status = {
-        type: status,
-      };
-    }
-
-    const [users, total] = await Promise.all([
-      prisma.user.findMany({
-        where,
-
-        skip,
-        take,
-
-        orderBy: {
-          [sortBy]: sortOrder,
-        },
-
-        select: userSafeSelect,
-      }),
-
-      prisma.user.count({
-        where,
-      }),
-    ]);
-
-    return {
-      users,
-      total,
-    };
-  }
-
-  async update(id: string, data: UpdateUserData): Promise<UserSafeData> {
-      return prisma.user.update({
-        where:{
-            id,
-        },
-        data,
-        select:userSafeSelect
+      orderBy:{
+        createdAt:"desc"
+      }
     })
-  }
-
-  async softDelete(id: string): Promise<void> {
-      
   }
 }
