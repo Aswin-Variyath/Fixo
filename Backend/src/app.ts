@@ -1,20 +1,23 @@
 import express from "express";
-
-import {
-  errorMiddleWare,
-} from "./shared/middlewares/error.middleware";
+import {errorMiddleware} from "./shared/middlewares/error.middleware";
 import { userRouter } from "./modules/users";
+import { authRoutes } from "./modules/auth";
 
 const app = express();
 
-// Parse JSON request bodies
 app.use(express.json());
 
+app.use((req, _res, next) => {
+  console.log("METHOD:", req.method);
+  console.log("CONTENT TYPE:", req.headers["content-type"]);
+  console.log("BODY:", req.body);
+  next();
+});
 
-// API routes
 app.use("/users",userRouter);
+app.use("/auth", authRoutes)
 
-// Error middleware must be registered after routes
-app.use(errorMiddleWare);
+
+app.use(errorMiddleware);
 
 export default app;
