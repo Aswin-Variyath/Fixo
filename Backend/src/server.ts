@@ -1,11 +1,9 @@
 import "reflect-metadata";
-
 import app from "./app";
 import { bootstrap } from "./bootstrap";
+import { ENV } from "./config/env.config";
 
-const PORT = Number(
-  process.env.PORT ?? 3000
-);
+const PORT = ENV.PORT;
 
 async function startServer(): Promise<void> {
   try {

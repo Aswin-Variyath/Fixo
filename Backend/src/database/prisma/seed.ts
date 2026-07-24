@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import prisma from "../prisma";
 
 async function main() {
@@ -138,82 +137,19 @@ async function main() {
   // 5. Hash test password
   // ==========================================
 
-  const hashedPassword = await bcrypt.hash(
-    "Test@1234",
-    12
-  );
+
 
   // ==========================================
   // 6. Seed Test Customer
   // ==========================================
 
-  await prisma.user.upsert({
-    where: {
-      email: "customer@test.com",
-    },
-
-    update: {},
-
-    create: {
-      firstName: "Test",
-      lastName: "Customer",
-      email: "customer@test.com",
-      phone: "9000000001",
-      password: hashedPassword,
-
-      roleId: customerRole.id,
-      languageId: englishLanguage.id,
-      statusId: activeStatus.id,
-    },
-  });
-
-  // ==========================================
-  // 7. Seed Test Worker
-  // ==========================================
-
-  await prisma.user.upsert({
-    where: {
-      email: "worker@test.com",
-    },
-
-    update: {},
-
-    create: {
-      firstName: "Test",
-      lastName: "Worker",
-      email: "worker@test.com",
-      phone: "9000000002",
-      password: hashedPassword,
-
-      roleId: workerRole.id,
-      languageId: malayalamLanguage.id,
-      statusId: activeStatus.id,
-    },
-  });
+  
 
   // ==========================================
   // 8. Seed Test Super Admin
   // ==========================================
 
-  await prisma.user.upsert({
-    where: {
-      email: "admin@test.com",
-    },
-
-    update: {},
-
-    create: {
-      firstName: "Test",
-      lastName: "Admin",
-      email: "admin@test.com",
-      phone: "9000000003",
-      password: hashedPassword,
-
-      roleId: superAdminRole.id,
-      languageId: englishLanguage.id,
-      statusId: activeStatus.id,
-    },
-  });
+  
 
   console.log("Database seeded successfully.");
 }

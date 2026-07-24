@@ -3,7 +3,6 @@ import {
   injectable,
 } from "inversify";
 
-import bcrypt from "bcrypt";
 
 import { TYPES } from "../../../di/identifiers";
 
