@@ -1,6 +1,6 @@
 import prisma from "../../../database/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
-import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository } from "../interfaces/user-auth-repository.interface";
+import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
 
 export class UserAuthRepository implements IUserAuthRespository {
     async existByEmail(email: string): Promise<Boolean> {
@@ -61,5 +61,58 @@ export class UserAuthRepository implements IUserAuthRespository {
             }
         })
     }
+    
      
+    async findForLogin(email: string): Promise<LoginUserRecord | null> {
+        const user = await prisma.user.findUnique({
+            where:{email},
+            select:{
+                id:true,
+                firstName:true,
+                lastName:true,
+                email:true,
+                phone:true,
+                profileImage:true,
+                password:true,
+                deletedAt:true,
+                role:{
+                    select:{
+                        type:true,
+                        title:true,
+                        isActive:true
+                    },
+
+                },
+                language:{
+                    select:{
+                        type:true,
+                        name:true
+                    }
+                },
+                status:{
+                    select:{
+                        type:true,
+                        title:true,
+                        isActive:true
+                    }
+                }
+            }
+        })
+        if(!user) {
+            return null
+        }
+        return {
+            id:user.id,
+            firstName:user.firstName,
+            lastName:user.lastName,
+            email:user.email,
+            phone:user.phone,
+            passwordHash:user.password,
+            profileImage:user.profileImage,
+            deletedAt:user.deletedAt,
+            role:user.role,
+            language:user.language,
+            status:user.status
+        }
+    }
 }

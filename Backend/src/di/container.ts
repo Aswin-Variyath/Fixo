@@ -20,6 +20,8 @@ import { IsessionStore } from "../modules/auth/interfaces/session-store.interfac
 import { SessionStore } from "../modules/auth/stores/session.store";
 import { ITokenFamilyStore } from "../modules/auth/interfaces/token-family-store.interface";
 import { TokenFamilyStore } from "../modules/auth/stores/token-family.store";
+import { IRefreshTokenStore } from "../modules/auth/interfaces/refresh-token-store.interface";
+import { RefreshTokenStore } from "../modules/auth/stores/refresh-token.store";
 
 export const container = new Container()
 
@@ -31,8 +33,7 @@ container.bind<IUserAuthRespository>(TYPES.UserAuthRepository).to(UserAuthReposi
 container.bind<IUserCommandService>(TYPES.AuthCommandService).to(AuthCommandService).inSingletonScope()
 container.bind<AuthController>(TYPES.AuthController).to(AuthController).inSingletonScope();
 container.bind<IAccessTokenService>(TYPES.AccessTokenSerivce).to(AccessTokenSerivce).inSingletonScope()
-container.bind<IAccessTokenService>(TYPES.AccessTokenSerivce).to(AccessTokenSerivce).inSingletonScope()
 container.bind<IRefreshTokenService>(TYPES.RefreshTokenService).to(RefreshTokenService).inSingletonScope()
 container.bind<IsessionStore>(TYPES.SessionStore).to(SessionStore).inSingletonScope()
 container.bind<ITokenFamilyStore>(TYPES.TokenFamilyStore).to(TokenFamilyStore).inSingletonScope()
-container.bind<IRefreshTokenService>(TYPES.RefreshTokenService).to(RefreshTokenService).inSingletonScope()
+container.bind<IRefreshTokenStore>(TYPES.RefreshTokenStore).to(RefreshTokenStore).inSingletonScope()

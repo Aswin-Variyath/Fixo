@@ -18,3 +18,30 @@ export interface SignupResponseDto {
     }
     createdAt:Date
 }
+
+
+export interface LoginUserResponseDto {
+    id:string;
+    firstName:string
+    lastName:string
+    email:string
+    phone:string
+    profileImage:string | null
+    role: {
+        type:string
+        title:string
+    }
+    language:{
+        type:string
+        name:string
+    }
+    status:{
+        type:string
+        title:string
+    }
+}
+
+export interface loginResponseDto {
+    user:LoginUserResponseDto
+    accessTokenExpiresIn:number
+}

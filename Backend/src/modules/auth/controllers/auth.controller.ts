@@ -3,6 +3,9 @@ import { IAuthCommandService } from "../interfaces/auth-command-service.interfac
 import {TYPES} from "../../../di/identifiers"
 import { Response, Request } from "express";
 import { SignupDto } from "../dto/signup.dto";
+import { LoginDto } from "../dto/login.dto";
+import { ENV } from "../../../config/env.config";
+import { success } from "zod";
 @injectable()
 export class AuthController {
     constructor(@inject(TYPES.AuthCommandService) private readonly authCommandService: IAuthCommandService) {}
@@ -14,5 +17,38 @@ export class AuthController {
             message:"User registered successfully",
             data:user
         })
+    }
+    login = async(req:Request<Record<string,never>, unknown, LoginDto>, res:Response):Promise<void> =>{
+        console.log("Hit login controller");
+        
+        const result = await this.authCommandService.login(req.body)
+        console.log("after authcommand service")
+        res.cookie(
+            "accessToken", 
+            result.accessToken,
+            {
+                httpOnly:true,
+                secure:ENV.NODE_ENV === "production",
+                sameSite:"lax",
+                maxAge:ENV.JWT.accessTokenTtlSeconds * 1000
+            }
+        )
+        console.log("After access token creation")
+        res.cookie(
+            "refreshToken",
+            result.refreshToken,
+            {
+                httpOnly:true,
+                secure:ENV.NODE_ENV === "production",
+                sameSite:"lax",
+                maxAge:ENV.AUTH.refreshTokenTtlSeconds * 1000
+            }
+        )
+        res.status(200).json({
+            success:true,
+            message:"Login successfull",
+            data:result.response
+        })
+        console.log("After refresh token creation")
     }
 }

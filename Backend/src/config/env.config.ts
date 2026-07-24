@@ -24,4 +24,5 @@ export const ENV = {
   AUTH: {
     refreshTokenTtlSeconds:Number(process.env.REFRESH_TOKEN_TTL_SECONDS ?? 60*60*24*30)
   },
+  NODE_ENV:getRequiredEnv("NODE_ENV")
 } as const
