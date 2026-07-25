@@ -8,7 +8,15 @@ export interface LoginResult {
     refreshToken:string
 }
 
+export interface RefreshResult {
+    accessToken:string
+    refreshToken:string
+    accessTokenExpiresIn:number
+}
+
+
 export interface IAuthCommandService {
     signup(data:SignupDto):Promise<SignupResponseDto>
     login(data:LoginDto):Promise<LoginResult>
+    refresh(refreshToken:string):Promise<RefreshResult>
 }

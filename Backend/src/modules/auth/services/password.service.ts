@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import { IPasswordService } from "../interfaces/password-service.interface";
 import  argon2  from "argon2";
 @injectable()

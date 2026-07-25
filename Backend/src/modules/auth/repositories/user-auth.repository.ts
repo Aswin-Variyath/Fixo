@@ -1,8 +1,9 @@
 import prisma from "../../../database/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
-import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
+import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord } from "../interfaces/user-auth-repository.interface";
 
 export class UserAuthRepository implements IUserAuthRespository {
+   
     async existByEmail(email: string): Promise<Boolean> {
         const user = await prisma.user.findUnique({where:{email},select:{id:true}})
         return user != null
@@ -114,5 +115,27 @@ export class UserAuthRepository implements IUserAuthRespository {
             language:user.language,
             status:user.status
         }
+    }
+
+     findByIdForAuth(id: string): Promise<RefreshAuthUserRecord | null> {
+        return prisma.user.findUnique({
+            where:{id},
+            select:{
+                id:true,
+                deletedAt:true,
+                role:{
+                    select:{
+                        type:true,
+                        isActive:true
+                    }
+                },
+                status:{
+                    select:{
+                        type:true,
+                        isActive:true
+                    }
+                }
+            }
+        })
     }
 }

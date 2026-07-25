@@ -2,11 +2,12 @@ import express from "express";
 import {errorMiddleware} from "./shared/middlewares/error.middleware";
 import { userRouter } from "./modules/users";
 import { authRoutes } from "./modules/auth";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 app.use(express.json());
-
+app.use(cookieParser())
 app.use((req, _res, next) => {
   console.log("METHOD:", req.method);
   console.log("CONTENT TYPE:", req.headers["content-type"]);

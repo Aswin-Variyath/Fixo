@@ -17,6 +17,20 @@ export interface AuthReferenceRecord {
     type: string
 }
 
+
+export interface RefreshAuthUserRecord {
+    id:string;
+    deletedAt: Date | null
+    role: {
+        type:string
+        isActive:boolean
+    },
+    status: {
+        type:string
+        isActive:boolean
+    }
+}
+
 export interface IUserAuthRespository {
     existByEmail(email:string):Promise<Boolean>
     existsByPhone(phone:string):Promise<Boolean>
@@ -25,6 +39,8 @@ export interface IUserAuthRespository {
     findStatusById(type:string):Promise<AuthReferenceRecord | null>
     createSignupUser(data:CreateSignupUserData):Promise<SignupResponseDto>
     findForLogin(email:string):Promise<LoginUserRecord | null>
+    findByIdForAuth(id:string):Promise<RefreshAuthUserRecord | null>
+
 }
 
 export interface LoginUserRecord {

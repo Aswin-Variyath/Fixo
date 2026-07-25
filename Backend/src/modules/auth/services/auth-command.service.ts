@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { IAuthCommandService, LoginResult } from "../interfaces/auth-command-service.interface";
+import { IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
 import { IUserAuthRespository } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
 import { SignupResponseDto } from "../dto/auth-response.dto";
@@ -16,6 +16,7 @@ import { IsessionStore } from "../interfaces/session-store.interface";
 import { ITokenFamilyStore } from "../interfaces/token-family-store.interface";
 import { IRefreshTokenStore } from "../interfaces/refresh-token-store.interface";
 import { IAccessTokenService } from "../interfaces/access-token-service.interface";
+import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh-token.error";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -28,6 +29,7 @@ export class AuthCommandService implements IAuthCommandService {
     @inject(TYPES.RefreshTokenStore) private readonly refreshTokenStore:IRefreshTokenStore,
     @inject(TYPES.AccessTokenSerivce) private readonly accessTokenService: IAccessTokenService
 ) {}
+    
     async signup(data: SignupDto): Promise<SignupResponseDto> {
         console.log("sdfljas")
         const emailExists = await this.userAuthRepository.existByEmail(data.email)
@@ -150,6 +152,62 @@ export class AuthCommandService implements IAuthCommandService {
             }
         }
     }
+
+    }
+    async refresh(refreshToken: string): Promise<RefreshResult> {
+        const currentTokenHash =  this.refreshTokenService.hash(refreshToken)
+
+        const currentRecord = await this.refreshTokenStore.findByHash(currentTokenHash)
+
+        if(!currentRecord) throw new InvalidRefreshTokenError()
+
+
+        const session = await this.sessionStore.findById(currentRecord.sessionId)
+
+        if(!session || session.status !== "ACTIVE") {
+            throw new InvalidRefreshTokenError()
+        }
+
+        const user = await this.userAuthRepository.findByIdForAuth(session.userId)
+
+        if(!user || user.deletedAt || !user.role.isActive || !user.status.isActive || user.status.type !== "active") {
+            throw new InvalidRefreshTokenError()
+        }
+
+        const {token:newRefreshToken, tokenHash: newTokenHash} = this.refreshTokenService.generate()
+
+        const now = new Date()
+
+        const newExpiresAt = new Date(now.getTime() + ENV.AUTH.refreshTokenTtlSeconds * 1000)
+
+        const rotationResult = await this.refreshTokenStore.rotate({
+            currentTokenHash,
+            newTokenHash,
+            sessionId: currentRecord.sessionId,
+            familyId:currentRecord.familyId,
+            newTokenExpiresAt:newExpiresAt.toISOString(),
+            ttlSeconds:ENV.AUTH.refreshTokenTtlSeconds
+        })
+
+        if(rotationResult.status  !== "ROTATED") {
+            if(rotationResult.status === "TOKEN_REUSED") {
+                console.warn("Refresh token reuse detected",{
+                    sessionId:currentRecord.sessionId,
+                    familyId:currentRecord.familyId
+                })
+            }
+            throw new InvalidRefreshTokenError()
+        }
+
+        const accessToken = this.accessTokenService.generate({
+            userId:user.id,
+            role: user.role.type,
+            sessionId:currentRecord.sessionId
+        })
+
+        return {
+            accessToken,refreshToken: newRefreshToken, accessTokenExpiresIn: ENV.JWT.accessTokenTtlSeconds
+        }
 
     }
 }
