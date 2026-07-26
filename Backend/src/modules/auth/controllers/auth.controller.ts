@@ -10,6 +10,7 @@ import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh
 @injectable()
 export class AuthController {
     constructor(@inject(TYPES.AuthCommandService) private readonly authCommandService: IAuthCommandService) {}
+    
     signup = async(req: Request<Record<string,never>,unknown, SignupDto>, res: Response):Promise<void> => {
         console.log("COntroller hits")
         const user = await this.authCommandService.signup(req.body);

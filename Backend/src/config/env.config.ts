@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import { access } from "node:fs";
 
 dotenv.config();
 
