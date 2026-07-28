@@ -19,4 +19,5 @@ export interface IAuthCommandService {
     signup(data:SignupDto):Promise<SignupResponseDto>
     login(data:LoginDto):Promise<LoginResult>
     refresh(refreshToken:string):Promise<RefreshResult>
+    logout(refreshToken:string):Promise<void>
 }

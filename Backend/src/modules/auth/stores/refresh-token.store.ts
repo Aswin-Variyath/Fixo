@@ -198,6 +198,11 @@ export class RefreshTokenStore implements IRefreshTokenStore {
                         return {status:"TOKEN_NOT_FOUND"}
 
     }
-
+    
   }
+  async deleteByHash(tokenHash:string):Promise<void> {
+    await redisClient.del(`auth:refresh:${tokenHash}`)
+  }
+
+  
 }

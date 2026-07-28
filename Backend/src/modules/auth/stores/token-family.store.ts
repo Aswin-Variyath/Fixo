@@ -13,4 +13,8 @@ export class TokenFamilyStore implements ITokenFamilyStore {
         if(!value)  return null
         return JSON.parse(value) as TokenFamily
     }
+
+    async deleteById(familyId: string): Promise<void> {
+        await redisClient.del(`auth:family:${familyId}`)
+    }
 }

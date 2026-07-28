@@ -16,4 +16,15 @@ export class SessionStore implements IsessionStore {
         }
         return JSON.parse(value) as AuthSession
     }
+    async deleteById(sessionId:string):Promise<void> {
+        console.log("THisis sessionid", sessionId)
+        const key = `auth:session:${sessionId}`;
+
+const value = await redisClient.get(key);
+
+console.log("Session Key:", key);
+console.log("Session Value:", value);
+    const deleted = await redisClient.del(`auth:session:${sessionId}`)
+    console.log("Deleted Count:", deleted);
+  }
 }

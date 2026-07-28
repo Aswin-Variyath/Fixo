@@ -1,11 +1,12 @@
 import { inject, injectable } from "inversify";
 import { IAuthCommandService } from "../interfaces/auth-command-service.interface";
 import {TYPES} from "../../../di/identifiers"
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { SignupDto } from "../dto/signup.dto";
 import { LoginDto } from "../dto/login.dto";
 import { ENV } from "../../../config/env.config";
 import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh-token.error";
+import { UnauthorizedError } from "../../../shared/errors/unauthorized.error";
 
 @injectable()
 export class AuthController {
@@ -81,6 +82,23 @@ export class AuthController {
             data: {
                 accessTokenExpiresIn: result.accessTokenExpiresIn
             }
+        })
+    }
+
+    logout = async(req:Request, res:Response, next: NextFunction):Promise<void> => {
+        console.log("This req.cookies",req?.cookies)
+        const refreshToken = req.cookies?.refreshToken
+
+        if(!refreshToken || typeof refreshToken !== "string") throw new UnauthorizedError("Refresh token is missing")
+        
+        await this.authCommandService.logout(refreshToken)
+
+        res.clearCookie("accessToken")
+        res.clearCookie("refreshToken")
+
+        res.status(200).json({
+            success:true,
+            message:"Logged out successfully"
         })
     }
 

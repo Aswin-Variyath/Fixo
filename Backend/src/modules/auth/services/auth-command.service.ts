@@ -27,7 +27,7 @@ export class AuthCommandService implements IAuthCommandService {
     @inject(TYPES.SessionStore) private readonly sessionStore: IsessionStore, 
     @inject(TYPES.TokenFamilyStore) private readonly tokenFamilyStore:ITokenFamilyStore, 
     @inject(TYPES.RefreshTokenStore) private readonly refreshTokenStore:IRefreshTokenStore,
-    @inject(TYPES.AccessTokenSerivce) private readonly accessTokenService: IAccessTokenService
+    @inject(TYPES.AccessTokenService) private readonly accessTokenService: IAccessTokenService
 ) {}
     
     async signup(data: SignupDto): Promise<SignupResponseDto> {
@@ -209,5 +209,21 @@ export class AuthCommandService implements IAuthCommandService {
             accessToken,refreshToken: newRefreshToken, accessTokenExpiresIn: ENV.JWT.accessTokenTtlSeconds
         }
 
+    }
+
+    async logout(refreshToken: string): Promise<void> {
+        const tokenHash = this.refreshTokenService.hash(refreshToken)
+
+        const refreshRecord = await this.refreshTokenStore.findByHash(tokenHash)
+
+        if(!refreshRecord) throw new InvalidRefreshTokenError()
+
+            await Promise.all([
+                this.sessionStore.deleteById(refreshRecord.sessionId),
+                this.refreshTokenStore.deleteByHash(tokenHash),
+                this.tokenFamilyStore.deleteById(refreshRecord.familyId),
+            ])
+            console.log("Logour completd");
+            
     }
 }

@@ -5,4 +5,5 @@ export interface AccessTokenPayload {
 }
 export interface IAccessTokenService {
     generate(payload:AccessTokenPayload):string
+    verify(token:string):AccessTokenPayload
 }

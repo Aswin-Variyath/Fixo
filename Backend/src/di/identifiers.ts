@@ -8,9 +8,11 @@ export const TYPES = {
     AuthCommandService: Symbol.for("AuthCommandService"),
     AuthController:Symbol.for("AuthController"),
     // Auth token and session infrasture
-    AccessTokenSerivce:Symbol.for("AccessTokenSerivce"),
+    AccessTokenService:Symbol.for("AccessTokenService"),
     RefreshTokenService:Symbol.for("RefreshTokenService"),
     SessionStore:Symbol.for("SessionStore"),
     TokenFamilyStore:Symbol.for("TokenFamilyStore"),
-    RefreshTokenStore:Symbol.for("RefreshTokenStore")
+    RefreshTokenStore:Symbol.for("RefreshTokenStore"),
+    AuthMiddleware:Symbol.for("AuthMiddleware"),
+    AuthorizationMiddleware:Symbol.for("AuthorizationMiddleware")
 } as const
