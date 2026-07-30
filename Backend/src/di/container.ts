@@ -27,15 +27,15 @@ import { AuthMiddleware } from "../modules/auth/middlewares/auth.middleware";
 import { IAuthorizationMiddleware } from "../modules/auth/interfaces/authoriazation-middleware.interface";
 import { AuthorizationMiddleware } from "../modules/auth/middlewares/authorization.middleware";
 import { PrismaClient } from "@prisma/client/extension";
-import prisma from "../database/prisma";
+import prisma from "../database/prisma/prisma";
 import { IPasswordResetRepository } from "../modules/auth/interfaces/password-reset.repository.interface";
 import { PasswordResetRepository } from "../modules/auth/repositories/password-reset.repository";
-import { IMailService } from "../services/mail/interfaces/mail.service.interface";
-import { ResendMailService } from "../services/mail/services/resend-mail.service";
 import { IRateLimitStore } from "../modules/auth/interfaces/rate-limit-store.interface";
 import { RateLimitStore } from "../modules/auth/stores/rate-limit.store";
 import { IsessionIndexStore } from "../modules/auth/interfaces/session-index-store.interface";
 import { SessionIndexStore } from "../modules/auth/stores/session.-index.store";
+import { IMailService } from "../shared/providers/mail/interfaces/mail.service.interface";
+import { NodemailerMailService } from "../shared/providers/mail/services/resend-mail.service";
 
 export const container = new Container()
 
@@ -55,6 +55,6 @@ container.bind<IRefreshTokenStore>(TYPES.RefreshTokenStore).to(RefreshTokenStore
 container.bind<IAuthMiddleWare>(TYPES.AuthMiddleware).to(AuthMiddleware).inSingletonScope()
 container.bind<IAuthorizationMiddleware>(TYPES.AuthorizationMiddleware).to(AuthorizationMiddleware).inSingletonScope()
 container.bind<IPasswordResetRepository>(TYPES.PasswordResetRepository).to(PasswordResetRepository).inSingletonScope()
-container.bind<IMailService>(TYPES.MailService).to(ResendMailService).inSingletonScope()
+container.bind<IMailService>(TYPES.MailService).to(NodemailerMailService).inSingletonScope()
 container.bind<IRateLimitStore>(TYPES.RateLimitStore).to(RateLimitStore).inSingletonScope()
 container.bind<IsessionIndexStore>(TYPES.SessionIndexStore).to(SessionIndexStore).inSingletonScope()

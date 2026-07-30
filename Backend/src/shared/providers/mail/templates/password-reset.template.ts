@@ -1,10 +1,10 @@
-import { ENV } from "../../../config/env.config";
+import { ENV } from "../../../../config/env.config";
 
 export function passwordResetTemplate(
   firstName: string,
   resetToken: string,
 ): string {
-  const resetLink = `${ENV.MAIL.FRONTEND_URL}/reset-password?token=${resetToken}`;
+  const resetLink = `${ENV.APP.FRONTEND_URL}/reset-password?token=${resetToken}`;
   return `
 <!DOCTYPE html>
 <html>

@@ -4,11 +4,8 @@ import { IUserAuthRespository } from "../interfaces/user-auth-repository.interfa
 import {TYPES } from "../../../di"
 import { SignupResponseDto } from "../dto/auth-response.dto";
 import { SignupDto } from "../dto/signup.dto";
-import { ConflictError } from "../../../shared/errors/conflict.error";
 import { IPasswordService } from "../interfaces/password-service.interface";
 import { LoginDto } from "../dto/login.dto";
-import { UnauthorizedError } from "../../../shared/errors/unauthorized.error";
-import { ForbiddenError } from "../../../shared/errors/forbidden.error";
 import { randomUUID } from "node:crypto";
 import { ENV } from "../../../config/env.config";
 import { IOpaqueTokenService } from "../interfaces/opaque_token_service.interface";
@@ -16,13 +13,13 @@ import { IsessionStore } from "../interfaces/session-store.interface";
 import { ITokenFamilyStore } from "../interfaces/token-family-store.interface";
 import { IRefreshTokenStore } from "../interfaces/refresh-token-store.interface";
 import { IAccessTokenService } from "../interfaces/access-token-service.interface";
-import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh-token.error";
 import { IPasswordResetRepository } from "../interfaces/password-reset.repository.interface";
-import { IMailService } from "../../../services/mail/interfaces/mail.service.interface";
 import { IRateLimitStore } from "../interfaces/rate-limit-store.interface";
-import { TooManyRequestError } from "../../../shared/errors/too-many-requests.error";
 import { IsessionIndexStore } from "../interfaces/session-index-store.interface";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
+import { IMailService } from "../../../shared/providers/mail/interfaces/mail.service.interface";
+import { AppError } from "../../../shared/errors/app.error";
+import { StatusCodes } from "http-status-codes";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -43,14 +40,13 @@ export class AuthCommandService implements IAuthCommandService {
     
     
     async signup(data: SignupDto): Promise<SignupResponseDto> {
-        console.log("sdfljas")
         const emailExists = await this.userAuthRepository.existByEmail(data.email)
         if(emailExists) {
-            throw new ConflictError("Email is alread registered")
+            throw new AppError(StatusCodes.CONFLICT, "Email is already registered")
         }
         const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
         if(phoneExists) {
-            throw new ConflictError("Phone number is already registered")
+            throw new AppError(StatusCodes.CONFLICT, "Phone number is already registered")
         }
 
         const customerRole = await this.userAuthRepository.findByRoleByType("customer")
@@ -59,7 +55,7 @@ export class AuthCommandService implements IAuthCommandService {
         
 
         if(!customerRole || !defaultLanguage || !activeStatus) {
-            throw new Error("Required signup reference data is missing")
+            throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Required signup reference data is missing")
         }
 
         const passwordHash = await this.passwordService.hash(data.password)
@@ -78,24 +74,18 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
     async login(data: LoginDto): Promise<LoginResult> {
-        console.log("Command service hits")
         const user = await this.userAuthRepository.findForLogin(data.email);
-        console.log("after find by email")
-        if(!user) throw new UnauthorizedError()
+        if(!user) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid email or password")
         const passwordMatches = await this.passwordService.verify(user.passwordHash,data.password)
-        console.log("after password verify")
-        if(!passwordMatches) throw new UnauthorizedError()
-        if(!user.role.isActive) throw new ForbiddenError("Account access is not allowed")
-        if(!user.status.isActive || user.status.type !== 'active') throw new ForbiddenError("Account access is not allowed")
-        console.log("Validation completed")
+        if(!passwordMatches) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid email or password")
+        if(!user.role.isActive) throw new AppError(StatusCodes.FORBIDDEN, "Account access is not allowed");
+        if(!user.status.isActive || user.status.type !== 'active') throw new AppError(403, "Account access is not allowed")
         const sessionId = randomUUID()
         const familyId = randomUUID()
-        console.log("Token id created")
         const {token: refreshToken, tokenHash} = this.opaqueTokenService.generate()
         const now = new Date()
-        const expiresAt = new Date(now.getTime() + ENV.AUTH.refreshTokenTtlSeconds * 1000)
+        const expiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
 
-        console.log("started session store")
         await this.sessionStore.create(sessionId,{
             userId:user.id,
             familyId,
@@ -105,19 +95,17 @@ export class AuthCommandService implements IAuthCommandService {
             expiresAt:expiresAt.toISOString(),
             lastUsedAt:null
         },
-        ENV.AUTH.refreshTokenTtlSeconds
+        ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
     )
 
     
-    console.log("completed session store")
     
     await this.tokenFamilyStore.create(familyId,{
         sessionId,
         status:"ACTIVE",
     },
-    ENV.AUTH.refreshTokenTtlSeconds
+    ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
 )
-console.log("Session family created")
 
 
 await this.refreshTokenStore.create(
@@ -129,22 +117,19 @@ await this.refreshTokenStore.create(
         expiresAt:expiresAt.toISOString(),
         replacedByHash:null
     },
-    ENV.AUTH.refreshTokenTtlSeconds
+    ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
 )
 await this.sessionIndexStore.addSession(user.id,sessionId)
-    console.log("Refresh token created ")
     const accessToken = this.accessTokenService.generate({
         userId:user.id,
         role:user.role.type,
         sessionId
     })
-    console.log("access token completed")
-    console.log("Returning result")
     return {
         accessToken,
         refreshToken,
         response: {
-            accessTokenExpiresIn:ENV.JWT.accessTokenTtlSeconds,
+            accessTokenExpiresIn:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS,
             user:{
                 id:user.id,
                 firstName:user.firstName,
@@ -174,26 +159,26 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
 
         const currentRecord = await this.refreshTokenStore.findByHash(currentTokenHash)
 
-        if(!currentRecord) throw new InvalidRefreshTokenError()
+        if(!currentRecord) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired authentication session")
 
 
         const session = await this.sessionStore.findById(currentRecord.sessionId)
 
         if(!session || session.status !== "ACTIVE") {
-            throw new InvalidRefreshTokenError()
+            throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired authentication session")
         }
 
         const user = await this.userAuthRepository.findByIdForAuth(session.userId)
 
         if(!user || user.deletedAt || !user.role.isActive || !user.status.isActive || user.status.type !== "active") {
-            throw new InvalidRefreshTokenError()
+            throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired authentication session")
         }
 
         const {token:newRefreshToken, tokenHash: newTokenHash} = this.opaqueTokenService.generate()
 
         const now = new Date()
 
-        const newExpiresAt = new Date(now.getTime() + ENV.AUTH.refreshTokenTtlSeconds * 1000)
+        const newExpiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
 
         const rotationResult = await this.refreshTokenStore.rotate({
             currentTokenHash,
@@ -201,7 +186,7 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
             sessionId: currentRecord.sessionId,
             familyId:currentRecord.familyId,
             newTokenExpiresAt:newExpiresAt.toISOString(),
-            ttlSeconds:ENV.AUTH.refreshTokenTtlSeconds
+            ttlSeconds:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
         })
 
         if(rotationResult.status  !== "ROTATED") {
@@ -211,7 +196,7 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
                     familyId:currentRecord.familyId
                 })
             }
-            throw new InvalidRefreshTokenError()
+            throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired authentication session")
         }
 
         const accessToken = this.accessTokenService.generate({
@@ -221,7 +206,7 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
         })
 
         return {
-            accessToken,refreshToken: newRefreshToken, accessTokenExpiresIn: ENV.JWT.accessTokenTtlSeconds
+            accessToken,refreshToken: newRefreshToken, accessTokenExpiresIn: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS
         }
 
     }
@@ -231,7 +216,7 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
 
         const refreshRecord = await this.refreshTokenStore.findByHash(tokenHash)
 
-        if(!refreshRecord) throw new InvalidRefreshTokenError()
+        if(!refreshRecord) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired authentication session")
 
             const session = await this.sessionStore.findById(refreshRecord.sessionId)
             if(session) {
@@ -243,13 +228,13 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
                 this.refreshTokenStore.deleteByHash(tokenHash),
                 this.tokenFamilyStore.deleteById(refreshRecord.familyId),
             ])
-            console.log("Logour completd");
             
     }
 
     async forgotPassword(email: string): Promise<void> {
 
         const user = await this.userAuthRepository.findByEmail(email)
+        console.log("This is ",user)
 
         if(!user) return
 
@@ -257,7 +242,7 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
 
         const isLimited = await this.rateLimitStore.exists(rateLimitKey)
 
-        if(isLimited) throw new TooManyRequestError("Please wait before requesting another password reset email.")
+        if(isLimited) throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Please wait before requesting another password reset email.")
 
 
 
@@ -274,7 +259,8 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
             
         })
 
-        await this.mailService.sendPasswordResetEmail(user.email,user.firstName,token)
+        let maili = await this.mailService.sendPasswordResetEmail(user.email,user.firstName,token)
+        console.log("this is a,il",maili)
         await this.rateLimitStore.set(rateLimitKey, 300)
     }
 
@@ -283,11 +269,11 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
 
         const resetToken = await this.passwordResetRepository.findByTokenHash(tokenHash)
 
-        if(!resetToken) throw new UnauthorizedError("Invalid or expired reset token")
+        if(!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired reset token")
 
         if(resetToken.expiresAt.getTime() < Date.now()) {
             await this.passwordResetRepository.deleteByTokenHash(tokenHash)
-            throw new UnauthorizedError("Invalid or expired reset token")
+            throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired reset token")
 
         }
 

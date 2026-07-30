@@ -1,8 +1,6 @@
 import { injectable } from "inversify";
-import { IsessionStore } from "../interfaces/session-store.interface";
-import { AuthSession } from "../types/auth-session.types";
 import { IsessionIndexStore } from "../interfaces/session-index-store.interface";
-import { redisClient } from "../../../infrastructure/redis/redis.client";
+import { redisClient } from "../../../config/redis.config";
 
 @injectable()
 export class SessionIndexStore implements IsessionIndexStore {

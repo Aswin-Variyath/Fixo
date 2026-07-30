@@ -1,4 +1,4 @@
-import prisma from "../../../database/prisma";
+import prisma from "../../../database/prisma/prisma";
 import { UserListItemResponseDto } from "../dtos/user-response.dto";
 import { IUserRepository } from "../interfaces/user-repository.interface";
 export class UserRepository implements IUserRepository {

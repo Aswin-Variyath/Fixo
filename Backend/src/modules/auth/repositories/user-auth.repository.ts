@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import prisma from "../../../database/prisma";
+import prisma from "../../../database/prisma/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
 import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord } from "../interfaces/user-auth-repository.interface";
 import { TYPES } from "../../../di";

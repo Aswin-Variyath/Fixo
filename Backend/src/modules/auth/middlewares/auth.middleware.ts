@@ -4,7 +4,7 @@ import { IAccessTokenService } from "../interfaces/access-token-service.interfac
 import {TYPES} from '../../../di/identifiers'
 import { IsessionStore } from "../interfaces/session-store.interface";
 import { Request, Response, NextFunction } from "express";
-import { UnauthorizedError } from "../../../shared/errors/unauthorized.error";
+import { AppError } from "../../../shared/errors/app.error";
 
 
 @injectable()
@@ -17,17 +17,17 @@ export class AuthMiddleware implements IAuthMiddleWare {
 
         const accessToken = req.cookies?.accessToken
 
-        if(!accessToken || typeof accessToken !== "string") throw new UnauthorizedError("Authentication required")
+        if(!accessToken || typeof accessToken !== "string") throw new AppError(401, "Authentication required")
         
         const payload = this.accessTokenService.verify(accessToken)
 
         const session = await this.sessionStore.findById(payload.sessionId)
         
-        if(!session) throw new UnauthorizedError("Session not found")
+        if(!session) throw new AppError(401, "Session not found")
 
-        if(session.status !== "ACTIVE") throw new UnauthorizedError("Session has been revoked")
+        if(session.status !== "ACTIVE") throw new AppError(401, "Session has been revoked")
 
-        if(session?.userId !== payload.userId) throw new UnauthorizedError("Invalid Session")
+        if(session?.userId !== payload.userId) throw new AppError(401, "Invalid Session")
         
         req.user = {
             userId:payload.userId,

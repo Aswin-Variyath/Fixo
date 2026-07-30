@@ -1,5 +1,5 @@
 export function passwordChangedTemplate(firstName: string): string {
-    return `
+  return `
 <!DOCTYPE html>
 <html>
 <head>

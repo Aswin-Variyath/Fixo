@@ -26,13 +26,7 @@ import type {
   UserSafeData,
 } from "../types/user.types";
 
-import {
-  NotFoundError,
-} from "../../../shared/errors/not-found.error";
 
-import {
-  ConflictError,
-} from "../../../shared/errors/conflict.error";
 
 
 @injectable()

@@ -3,11 +3,8 @@ import {errorMiddleware} from "./shared/middlewares/error.middleware";
 import { userRouter } from "./modules/users";
 import { authRoutes } from "./modules/auth";
 import cookieParser from "cookie-parser";
-import { AuthMiddleware } from "./modules/auth/middlewares/auth.middleware";
 import { IAuthMiddleWare } from "./modules/auth/interfaces/auth-middleware.interface";
 import { container, TYPES } from "./di";
-import { success } from "zod";
-import router from "./modules/users/routes/user.routes";
 
 const app = express();
 

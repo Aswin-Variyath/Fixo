@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import {IRefreshTokenStore,RefreshRotationResult,RotateRefreshTokenData,} from "../interfaces/refresh-token-store.interface";
 import { RefreshTokenRecord } from "../types/auth-session.types";
-import { redisClient } from "../../../infrastructure/redis/redis.client";
+import { redisClient } from "../../../config/redis.config";
 
 @injectable()
 export class RefreshTokenStore implements IRefreshTokenStore {

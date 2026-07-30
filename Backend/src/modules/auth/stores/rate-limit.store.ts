@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { IRateLimitStore } from "../interfaces/rate-limit-store.interface";
-import { redisClient } from "../../../infrastructure/redis/redis.client";
+import { redisClient } from "../../../config/redis.config";
 
 @injectable()
 export class RateLimitStore implements IRateLimitStore {

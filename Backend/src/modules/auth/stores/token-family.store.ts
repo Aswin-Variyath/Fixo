@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { ITokenFamilyStore } from "../interfaces/token-family-store.interface";
 import { TokenFamily } from "../types/auth-session.types";
-import { redisClient } from "../../../infrastructure/redis/redis.client";
+import { redisClient } from "../../../config/redis.config";
 
 @injectable()
 export class TokenFamilyStore implements ITokenFamilyStore {
