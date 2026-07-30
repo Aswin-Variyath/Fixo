@@ -23,5 +23,10 @@ export const ENV = {
   AUTH: {
     refreshTokenTtlSeconds:Number(process.env.REFRESH_TOKEN_TTL_SECONDS ?? 60*60*24*30)
   },
-  NODE_ENV:getRequiredEnv("NODE_ENV")
+  NODE_ENV:getRequiredEnv("NODE_ENV"),
+  MAIL:{
+    RESEND_API_KEY:getRequiredEnv("RESEND_API_KEY"),
+    MAIL_FROM:getRequiredEnv("MAIL_FROM"),
+    FRONTEND_URL:getRequiredEnv("FRONTEND_URL")
+  }
 } as const

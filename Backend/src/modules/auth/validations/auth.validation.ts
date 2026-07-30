@@ -17,3 +17,10 @@ export const loginSchema = z.object({
     })
 })
 export type loginInput = z.infer<typeof loginSchema>["body"]
+
+export const resetPasswordSchema = z.object({
+    body:z.object({
+        token:z.string().trim().min(1,"Reset token is required"),
+        password:z.string().min(8).max(100,"Password is too long").regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,"Password must contain uppercase, lowercase, number and special character.")
+    })
+})

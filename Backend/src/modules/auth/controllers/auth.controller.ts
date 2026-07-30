@@ -7,6 +7,8 @@ import { LoginDto } from "../dto/login.dto";
 import { ENV } from "../../../config/env.config";
 import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh-token.error";
 import { UnauthorizedError } from "../../../shared/errors/unauthorized.error";
+import { success } from "zod";
+import { ForgotPasswordDto } from "../dto/forgot-password.dto";
 
 @injectable()
 export class AuthController {
@@ -99,6 +101,22 @@ export class AuthController {
         res.status(200).json({
             success:true,
             message:"Logged out successfully"
+        })
+    }
+
+    forgotPassword = async(req:Request<Record<string, never>, unknown, ForgotPasswordDto>, res:Response):Promise<void> =>{
+        await this.authCommandService.forgotPassword(req.body.email);
+        res.status(200).json({
+            success:true,
+            message: "If an account exists for that email, a password reset link has been sent."
+        })
+    }
+
+    resetPassword = async(req:Request, res: Response):Promise<void> =>{
+        await this.authCommandService.resetPassword(req.body)
+        res.status(200).json({
+            success:true,
+            message: "Password reset successfully"
         })
     }
 

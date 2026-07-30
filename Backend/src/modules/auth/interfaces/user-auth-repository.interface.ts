@@ -1,3 +1,4 @@
+import { User } from "../../../database/generated/prisma/client"
 import { SignupResponseDto } from "../dto/auth-response.dto"
 
 export interface CreateSignupUserData {
@@ -40,7 +41,8 @@ export interface IUserAuthRespository {
     createSignupUser(data:CreateSignupUserData):Promise<SignupResponseDto>
     findForLogin(email:string):Promise<LoginUserRecord | null>
     findByIdForAuth(id:string):Promise<RefreshAuthUserRecord | null>
-
+    findByEmail(email:string):Promise<User | null>
+    updatePassword(userId:string, passwordHash:string):Promise<void>
 }
 
 export interface LoginUserRecord {

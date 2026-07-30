@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request} from "express";
-import { success, ZodType } from "zod";
+import {  ZodType } from "zod";
+
 
 export const validate = (schema: ZodType)=>{
   return (req:Request, res: Response, next: NextFunction):void=> {
@@ -9,6 +10,7 @@ export const validate = (schema: ZodType)=>{
       query: req.query,
       params: req.params
     })
+    
     if(!result.success) {
       res.status(400).json({
         success:false,
@@ -20,6 +22,7 @@ export const validate = (schema: ZodType)=>{
       })
       return
     }
+
     next()
   }
 }

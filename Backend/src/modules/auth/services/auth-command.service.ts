@@ -11,24 +11,36 @@ import { UnauthorizedError } from "../../../shared/errors/unauthorized.error";
 import { ForbiddenError } from "../../../shared/errors/forbidden.error";
 import { randomUUID } from "node:crypto";
 import { ENV } from "../../../config/env.config";
-import { IRefreshTokenService } from "../interfaces/refresh-token-service.interface";
+import { IOpaqueTokenService } from "../interfaces/opaque_token_service.interface";
 import { IsessionStore } from "../interfaces/session-store.interface";
 import { ITokenFamilyStore } from "../interfaces/token-family-store.interface";
 import { IRefreshTokenStore } from "../interfaces/refresh-token-store.interface";
 import { IAccessTokenService } from "../interfaces/access-token-service.interface";
 import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh-token.error";
+import { IPasswordResetRepository } from "../interfaces/password-reset.repository.interface";
+import { IMailService } from "../../../services/mail/interfaces/mail.service.interface";
+import { IRateLimitStore } from "../interfaces/rate-limit-store.interface";
+import { TooManyRequestError } from "../../../shared/errors/too-many-requests.error";
+import { IsessionIndexStore } from "../interfaces/session-index-store.interface";
+import { ResetPasswordDto } from "../dto/reset-password.dto";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
     constructor(
     @inject(TYPES.UserAuthRepository) private readonly userAuthRepository: IUserAuthRespository, 
     @inject(TYPES.PasswordService) private readonly passwordService: IPasswordService, 
-    @inject(TYPES.RefreshTokenService) private readonly refreshTokenService: IRefreshTokenService, 
+    @inject(TYPES.OpaqueTokenService) private readonly opaqueTokenService: IOpaqueTokenService, 
     @inject(TYPES.SessionStore) private readonly sessionStore: IsessionStore, 
     @inject(TYPES.TokenFamilyStore) private readonly tokenFamilyStore:ITokenFamilyStore, 
     @inject(TYPES.RefreshTokenStore) private readonly refreshTokenStore:IRefreshTokenStore,
-    @inject(TYPES.AccessTokenService) private readonly accessTokenService: IAccessTokenService
+    @inject(TYPES.AccessTokenService) private readonly accessTokenService: IAccessTokenService,
+    @inject(TYPES.PasswordResetRepository) private readonly passwordResetRepository: IPasswordResetRepository,
+    @inject(TYPES.MailService) private readonly mailService: IMailService,
+    @inject(TYPES.RateLimitStore) private readonly rateLimitStore: IRateLimitStore,
+    @inject(TYPES.SessionIndexStore) private readonly sessionIndexStore: IsessionIndexStore,
 ) {}
+    
+    
     
     async signup(data: SignupDto): Promise<SignupResponseDto> {
         console.log("sdfljas")
@@ -79,7 +91,7 @@ export class AuthCommandService implements IAuthCommandService {
         const sessionId = randomUUID()
         const familyId = randomUUID()
         console.log("Token id created")
-        const {token: refreshToken, tokenHash} = this.refreshTokenService.generate()
+        const {token: refreshToken, tokenHash} = this.opaqueTokenService.generate()
         const now = new Date()
         const expiresAt = new Date(now.getTime() + ENV.AUTH.refreshTokenTtlSeconds * 1000)
 
@@ -87,6 +99,7 @@ export class AuthCommandService implements IAuthCommandService {
         await this.sessionStore.create(sessionId,{
             userId:user.id,
             familyId,
+            refreshTokenHash: tokenHash,
             status:"ACTIVE",
             createdAt:now.toISOString(),
             expiresAt:expiresAt.toISOString(),
@@ -95,28 +108,30 @@ export class AuthCommandService implements IAuthCommandService {
         ENV.AUTH.refreshTokenTtlSeconds
     )
 
+    
     console.log("completed session store")
-
+    
     await this.tokenFamilyStore.create(familyId,{
         sessionId,
         status:"ACTIVE",
     },
     ENV.AUTH.refreshTokenTtlSeconds
-    )
-    console.log("Session family created")
+)
+console.log("Session family created")
 
 
-    await this.refreshTokenStore.create(
-        tokenHash,
-        {
-            sessionId,
-            familyId,
-            status:"ACTIVE",
-            expiresAt:expiresAt.toISOString(),
-            replacedByHash:null
-        },
-        ENV.AUTH.refreshTokenTtlSeconds
-    )
+await this.refreshTokenStore.create(
+    tokenHash,
+    {
+        sessionId,
+        familyId,
+        status:"ACTIVE",
+        expiresAt:expiresAt.toISOString(),
+        replacedByHash:null
+    },
+    ENV.AUTH.refreshTokenTtlSeconds
+)
+await this.sessionIndexStore.addSession(user.id,sessionId)
     console.log("Refresh token created ")
     const accessToken = this.accessTokenService.generate({
         userId:user.id,
@@ -155,7 +170,7 @@ export class AuthCommandService implements IAuthCommandService {
 
     }
     async refresh(refreshToken: string): Promise<RefreshResult> {
-        const currentTokenHash =  this.refreshTokenService.hash(refreshToken)
+        const currentTokenHash =  this.opaqueTokenService.hash(refreshToken)
 
         const currentRecord = await this.refreshTokenStore.findByHash(currentTokenHash)
 
@@ -174,7 +189,7 @@ export class AuthCommandService implements IAuthCommandService {
             throw new InvalidRefreshTokenError()
         }
 
-        const {token:newRefreshToken, tokenHash: newTokenHash} = this.refreshTokenService.generate()
+        const {token:newRefreshToken, tokenHash: newTokenHash} = this.opaqueTokenService.generate()
 
         const now = new Date()
 
@@ -212,11 +227,16 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
     async logout(refreshToken: string): Promise<void> {
-        const tokenHash = this.refreshTokenService.hash(refreshToken)
+        const tokenHash = this.opaqueTokenService.hash(refreshToken)
 
         const refreshRecord = await this.refreshTokenStore.findByHash(tokenHash)
 
         if(!refreshRecord) throw new InvalidRefreshTokenError()
+
+            const session = await this.sessionStore.findById(refreshRecord.sessionId)
+            if(session) {
+                await this.sessionIndexStore.removeSession(session.userId,refreshRecord.sessionId)
+            }
 
             await Promise.all([
                 this.sessionStore.deleteById(refreshRecord.sessionId),
@@ -226,4 +246,82 @@ export class AuthCommandService implements IAuthCommandService {
             console.log("Logour completd");
             
     }
+
+    async forgotPassword(email: string): Promise<void> {
+
+        const user = await this.userAuthRepository.findByEmail(email)
+
+        if(!user) return
+
+        const rateLimitKey = `auth:rate-limit:forgot-password:${email}`
+
+        const isLimited = await this.rateLimitStore.exists(rateLimitKey)
+
+        if(isLimited) throw new TooManyRequestError("Please wait before requesting another password reset email.")
+
+
+
+        await this.passwordResetRepository.deleteByUserId(user.id)
+
+        const {token, tokenHash} = this.opaqueTokenService.generate()
+
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000)
+
+        await this.passwordResetRepository.create({
+            userId: user.id,
+            tokenHash,
+            expiresAt,
+            
+        })
+
+        await this.mailService.sendPasswordResetEmail(user.email,user.firstName,token)
+        await this.rateLimitStore.set(rateLimitKey, 300)
+    }
+
+    async resetPassword(data: ResetPasswordDto): Promise<void> {
+        const tokenHash = this.opaqueTokenService.hash(data.token)
+
+        const resetToken = await this.passwordResetRepository.findByTokenHash(tokenHash)
+
+        if(!resetToken) throw new UnauthorizedError("Invalid or expired reset token")
+
+        if(resetToken.expiresAt.getTime() < Date.now()) {
+            await this.passwordResetRepository.deleteByTokenHash(tokenHash)
+            throw new UnauthorizedError("Invalid or expired reset token")
+
+        }
+
+        const passwordHash = await this.passwordService.hash(data.password)
+
+        await this.userAuthRepository.updatePassword(resetToken.userId,passwordHash)
+
+        try {
+            const sessionIds = await this.sessionIndexStore.getSessions(resetToken.userId)
+
+            for(const sessionId of sessionIds) {
+                const session = await this.sessionStore.findById(sessionId)
+
+                if(!session) continue
+
+                await Promise.all([
+                    this.sessionStore.deleteById(sessionId),
+                    this.refreshTokenStore.deleteByHash(session.refreshTokenHash),
+                    this.tokenFamilyStore.deleteById(session.familyId),
+
+                ])
+            }
+            await this.sessionIndexStore.deleteIndex(resetToken.userId)
+            try{
+                await this.mailService.sendPasswordChangeEmail(resetToken.user.email, resetToken.user.firstName)
+
+            }catch(error) {
+                console.error("failed to send password change email")
+            }
+
+        }finally {
+            await this.passwordResetRepository.deleteByTokenHash(tokenHash)
+        }
+    }
+
+
 }

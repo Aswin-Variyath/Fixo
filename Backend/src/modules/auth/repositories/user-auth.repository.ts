@@ -1,9 +1,16 @@
+import { inject, injectable } from "inversify";
 import prisma from "../../../database/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
 import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord } from "../interfaces/user-auth-repository.interface";
+import { TYPES } from "../../../di";
+import { PrismaClient, User } from "../../../database/generated/prisma/client";
 
+@injectable()
 export class UserAuthRepository implements IUserAuthRespository {
    
+    constructor(@inject(TYPES.PrismaClient) private readonly prisma: PrismaClient) {}
+   
+
     async existByEmail(email: string): Promise<Boolean> {
         const user = await prisma.user.findUnique({where:{email},select:{id:true}})
         return user != null
@@ -136,6 +143,17 @@ export class UserAuthRepository implements IUserAuthRespository {
                     }
                 }
             }
+        })
+    }
+
+    findByEmail(email: string): Promise<User | null> {
+        return this.prisma.user.findUnique({where:{email}})
+    }
+
+     async updatePassword(userId: string, passwordHash: string): Promise<void> {
+        await prisma.user.update({
+            where:{id:userId},
+            data:{password:passwordHash}
         })
     }
 }

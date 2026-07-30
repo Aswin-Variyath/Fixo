@@ -1,4 +1,5 @@
 export const TYPES = {
+    PrismaClient: Symbol.for("PrismaClient"),
     UserRepository:Symbol.for("UserRepository"),
     UserQueryService:Symbol.for("UserQueryService"),
     UserController:Symbol.for("UserController"),
@@ -9,10 +10,15 @@ export const TYPES = {
     AuthController:Symbol.for("AuthController"),
     // Auth token and session infrasture
     AccessTokenService:Symbol.for("AccessTokenService"),
-    RefreshTokenService:Symbol.for("RefreshTokenService"),
+    OpaqueTokenService:Symbol.for("OpaqueTokenService"),
     SessionStore:Symbol.for("SessionStore"),
     TokenFamilyStore:Symbol.for("TokenFamilyStore"),
     RefreshTokenStore:Symbol.for("RefreshTokenStore"),
     AuthMiddleware:Symbol.for("AuthMiddleware"),
-    AuthorizationMiddleware:Symbol.for("AuthorizationMiddleware")
+    AuthorizationMiddleware:Symbol.for("AuthorizationMiddleware"),
+    // Password reseting 
+    PasswordResetRepository: Symbol.for("PasswordResetRepository"),
+    MailService: Symbol.for("MailService"),
+    RateLimitStore: Symbol.for("RateLimitStore"),
+    SessionIndexStore: Symbol.for("SessionIndexStore"),
 } as const
