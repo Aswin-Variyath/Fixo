@@ -10,5 +10,5 @@
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"
-  ]
+, "src/app/features/landing/customer/home/sections/hero/hero.component.spec.ts"  ]
 }

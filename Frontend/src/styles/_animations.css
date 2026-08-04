@@ -1,0 +1,78 @@
+/*
+ * _animations.css
+ * ---------------
+ * PURPOSE : Centralised animation layer — every @keyframes block and every
+ *           animation utility class used across the design.
+ *
+ * BELONGS : @keyframes definitions, Tailwind @utility blocks for animation
+ *           helpers (animate-fade-in-up, animate-float-blob), transition
+ *           utilities for scroll-reveal (opacity-0, translate-y-10, etc.
+ *           when not available as Tailwind defaults).
+ *
+ * NEVER   : Design tokens, component multi-property styles, base element rules.
+ *           If it is not about motion/timing, it does not belong here.
+ */
+
+/* ============================================================
+   @keyframes float
+   Used by .floating-blob — 15s infinite alternate ease-in-out
+   Preserved exactly from Stitch CSS.
+============================================================ */
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(100px, 50px) scale(1.2);
+  }
+}
+
+/* ============================================================
+   @keyframes fadeInUp
+   Used by the Hero section (.animate-fade-in-up).
+   Slides content up from 40px below while fading in.
+============================================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   @keyframes pulse
+   Used by the "live" badge dot in the Hero section.
+   Tailwind includes a default animate-pulse but we declare
+   the keyframe explicitly to guarantee it matches.
+============================================================ */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   Tailwind v4 custom animation utilities
+   Declared with @utility so they are available as Tailwind
+   utility classes (e.g. class="animate-fade-in-up")
+============================================================ */
+
+@utility animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@utility animate-float-blob {
+  animation: float 15s infinite alternate ease-in-out;
+}
+
+@utility animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
