@@ -1,4 +1,4 @@
-/*
+/* 
  * _base.css
  * ---------
  * PURPOSE : Global HTML element defaults and resets.
@@ -47,37 +47,4 @@ html:not(.dark) body {
     "opsz" 24;
 }
 
-/* ============================================================
-   CUSTOM SCROLLBAR — Preserved exactly from Stitch CSS
-============================================================ */
 
-/* Track width */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-/* Track background — dark mode */
-::-webkit-scrollbar-track {
-  background: #121317;
-}
-
-/* Track background — light mode */
-html:not(.dark) ::-webkit-scrollbar-track {
-  background: #f8f9fc;
-}
-
-/* Thumb — dark mode */
-::-webkit-scrollbar-thumb {
-  background: #343439;
-  border-radius: 10px;
-}
-
-/* Thumb — light mode */
-html:not(.dark) ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-}
-
-/* Thumb hover — both modes (uses primary-container accent) */
-::-webkit-scrollbar-thumb:hover {
-  background: #5e6ad2;
-}

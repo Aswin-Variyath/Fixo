@@ -158,3 +158,20 @@ html:not(.dark) .floating-blob {
   display: inline-block;
   transition: transform 0.2s ease-out;
 }
+
+
+/* ============================================================
+   PRIMARY GRADIENT
+============================================================ */
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #2E4AD1 0%, #7CC4FA 100%);
+}
+
+/* ============================================================
+   PRIMARY GLOW
+============================================================ */
+
+.glow-shadow-primary {
+  box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
+}
