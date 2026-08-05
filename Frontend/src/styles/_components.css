@@ -188,3 +188,19 @@ html:not(.dark) .floating-blob {
   box-shadow: 0 0 15px rgba(94, 106, 210, 0.3);
   border-color: #bdc2ff;
 }
+
+/* ============================================================
+   INPUT GLASS
+============================================================ */
+
+.input-glass {
+  background: rgba(13, 14, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.input-glass:focus-within {
+  border-color: #5e6ad2;
+  background: rgba(26, 27, 32, 0.9);
+  box-shadow: 0 0 0 2px rgba(94, 106, 210, 0.2);
+}
