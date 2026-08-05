@@ -175,3 +175,16 @@ html:not(.dark) .floating-blob {
 .glow-shadow-primary {
   box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
 }
+
+/* ============================================================
+   LOGIN PAGE
+============================================================ */
+
+.login-gradient-bg {
+  background: radial-gradient(circle at 0% 0%, #0b111b 0%, #121317 100%);
+}
+
+.input-focus-glow:focus {
+  box-shadow: 0 0 15px rgba(94, 106, 210, 0.3);
+  border-color: #bdc2ff;
+}

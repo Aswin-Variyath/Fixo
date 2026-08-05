@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { NavbarComponent } from '../../landing/customer/home/sections/navbar/navbar.component';
-import { FooterComponent } from '../../landing/customer/home/sections/footer/footer.component';
+import { NavbarComponent } from '../../../landing/customer/home/sections/navbar/navbar.component';
+import { FooterComponent } from '../../../landing/customer/home/sections/footer/footer.component';
 
 @Component({
   selector: 'app-signup',
