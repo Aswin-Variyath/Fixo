@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { MagneticDirective } from '../../../../../../../shared/directives/magnetic.directive';
 import { ScrollRevealDirective } from '../../../../../../../shared/directives/scroll-reveal.directive';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
-  imports: [MagneticDirective, ScrollRevealDirective],
+  imports: [MagneticDirective, ScrollRevealDirective, RouterLink],
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.css',
 })
