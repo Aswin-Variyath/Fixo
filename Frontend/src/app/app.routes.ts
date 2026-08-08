@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
+    // Customer routers
     {
         path:"",
         loadComponent:()=>
@@ -15,7 +16,7 @@ export const routes: Routes = [
     {
         path:'login',
         loadComponent:()=>
-            import("./features/customer/auth/pages/login/login").then((m)=>m.Login)
+            import("./features/customer/auth/pages/signin/login").then((m)=>m.Login)
     },
     {
         path:'forgot-password',
@@ -27,7 +28,7 @@ export const routes: Routes = [
         loadComponent:()=>
             import("./features/customer/auth/pages/reset-password/reset-password").then((m)=>m.ResetPassword)
     },
-    // Tasker routes
+    // Tasker routers
     {
         path:'become-a-tasker',
         loadComponent:()=>
@@ -36,7 +37,7 @@ export const routes: Routes = [
     {
         path:"tasker/login",
         loadComponent:()=>
-            import("./features/tasker/auth/pages/tasker-login/tasker-login").then((m)=>m.TaskerLogin)
+            import("./features/tasker/auth/pages/tasker-signin/tasker-login").then((m)=>m.TaskerLogin)
     },
     {
         path:"tasker/signup",
@@ -52,5 +53,21 @@ export const routes: Routes = [
         path:"tasker/reset-password",
         loadComponent:()=>
             import("./features/tasker/auth/pages/tasker-reset-password/tasker-reset-password").then((m)=>m.TaskerResetPassword)
+    },
+    // Admin routers
+    {
+        path:"admin/signin",
+        loadComponent:()=>
+            import("./features/admin/auth/pages/admin-signin/admin-signin").then((m)=>m.AdminSignin)
+    },
+    {
+        path:"admin/forgot-password",
+        loadComponent:()=>
+            import("./features/admin/auth/pages/admin-forgot-password/admin-forgot-password").then((m)=>m.AdminForgotPassword)
+    },
+    {
+        path:"admin/reset-password",
+        loadComponent:()=>
+            import("./features/admin/auth/pages/admin-reset-password/admin-reset-password").then((m)=>m.AdminResetPassword)
     }
 ];

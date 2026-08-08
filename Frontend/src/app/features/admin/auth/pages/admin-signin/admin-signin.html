@@ -1,0 +1,134 @@
+<main
+  class="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-surface-dim px-margin-mobile font-body-md"
+>
+  <!-- Background Blobs -->
+
+
+  <!-- Login Container -->
+  <div class="relative z-10 w-full max-w-md">
+    <div
+      class="glass-card glow-shadow-primary relative overflow-hidden rounded-[24px] p-8 md:p-10"
+    >
+      <!-- Top Highlight -->
+      <div
+        class="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+      ></div>
+
+      <!-- Header -->
+      <div class="mb-10 text-center">
+        <h1
+          class="bg-gradient-to-r from-royal-blue to-sky-blue bg-clip-text text-headline-lg-mobile font-headline-lg-mobile tracking-tight text-transparent md:text-headline-lg md:font-headline-lg"
+        >
+          Admin Portal
+        </h1>
+
+       
+      </div>
+
+      <!-- Form -->
+      <form class="space-y-stack-md" novalidate>
+        <!-- Email Field -->
+        <div class="space-y-stack-sm">
+          <label
+            class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant"
+            for="email"
+          >
+            Admin Email
+          </label>
+
+          <div class="input-glass relative flex items-center rounded-xl px-4 py-3">
+            <span class="material-symbols-outlined mr-3 text-outline">
+              mail
+            </span>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="admin@fixo.com"
+              class="w-full border-none bg-transparent p-0 font-body-md text-on-surface placeholder:text-outline focus:ring-0"
+            />
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-stack-sm pt-2">
+          <div class="flex items-center justify-between">
+            <label
+              class="block font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant"
+              for="password"
+            >
+              Password
+            </label>
+
+            <a
+              routerLink="/admin/forgot-password"
+              class="font-label-sm text-label-sm text-primary transition-colors hover:text-sky-blue"
+            >
+              Forgot Password?
+            </a>
+          </div>
+
+          <div class="input-glass relative flex items-center rounded-xl px-4 py-3">
+            <span class="material-symbols-outlined mr-3 text-outline">
+              lock
+            </span>
+
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              class="w-full border-none bg-transparent p-0 font-body-md text-on-surface placeholder:text-outline focus:ring-0"
+            />
+          </div>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="flex items-center pt-2">
+          <input
+            id="remember-me"
+            type="checkbox"
+            class="h-4 w-4 rounded border-outline bg-transparent text-primary-container focus:ring-primary-container focus:ring-offset-surface-dim"
+          />
+
+          <label
+            for="remember-me"
+            class="ml-2 block text-sm font-body-md text-on-surface-variant"
+          >
+            Remember me for 30 days
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-stack-md">
+          <button
+            type="submit"
+            class="group/btn relative flex w-full justify-center overflow-hidden rounded-full bg-gradient-to-r from-royal-blue to-sky-blue px-4 py-4 font-body-md font-medium text-white shadow-[0_0_20px_-5px_rgba(124,196,250,0.4)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_-5px_rgba(124,196,250,0.6)] active:scale-[0.98]"
+          >
+            <span class="relative z-10 flex items-center">
+              Sign In
+
+              <span
+                class="material-symbols-outlined ml-2 text-[20px] transition-transform group-hover/btn:translate-x-1"
+              >
+                arrow_forward
+              </span>
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Security Badge -->
+      <div class="mt-8 flex items-center justify-center gap-2 opacity-60">
+        <span class="material-symbols-outlined text-[16px]">
+          verified_user
+        </span>
+
+        <span
+          class="font-label-sm text-[10px] uppercase tracking-[0.25em] text-on-surface-variant"
+        >
+          Secure Enterprise Login
+        </span>
+      </div>
+    </div>
+  </div>
+</main>
