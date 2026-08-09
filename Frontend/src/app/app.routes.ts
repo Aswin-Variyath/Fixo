@@ -69,5 +69,10 @@ export const routes: Routes = [
         path:"admin/reset-password",
         loadComponent:()=>
             import("./features/admin/auth/pages/admin-reset-password/admin-reset-password").then((m)=>m.AdminResetPassword)
+    },
+    {
+        path:'admin/dashboard',
+        loadComponent:()=>
+            import("./features/admin/dashboard/dashboard").then((m)=>m.Dashboard)
     }
 ];
