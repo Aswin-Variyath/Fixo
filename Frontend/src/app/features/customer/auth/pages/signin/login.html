@@ -24,7 +24,7 @@
           </p>
         </div>
         <!-- Login Form -->
-        <form class="space-y-6" onsubmit="event.preventDefault()">
+        <form class="space-y-6" [formGroup]="loginForm" (ngSubmit)="submit()">
           <div class="space-y-2">
             <label class="font-label-sm text-label-sm text-on-surface-variant ml-1"
               >EMAIL ADDRESS</label
@@ -38,15 +38,22 @@
                 class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl py-3.5 pl-12 pr-4 text-on-surface placeholder:text-outline/50 focus:outline-none input-focus-glow transition-all duration-300"
                 placeholder="name@company.com"
                 type="email"
+                formControlName="email"
               />
             </div>
+            @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('required')) {
+              <p class="text-red-400 text-sm mt-1">Email is required</p>
+            }
+            @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('email')) {
+              <p class="text-red-400 text-sm mt-1">Please enter a valid email address</p>
+            }
           </div>
           <div class="space-y-2">
             <div class="flex justify-between items-center ml-1">
               <label class="font-label-sm text-label-sm text-on-surface-variant">PASSWORD</label>
               <a
                 class="font-label-sm text-label-sm text-primary hover:underline transition-all"
-                href="#"
+                routerLink="/forgot-password"
                 >Forgot?</a
               >
             </div>
@@ -59,6 +66,7 @@
                 class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl py-3.5 pl-12 pr-4 text-on-surface placeholder:text-outline/50 focus:outline-none input-focus-glow transition-all duration-300"
                 placeholder="••••••••"
                 type="password"
+                formControlName="password"
               />
             </div>
           </div>
@@ -106,7 +114,8 @@
         </button>
         <p class="mt-8 text-center font-body-md text-on-surface-variant">
           Don't have an account?
-          <a class="text-primary font-bold hover:text-sky-blue transition-colors" href="#"
+          <a class="text-primary font-bold hover:text-sky-blue transition-colors"
+            routerLink="/signup"
             >Create one.</a
           >
         </p>
