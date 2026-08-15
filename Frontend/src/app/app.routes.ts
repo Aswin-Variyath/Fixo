@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
+import { guestGuard } from './core/guards/guest-guard';
 
 export const routes: Routes = [
     // Customer routers
     {
         path:"",
+        pathMatch: 'full',
         loadComponent:()=>
             import("./features/customer/landing/pages/customer/home.component").then((m)=>m.HomeLanding)
     },
@@ -15,6 +17,7 @@ export const routes: Routes = [
     },
     {
         path:'login',
+        canActivate:[guestGuard],
         loadComponent:()=>
             import("./features/customer/auth/pages/signin/login").then((m)=>m.Login)
     },

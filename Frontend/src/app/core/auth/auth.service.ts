@@ -35,4 +35,12 @@ export class AuthService {
         )
     }
 
+    logout() {
+        return this.authApiService.logout().pipe(
+            tap(()=>{
+                this.authStore.setUnauthenticated();
+            })
+        )
+    }
+
 }

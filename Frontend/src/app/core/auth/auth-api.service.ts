@@ -21,6 +21,8 @@ export class AuthApiService {
         return this.http.get<ApiResponse<AuthUser>>(`${this.userUrl}/me`, this.httpOptions)
     }
 
-   
+   logout() {
+    return this.http.post<ApiResponse<null>>(`${this.authUrl}/logout`,{},this.httpOptions)
+   }
 
 }

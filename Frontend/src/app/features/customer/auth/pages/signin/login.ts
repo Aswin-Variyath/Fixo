@@ -40,7 +40,7 @@ export class Login {
       next:() => {
         this.isSubmitting = false;
 
-        this.router.navigate(['/customer/home'])
+        this.router.navigate(['/customer/home'],{replaceUrl:true})
       },
       error:(error) => {
         this.isSubmitting = false
