@@ -1,5 +1,5 @@
-import { UserListItemResponseDto } from "../dtos/user-response.dto";
+import { CurrentUser } from "../types/user.types";
 
 export interface IUserRepository {
-    findAll(): Promise<UserListItemResponseDto[]>
+findById(userId: string): Promise<CurrentUser | null>;
 }

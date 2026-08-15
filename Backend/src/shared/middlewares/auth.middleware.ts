@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
-import { IAuthMiddleWare } from "../interfaces/auth-middleware.interface";
-import { IAccessTokenService } from "../interfaces/access-token-service.interface";
-import {TYPES} from '../../../di/identifiers'
-import { IsessionStore } from "../interfaces/session-store.interface";
+import { IAuthMiddleWare } from "../../modules/auth/interfaces/auth-middleware.interface";
+import { IAccessTokenService } from "../../modules/auth/interfaces/access-token-service.interface";
+import {TYPES} from '../../di/identifiers'
+import { IsessionStore } from "../../modules/auth/interfaces/session-store.interface";
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../../../shared/errors/app.error";
+import { AppError } from "../errors/app.error";
 
 
 @injectable()

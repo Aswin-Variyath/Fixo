@@ -40,16 +40,13 @@ export class Login {
       next:() => {
         this.isSubmitting = false;
 
-        this.router.navigate(['/'])
+        this.router.navigate(['/customer/home'])
       },
       error:(error) => {
         this.isSubmitting = false
         this.errorMessage = error?.error?.message ?? 'Unable to login. Please try again'
       }
     })
-
-    this.isSubmitting = false
-
   }
 
 

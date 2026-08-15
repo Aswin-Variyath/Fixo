@@ -74,5 +74,12 @@ export const routes: Routes = [
         path:'admin/dashboard',
         loadComponent:()=>
             import("./features/admin/dashboard/dashboard").then((m)=>m.Dashboard)
+    },
+    // testing routes
+    {
+    path: 'customer/home',
+    loadComponent: () =>
+        import('./features/customer/home/pages/customer-home/customer-home')
+            .then((m) => m.CustomerHome)
     }
 ];

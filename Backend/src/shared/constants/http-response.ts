@@ -29,12 +29,15 @@ export const HttpResponse = {
 
     EMAIL_ALREADY_EXISTS: "Email is already registered",
     PHONE_ALREADY_EXISTS: "Phone number is already registered",
-    TOKEN_REFRESH_SUCCESS: "Token refreshed successfully"
+    TOKEN_REFRESH_SUCCESS: "Token refreshed successfully",
+
+    CURRENT_USER: "Current user retrieved successfully"
   },
 
   USER: {
     PROFILE_UPDATED: "Profile updated successfully",
     USER_NOT_FOUND: "User not found",
+    CURRENT_USER: "Current user retrieved successfully"
   },
 
   MAIL: {

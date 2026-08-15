@@ -1,0 +1,22 @@
+<p>customer-home works!</p>
+<div class="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+    <div class="text-center">
+        <h1 class="text-3xl font-bold mb-4">
+            Customer Home
+        </h1>
+
+        @if (user(); as currentUser) {
+            <p class="text-xl">
+                Welcome, {{ currentUser.firstName }} {{ currentUser.lastName }}
+            </p>
+
+            <p class="mt-2 text-slate-400">
+                {{ currentUser.email }}
+            </p>
+        } @else {
+            <p class="text-slate-400">
+                User information is loading...
+            </p>
+        }
+    </div>
+</div>

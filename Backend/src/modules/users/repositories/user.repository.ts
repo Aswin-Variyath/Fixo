@@ -1,26 +1,19 @@
 import prisma from "../../../database/prisma/prisma";
-import { UserListItemResponseDto } from "../dtos/user-response.dto";
 import { IUserRepository } from "../interfaces/user-repository.interface";
+import { CurrentUser } from "../types/user.types";
 export class UserRepository implements IUserRepository {
-  async findAll(): Promise<UserListItemResponseDto[]> {
-    return prisma.user.findMany({
-      where: {
-        deletedAt: null
+  async findById(userId: string): Promise<CurrentUser | null> {
+    return prisma.user.findUnique({
+      where:{
+        id:userId
       },
-      select: {
+      select:{
         id:true,
         firstName:true,
         lastName:true,
         email:true,
         phone:true,
         profileImage:true,
-        status:{
-          select: {
-            type:true,
-            title:true,
-            colorCode:true
-          }
-        },
         role:{
           select:{
             type:true,
@@ -33,13 +26,14 @@ export class UserRepository implements IUserRepository {
             name:true
           }
         },
-        lastLogin:true,
-        createdAt:true,
-        updatedAt:true
-      },
-      orderBy:{
-        createdAt:"desc"
+        status:{
+          select:{
+            type:true,
+            title:true
+          }
+        }
       }
     })
   }
+    
 }

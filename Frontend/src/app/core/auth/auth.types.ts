@@ -1,33 +1,38 @@
-export type UserRole = 'customer' | 'tasket' | 'admin'
-
-export type AuthStatus = 'unknown' | 'authenticated' | 'unathenticated';
+export type AuthStatus = 'unknown' | 'authenticated' | 'unauthenticated';
 
 export interface ApiResponse<T> {
-    success: boolean
-    message: string;
-    data?: T
+    success:boolean
+    message:string
+    data:T
 }
 
 export interface AuthUser {
-    userId: string
-    role: UserRole
-    sessionId:string
+    id:string;
+    firstName:string
+    lastName:string
+    email:string
+    phone:string
+    profileImage:string | null
+    role: {
+        type:string
+        title:string
+    },
+    language:{
+        type:string
+        name:string
+    }
+    status:{
+        type:string
+        title:string
+    }
 }
 
 export interface LoginRequest {
-    email: string
-    password:string
-}
-
-export interface ForgotPasswordRequest {
     email:string
-}
-
-export interface ResetPasswordRequest {
-    token:string
     password:string
 }
 
-export interface RefreshResponse {
-    accessTokenExpiresIn:number
+export interface LoginResponse {
+    accessTokenExpiresIn: number;
+    user: AuthUser;
 }

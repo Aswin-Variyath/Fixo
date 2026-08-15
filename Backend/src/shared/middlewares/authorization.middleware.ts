@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { IAuthorizationMiddleware } from "../interfaces/authoriazation-middleware.interface";
+import { IAuthorizationMiddleware } from "../../modules/auth/interfaces/authoriazation-middleware.interface";
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../../../shared/errors/app.error";
+import { AppError } from "../errors/app.error";
 
 @injectable()
 export class AuthorizationMiddleware implements IAuthorizationMiddleware {
@@ -12,6 +12,5 @@ export class AuthorizationMiddleware implements IAuthorizationMiddleware {
             next()
         }
     }
-    
 }
 

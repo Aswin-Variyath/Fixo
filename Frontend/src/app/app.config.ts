@@ -10,9 +10,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withViewTransitions()),
     provideHttpClient(),
-    provideAppInitializer(()=> {
-      const authService = inject(AuthService)
-      authService.initialize()
+    provideAppInitializer(()=>{
+      return inject(AuthService).initialize()
     })
   ]
 };

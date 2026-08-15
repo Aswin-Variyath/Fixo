@@ -129,7 +129,7 @@ await this.sessionIndexStore.addSession(user.id,sessionId)
         accessToken,
         refreshToken,
         response: {
-            accessTokenExpiresIn:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS,
+            accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS,
             user:{
                 id:user.id,
                 firstName:user.firstName,

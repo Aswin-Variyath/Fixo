@@ -3,8 +3,8 @@ import { AuthController } from "../controllers/auth.controller";
 import {TYPES, container} from "../../../di"
 import { validate } from "../../../shared/middlewares/validate.middleware";
 import { loginSchema, resetPasswordSchema, signupSchema } from "../validations/auth.validation";
-import { AuthMiddleware } from "../middlewares/auth.middleware";
-import { AuthorizationMiddleware } from "../middlewares/authorization.middleware";
+import { AuthMiddleware } from "../../../shared/middlewares/auth.middleware";
+import { AuthorizationMiddleware } from "../../../shared/middlewares/authorization.middleware";
 import { forgotPasswordSchema } from "../validations/forgot-password.validation";
 
 const router = Router();
@@ -18,9 +18,10 @@ router.post("/login", validate(loginSchema),authController.login)
 router.post("/logout", authController.logout)
 router.post("/forgot-password",validate(forgotPasswordSchema),authController.forgotPassword)
 router.post("/reset-password",validate(resetPasswordSchema), authController.resetPassword)
-// test api =======
 router.post("/refresh",authController.refresh)
-router.get("/adim-test",authMiddleware.authenticate,authorizationMiddleware.authorize("admin"),(req,res)=>{
+
+// test api =======
+router.get("/admin-test",authMiddleware.authenticate,authorizationMiddleware.authorize("admin"),(req,res)=>{
     res.json({
         message:"Welcome Admin",
         user: req.user

@@ -3,42 +3,32 @@ import {errorMiddleware} from "./shared/middlewares/error.middleware";
 import { userRouter } from "./modules/users";
 import { authRoutes } from "./modules/auth";
 import cookieParser from "cookie-parser";
-import { IAuthMiddleWare } from "./modules/auth/interfaces/auth-middleware.interface";
-import { container, TYPES } from "./di";
+import cors from 'cors'
+import { ENV } from "./config/env.config";
 
 const app = express();
 
-app.use(express.json());
+app.use(cors({
+  origin: ENV.APP.FRONTEND_URL,
+  credentials:true
+}))
+
 app.use(cookieParser())
+app.use(express.json());
 app.use((req, _res, next) => {
   console.log("METHOD:", req.method);
   console.log("CONTENT TYPE:", req.headers["content-type"]);
   console.log("BODY:", req.body);
   next();
 });
-const authMiddleware = container.get<IAuthMiddleWare>(TYPES.AuthMiddleware);
-
-// For testing routes=======================
-app.get("/test",authMiddleware.authenticate,(req,res)=>{
-  res.json({
-    success:true,
-    message:"Authenitacated"
-  })
-})
-
-app.get("/me",authMiddleware.authenticate,(req,res)=>{
-  res.status(200).json({
-    success:true,
-    user:req.user
-  })
-})
-
-// For testing routes=======================
 
 
 
-app.use("/users",userRouter);
+
+
+
 app.use("/auth", authRoutes)
+app.use("/users",userRouter);
 
 
 app.use(errorMiddleware);
