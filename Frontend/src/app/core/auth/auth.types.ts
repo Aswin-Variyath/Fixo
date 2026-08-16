@@ -36,3 +36,7 @@ export interface LoginResponse {
     accessTokenExpiresIn: number;
     user: AuthUser;
 }
+
+export interface RefreshResponse {
+    accessTokenExpiresIn:number
+}

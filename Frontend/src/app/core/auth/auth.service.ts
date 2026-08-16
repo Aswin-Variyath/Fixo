@@ -43,4 +43,8 @@ export class AuthService {
         )
     }
 
+    refresh() {
+        return this.authApiService.refresh()
+    }
+
 }
