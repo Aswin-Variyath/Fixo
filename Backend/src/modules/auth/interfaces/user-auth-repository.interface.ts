@@ -22,10 +22,12 @@ export interface AuthReferenceRecord {
 export interface RefreshAuthUserRecord {
     id:string;
     deletedAt: Date | null
-    role: {
+    
+    roles: {
         type:string
         isActive:boolean
-    },
+    }[]
+
     status: {
         type:string
         isActive:boolean

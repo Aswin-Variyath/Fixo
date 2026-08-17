@@ -86,7 +86,7 @@ export class AuthCommandService implements IAuthCommandService {
         const familyId = randomUUID()
         const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
         const now = new Date()
-        const expiresAt = new Date(now.getDate() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
+        const expiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
         const activeRole = requestedRole.type as ActiveRole
         await this.sessionStore.create(sessionId,{
             userId:user.id,
@@ -156,9 +156,13 @@ export class AuthCommandService implements IAuthCommandService {
 
         const user = await this.userAuthRepository.findByIdForAuth(session.userId)
 
-        if(!user || user.deletedAt || !user.role.isActive || !user.status.isActive || user.status.type !== "active") {
+        if(!user || user.deletedAt ||  !user.status.isActive || user.status.type !== "active") {
             throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired authentication session")
         }
+
+        const activeRole = user.roles.find((role)=>role.type === session.activeRole)
+
+        if(!activeRole || !activeRole.isActive) throw new AppError(StatusCodes.UNAUTHORIZED,"Inavlid or expired authentication session")
 
         const {token:newRefreshToken, tokenHash: newTokenHash} = this.opaqueTokenService.generate()
 
@@ -187,7 +191,7 @@ export class AuthCommandService implements IAuthCommandService {
 
         const accessToken = this.accessTokenService.generate({
             userId:user.id,
-            role: user.role.type,
+            role: session.activeRole,
             sessionId:currentRecord.sessionId
         })
 

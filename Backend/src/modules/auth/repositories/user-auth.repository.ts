@@ -30,36 +30,50 @@ export class UserAuthRepository implements IUserAuthRespository {
         
     }
     async createSignupUser(data: CreateSignupUserData): Promise<SignupResponseDto> {
-        return prisma.user.create({
-            data:{
+        const user = await this.prisma.user.create({
+            data: {
                 firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
+                lastName:data.lastName,
+                email:data.email,
                 phone:data.phone,
                 password:data.passwordHash,
-                roleId:data.roleId,
+
                 languageId: data.languageId,
-                statusId: data.statusId
-            },
-            select:{
-                id:true, 
-                firstName:true, 
-                lastName:true, 
-                email:true, 
-                phone:true, 
-                role:{
-                    select:{
-                        type:true,
-                        title:true
+                statusId: data.statusId,
+
+                userRoles:{
+                    create:{
+                        roleId:data.roleId
                     }
                 },
-                language:{
+
+                
+            },
+            select:{
+                id:true,
+                firstName:true,
+                lastName:true,
+                email:true,
+                phone:true,
+
+                userRoles: {
                     select:{
+                        role: {
+                            select: {
+                                type:true,
+                                title:true
+                            }
+                        }
+                    }
+                },
+                language: {
+                    select: {
                         type:true,
                         name:true
                     }
+
                 },
-                status:{
+                status: {
                     select:{
                         type:true,
                         title:true
@@ -68,6 +82,21 @@ export class UserAuthRepository implements IUserAuthRespository {
                 createdAt:true
             }
         })
+
+
+        return {
+            id:user.id,
+            firstName:user.firstName,
+            lastName:user.lastName,
+            email:user.email,
+            phone:user.phone,
+
+            role:user.userRoles[0].role,
+
+            language:user.language,
+            status:user.status,
+            createdAt:user.createdAt
+        }
     }
     
      
@@ -131,16 +160,20 @@ export class UserAuthRepository implements IUserAuthRespository {
         }
     }
 
-     findByIdForAuth(id: string): Promise<RefreshAuthUserRecord | null> {
-        return prisma.user.findUnique({
+     async findByIdForAuth(id: string): Promise<RefreshAuthUserRecord | null> {
+        const user = await this.prisma.user.findUnique({
             where:{id},
-            select:{
+            select: {
                 id:true,
                 deletedAt:true,
-                role:{
+                userRoles:{
                     select:{
-                        type:true,
-                        isActive:true
+                        role:{
+                            select:{
+                                type:true,
+                                isActive:true
+                            }
+                        }
                     }
                 },
                 status:{
@@ -151,6 +184,16 @@ export class UserAuthRepository implements IUserAuthRespository {
                 }
             }
         })
+        if(!user) return null
+        return {
+            id:user.id,
+            deletedAt:user.deletedAt,
+            roles:user.userRoles.map((userRole)=>({
+                type:userRole.role.type,
+                isActive:userRole.role.isActive
+            })),
+            status:user.status
+        }
     }
 
     findByEmail(email: string): Promise<User | null> {
