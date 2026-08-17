@@ -1,8 +1,10 @@
 export type SessionStatus = "ACTIVE" | "REVOKED";
 export type TokenFamilyStatus = "ACTIVE" | "REVOKED";
 export type RefreshTokenStatus = "ACTIVE" | "USED" | "REVOKED";
+export type ActiveRole = "customer" | "tasker"
 export interface AuthSession {
   userId: string;
+  activeRole: ActiveRole;
   familyId: string;
   refreshTokenHash: string;
   status: SessionStatus;

@@ -20,6 +20,7 @@ import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { IMailService } from "../../../shared/providers/mail/interfaces/mail.service.interface";
 import { AppError } from "../../../shared/errors/app.error";
 import { StatusCodes } from "http-status-codes";
+import { ActiveRole } from "../types/auth-session.types";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -74,85 +75,70 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
     async login(data: LoginDto): Promise<LoginResult> {
-        const user = await this.userAuthRepository.findForLogin(data.email);
-        if(!user) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid email or password")
+        const user = await this.userAuthRepository.findForLogin(data.email)
+        if(!user) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
         const passwordMatches = await this.passwordService.verify(user.passwordHash,data.password)
-        if(!passwordMatches) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid email or password")
-        if(!user.role.isActive) throw new AppError(StatusCodes.FORBIDDEN, "Account access is not allowed");
-        if(!user.status.isActive || user.status.type !== 'active') throw new AppError(403, "Account access is not allowed")
+        if(!passwordMatches) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+        const requestedRole = user.roles.find((role)=>role.type === data.role)
+        if(!requestedRole) throw new AppError(StatusCodes.FORBIDDEN,"You are not registered with this role")
+        if(!user.status.isActive || user.status.type !== "active") throw new AppError(StatusCodes.FORBIDDEN,"Account access is not allowed")
         const sessionId = randomUUID()
         const familyId = randomUUID()
-        const {token: refreshToken, tokenHash} = this.opaqueTokenService.generate()
+        const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
         const now = new Date()
-        const expiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
-
+        const expiresAt = new Date(now.getDate() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
+        const activeRole = requestedRole.type as ActiveRole
         await this.sessionStore.create(sessionId,{
             userId:user.id,
+            activeRole,
             familyId,
-            refreshTokenHash: tokenHash,
+            refreshTokenHash:tokenHash,
             status:"ACTIVE",
             createdAt:now.toISOString(),
             expiresAt:expiresAt.toISOString(),
             lastUsedAt:null
-        },
-        ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
-    )
-
-    
-    
-    await this.tokenFamilyStore.create(familyId,{
-        sessionId,
-        status:"ACTIVE",
-    },
-    ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
-)
-
-
-await this.refreshTokenStore.create(
-    tokenHash,
-    {
-        sessionId,
-        familyId,
-        status:"ACTIVE",
-        expiresAt:expiresAt.toISOString(),
-        replacedByHash:null
-    },
-    ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
-)
-await this.sessionIndexStore.addSession(user.id,sessionId)
-    const accessToken = this.accessTokenService.generate({
-        userId:user.id,
-        role:user.role.type,
-        sessionId
-    })
-    return {
-        accessToken,
-        refreshToken,
-        response: {
-            accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS,
-            user:{
-                id:user.id,
-                firstName:user.firstName,
-                lastName:user.lastName,
-                email:user.email,
-                phone:user.phone,
-                profileImage:user.profileImage,
-                role:{
-                    type:user.role.type,
-                    title:user.role.title
-                },
-                language:{
-                    type:user.language.type,
-                    name:user.language.name
-                },
-                status:{
-                    type:user.status.type,
-                    title:user.status.title
+        },ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS)
+        await this.refreshTokenStore.create(
+            tokenHash,{
+                sessionId,
+                familyId,
+                status:"ACTIVE",
+                expiresAt:expiresAt.toISOString(),
+                replacedByHash:null,
+            },ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS)
+        await this.sessionIndexStore.addSession(user.id, sessionId)
+        const accessToken = this.accessTokenService.generate({
+            userId:user.id,
+            role:requestedRole.type,
+            sessionId
+        })
+        return {
+            accessToken,
+            refreshToken,
+            response: {
+                accessTokenExpiresIn: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS,
+                user: {
+                    id:user.id,
+                    firstName:user.firstName,
+                    lastName:user.lastName,
+                    email:user.email,
+                    phone:user.phone,
+                    profileImage:user.profileImage,
+                    role:{
+                        type:requestedRole.type,
+                        title:requestedRole.title
+                    },
+                    language:{
+                        type:user.language.type,
+                        name:user.language.name
+                    },
+                    status:{
+                        type:user.status.type,
+                        title:user.status.title
+                    }
                 }
             }
         }
-    }
-
     }
     async refresh(refreshToken: string): Promise<RefreshResult> {
         const currentTokenHash =  this.opaqueTokenService.hash(refreshToken)

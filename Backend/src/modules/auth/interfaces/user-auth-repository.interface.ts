@@ -54,11 +54,13 @@ export interface LoginUserRecord {
     passwordHash:string
     profileImage:string | null
     deletedAt: Date | null
-    role: {
+
+    roles: {
         type:string
         title:string
         isActive:boolean
-    }
+    }[]
+
     language: {
         type:string
         name:string

@@ -10,13 +10,23 @@ export const signupSchema = z.object({
 })
 export type SignupInput = z.infer<typeof signupSchema>["body"]
 
+
+
+
 export const loginSchema = z.object({
     body:z.object({
         email:z.email().trim().toLowerCase(),
-        password:z.string().min(1,"Password is required")
+        password:z.string().min(1,"Password is required"),
+        role:z.enum(['customer','tasker'],{error:'Role must be either customer of tasker'})
     })
 })
 export type loginInput = z.infer<typeof loginSchema>["body"]
+
+
+
+
+
+
 
 export const resetPasswordSchema = z.object({
     body:z.object({

@@ -83,13 +83,16 @@ export class UserAuthRepository implements IUserAuthRespository {
                 profileImage:true,
                 password:true,
                 deletedAt:true,
-                role:{
+                userRoles:{
                     select:{
-                        type:true,
-                        title:true,
-                        isActive:true
-                    },
-
+                        role:{
+                            select:{
+                                type:true,
+                                title:true,
+                                isActive:true
+                            }
+                        }
+                    }
                 },
                 language:{
                     select:{
@@ -118,7 +121,11 @@ export class UserAuthRepository implements IUserAuthRespository {
             passwordHash:user.password,
             profileImage:user.profileImage,
             deletedAt:user.deletedAt,
-            role:user.role,
+            roles:user.userRoles.map((userRole)=>({
+                type:userRole.role.type,
+                title:userRole.role.title,
+                isActive:userRole.role.isActive
+            })),
             language:user.language,
             status:user.status
         }
