@@ -6,17 +6,17 @@ export async function seedRoles() {
       {
         type: "customer",
         title: "Customer",
-        isSuper: false,
+        isSuperAdmin: false,
       },
       {
-        type: "worker",
-        title: "Worker",
-        isSuper: false,
+        type: "tasker",
+        title: "Tasker",
+        isSuperAdmin: false,
       },
       {
         type: "super_admin",
         title: "Super Administrator",
-        isSuper: true,
+        isSuperAdmin: true,
       },
     ],
     skipDuplicates: true,
