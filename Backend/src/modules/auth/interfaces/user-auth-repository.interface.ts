@@ -45,6 +45,8 @@ export interface IUserAuthRespository {
     findByIdForAuth(id:string):Promise<RefreshAuthUserRecord | null>
     findByEmail(email:string):Promise<User | null>
     updatePassword(userId:string, passwordHash:string):Promise<void>
+    findUserRole(userId:string,roleId:string):Promise<boolean>
+    createUserRole(userId:string,roleId:string):Promise<void>
 }
 
 export interface LoginUserRecord {

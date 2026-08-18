@@ -2,6 +2,7 @@ import { loginResponseDto, SignupResponseDto } from "../dto/auth-response.dto";
 import { LoginDto } from "../dto/login.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { SignupDto } from "../dto/signup.dto";
+import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 
 export interface LoginResult {
     response:loginResponseDto,
@@ -23,4 +24,7 @@ export interface IAuthCommandService {
     logout(refreshToken:string):Promise<void>
     forgotPassword(email:string):Promise<void>
     resetPassword(data:ResetPasswordDto):Promise<void>
+    taskerSignup(data:TaskerSignupDto):Promise<SignupResponseDto>
+    becomeTasker(userId:string):Promise<void>
+    becomeCustomer(userId:string):Promise<void>
 }

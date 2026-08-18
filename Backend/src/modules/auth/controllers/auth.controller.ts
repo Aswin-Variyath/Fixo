@@ -10,6 +10,7 @@ import { AppError } from "../../../shared/errors/app.error";
 import { StatusCodes } from "http-status-codes";
 import { successResponse } from "../../../shared/utils/response.util";
 import { HttpResponse } from "../../../shared/constants";
+import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 
 @injectable()
 export class AuthController {
@@ -92,4 +93,20 @@ export class AuthController {
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_SUCCESS))
     }
 
+    taskerSignup = async(req:Request<Record<string, never>, unknown, TaskerSignupDto>, res:Response):Promise<void> => {
+        const user = await this.authCommandService.taskerSignup(req.body)
+        res.status(StatusCodes.CREATED).json(successResponse(HttpResponse.AUTH.SIGNUP_SUCCESS,user))
+    }
+
+    becomeCustomer = async(req:Request,res:Response):Promise<void> => {
+        if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        await this.authCommandService.becomeCustomer(req.user.userId)
+        res.status(StatusCodes.OK).json(successResponse("Customer role addedd successfully"))
+    }
+
+    becomeTasker = async(req:Request, res:Response):Promise<void> => {
+        if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        await this.authCommandService.becomeTasker(req.user.userId)
+        res.status(StatusCodes.OK).json(successResponse("Tasker Role added successfully"))
+    }
 }
