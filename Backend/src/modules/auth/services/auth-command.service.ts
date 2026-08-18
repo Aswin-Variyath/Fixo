@@ -21,6 +21,8 @@ import { IMailService } from "../../../shared/providers/mail/interfaces/mail.ser
 import { AppError } from "../../../shared/errors/app.error";
 import { StatusCodes } from "http-status-codes";
 import { ActiveRole } from "../types/auth-session.types";
+import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
+import { ta } from "zod/v4/locales";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -300,4 +302,46 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
 
+    async taskerSignup(data: TaskerSignupDto): Promise<SignupResponseDto> {
+        const emailExists = await this.userAuthRepository.existByEmail(data.email)
+        if(emailExists) throw new AppError(StatusCodes.CONFLICT,"Email is already registered")
+        const phoneExists = await this.userAuthRepository.existByEmail(data.phone)
+        if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")
+        const taskerRole = await this.userAuthRepository.findByRoleByType("tasker")
+        const defaultLanguage = await this.userAuthRepository.findLanguageById("en")
+        const activeStatus = await this.userAuthRepository.findStatusById("active")
+        if(!taskerRole || !defaultLanguage || !activeStatus) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Required signup reference data is missing")
+
+        const passwordHash = await this.passwordService.hash(data.password)
+        return this.userAuthRepository.createSignupUser({
+            firstName:data.firstName,
+            lastName:data.lastName,
+            email:data.email,
+            phone:data.phone,
+            passwordHash,
+            roleId:taskerRole.id,
+            languageId:defaultLanguage.id,
+            statusId:activeStatus.id
+        })
+    }
+
+    async becomeTasker(userId:string):Promise<void> {
+        const taskerRole = await this.userAuthRepository.findByRoleByType("tasker")
+        if(!taskerRole) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Tasker role is not available")
+
+        const alreadyTasker = await this.userAuthRepository.findUserRole(userId,taskerRole.id)
+        if(alreadyTasker) throw new AppError(StatusCodes.CONFLICT,"User is already registered as a tasker")
+
+        await this.userAuthRepository.createUserRole(userId,taskerRole.id)
+    }
+
+    async becomeCustomer(userId: string): Promise<void> {
+        const customerRole = await this.userAuthRepository.findByRoleByType("customer")
+        if(!customerRole) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Customer role is not available")
+
+        const alreadyCustomer = await this.userAuthRepository.findUserRole(userId,customerRole.id)
+        if(alreadyCustomer) throw new AppError(StatusCodes.CONFLICT, "User is already registered as a customer")
+
+        await this.userAuthRepository.createUserRole(userId,customerRole.id)
+    }
 }

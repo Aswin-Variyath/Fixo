@@ -206,4 +206,30 @@ export class UserAuthRepository implements IUserAuthRespository {
             data:{password:passwordHash}
         })
     }
+
+    async findUserRole(userId: string, roleId: string): Promise<boolean> {
+        const userRole = await this.prisma.userRole.findUnique({
+            where:{
+                userId_roleId:{
+                    userId,
+                    roleId
+                }
+            },
+            select:{
+                userId:true
+            }
+        })   
+        return userRole !== null 
+    }
+
+    async createUserRole(userId: string, roleId: string): Promise<void> {
+        await this.prisma.userRole.create({
+            data:{
+                userId,
+                roleId
+            }
+        })
+    }
+
+
 }
