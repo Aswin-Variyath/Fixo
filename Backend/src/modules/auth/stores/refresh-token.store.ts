@@ -15,6 +15,7 @@ export class RefreshTokenStore implements IRefreshTokenStore {
     if (!value) return null;
     return JSON.parse(value) as RefreshTokenRecord;
   }
+  
   async rotate(data: RotateRefreshTokenData): Promise<RefreshRotationResult> {
     const currentRefreshKey = `auth:refresh:${data.currentTokenHash}`;
     const newRefreshKey = `auth:refresh:${data.newTokenHash}`;
@@ -130,9 +131,9 @@ export class RefreshTokenStore implements IRefreshTokenStore {
     end
 
 
+    -- Mark current refresh token as USED
     current.status = 'USED'
     current.replacedByHash = ARGV[3]
-
 
     redis.call(
       'SET',
@@ -142,6 +143,7 @@ export class RefreshTokenStore implements IRefreshTokenStore {
     )
 
 
+    -- Create new refresh token
     local newToken = {
       sessionId = ARGV[1],
       familyId = ARGV[2],
@@ -150,20 +152,32 @@ export class RefreshTokenStore implements IRefreshTokenStore {
       replacedByHash = cjson.null
     }
 
-
     redis.call(
       'SET',
       KEYS[2],
       cjson.encode(newToken),
       'EX',
-      ARGV[5]
+      ARGV[6]
+    )
+
+
+    -- Update session with the new refresh token
+    session.refreshTokenHash = ARGV[3]
+    session.lastUsedAt = ARGV[5]
+
+    redis.call(
+      'SET',
+      KEYS[3],
+      cjson.encode(session),
+      'KEEPTTL'
     )
 
 
     return 'ROTATED'
-    `
-    const result = await redisClient.eval(script,{
-        keys:[
+    `;
+
+    const result = await redisClient.eval(script, {
+        keys: [
             currentRefreshKey,
             newRefreshKey,
             sessionKey,
@@ -174,35 +188,50 @@ export class RefreshTokenStore implements IRefreshTokenStore {
             data.familyId,
             data.newTokenHash,
             data.newTokenExpiresAt,
+            data.now,
             String(data.ttlSeconds)
         ]
-    })
+    });
 
     switch (result) {
         case "ROTATED":
-            return {status:"ROTATED"}
+            return { status: "ROTATED" };
 
-            case "TOKEN_REUSED":
-                return {status:"TOKEN_REUSED",
-                    sessionId:data.sessionId,
-                    familyId:data.familyId
-                }
+        case "TOKEN_REUSED":
+            return {
+                status: "TOKEN_REUSED",
+                sessionId: data.sessionId,
+                familyId: data.familyId
+            };
 
-                case "SESSION_INVALID":
-                    return{status:"SESSION_INVALID"}
+        case "SESSION_INVALID":
+            return {
+                status: "SESSION_INVALID"
+            };
 
-                    case "FAMILY_INVALID":
-                        return {status:"FAMILY_INVALID"}
+        case "FAMILY_INVALID":
+            return {
+                status: "FAMILY_INVALID"
+            };
 
-                        default: 
-                        return {status:"TOKEN_NOT_FOUND"}
-
+        default:
+            return {
+                status: "TOKEN_NOT_FOUND"
+            };
     }
-    
-  }
+}
+
   async deleteByHash(tokenHash:string):Promise<void> {
     await redisClient.del(`auth:refresh:${tokenHash}`)
   }
 
+  async revokeByHash(tokenHash: string): Promise<void> {
+    const key = `auth:refresh:${tokenHash}`
+    const value = await redisClient.get(key)
+    if(!value) return
+    const refreshToken = JSON.parse(value) as RefreshTokenRecord
+    refreshToken.status = "REVOKED"
+    await redisClient.set(key,JSON.stringify(refreshToken),{KEEPTTL:true})
+  }
   
 }

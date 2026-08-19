@@ -17,4 +17,13 @@ export class TokenFamilyStore implements ITokenFamilyStore {
     async deleteById(familyId: string): Promise<void> {
         await redisClient.del(`auth:family:${familyId}`)
     }
+
+    async revokeById(familyId: string): Promise<void> {
+        const key = `auth:family:${familyId}`
+        const value = await redisClient.get(key)
+        if(!value) return
+        const family = JSON.parse(value) as TokenFamily
+        family.status = "REVOKED"
+        await redisClient.set(key,JSON.stringify(family),{KEEPTTL:true})
+    }
 }

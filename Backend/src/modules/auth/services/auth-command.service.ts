@@ -89,6 +89,7 @@ export class AuthCommandService implements IAuthCommandService {
         const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
         const now = new Date()
         const expiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
+        await this.tokenFamilyStore.create(familyId,{sessionId,status:"ACTIVE"},ENV.AUTH.TOKEN.FAMILY_TTL_SECONDS)
         const activeRole = requestedRole.type as ActiveRole
         await this.sessionStore.create(sessionId,{
             userId:user.id,
@@ -99,7 +100,7 @@ export class AuthCommandService implements IAuthCommandService {
             createdAt:now.toISOString(),
             expiresAt:expiresAt.toISOString(),
             lastUsedAt:null
-        },ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS)
+        },ENV.AUTH.TOKEN.SESSION_TTL_SECONDS)
         await this.refreshTokenStore.create(
             tokenHash,{
                 sessionId,
@@ -176,9 +177,10 @@ export class AuthCommandService implements IAuthCommandService {
             currentTokenHash,
             newTokenHash,
             sessionId: currentRecord.sessionId,
-            familyId:currentRecord.familyId,
-            newTokenExpiresAt:newExpiresAt.toISOString(),
-            ttlSeconds:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
+            familyId: currentRecord.familyId,
+            newTokenExpiresAt: newExpiresAt.toISOString(),
+            now: now.toISOString(),
+            ttlSeconds: ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS
         })
 
         if(rotationResult.status  !== "ROTATED") {
@@ -216,9 +218,9 @@ export class AuthCommandService implements IAuthCommandService {
             }
 
             await Promise.all([
-                this.sessionStore.deleteById(refreshRecord.sessionId),
-                this.refreshTokenStore.deleteByHash(tokenHash),
-                this.tokenFamilyStore.deleteById(refreshRecord.familyId),
+                this.sessionStore.revokeById(refreshRecord.sessionId),
+                this.refreshTokenStore.revokeByHash(tokenHash),
+                this.tokenFamilyStore.revokeById(refreshRecord.familyId),
             ])
             
     }
@@ -305,7 +307,7 @@ export class AuthCommandService implements IAuthCommandService {
     async taskerSignup(data: TaskerSignupDto): Promise<SignupResponseDto> {
         const emailExists = await this.userAuthRepository.existByEmail(data.email)
         if(emailExists) throw new AppError(StatusCodes.CONFLICT,"Email is already registered")
-        const phoneExists = await this.userAuthRepository.existByEmail(data.phone)
+        const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
         if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")
         const taskerRole = await this.userAuthRepository.findByRoleByType("tasker")
         const defaultLanguage = await this.userAuthRepository.findLanguageById("en")
