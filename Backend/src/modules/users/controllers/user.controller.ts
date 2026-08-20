@@ -16,7 +16,7 @@ export class UserController {
 
         if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
 
-        const user = await this.userQueryService.getCurrentUser(req.user.userId)
+        const user = await this.userQueryService.getCurrentUser(req.user.userId,req.user.sessionId)
 
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.USER.CURRENT_USER,user))
     }

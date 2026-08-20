@@ -1,5 +1,5 @@
-import { CurrentUser } from "../types/user.types";
+import {  UserFromDatabase } from "../types/user.types";
 
 export interface IUserRepository {
-findById(userId: string): Promise<CurrentUser | null>;
+findById(userId: string): Promise<UserFromDatabase | null>;
 }
