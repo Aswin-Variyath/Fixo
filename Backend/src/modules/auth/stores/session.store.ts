@@ -20,11 +20,21 @@ export class SessionStore implements IsessionStore {
         console.log("THisis sessionid", sessionId)
         const key = `auth:session:${sessionId}`;
 
-const value = await redisClient.get(key);
+        const value = await redisClient.get(key);
 
-console.log("Session Key:", key);
-console.log("Session Value:", value);
-    const deleted = await redisClient.del(`auth:session:${sessionId}`)
-    console.log("Deleted Count:", deleted);
-  }
+        console.log("Session Key:", key);
+        console.log("Session Value:", value);
+        const deleted = await redisClient.del(`auth:session:${sessionId}`)
+        console.log("Deleted Count:", deleted);
+    }
+
+    async revokeById(sessionId: string): Promise<void> {
+        const key = `auth:session:${sessionId}`
+        const value = await redisClient.get(key)
+        if(!value) return
+        const session = JSON.parse(value) as AuthSession
+        session.status  = "REVOKED"
+        await redisClient.set(key,JSON.stringify(session),{KEEPTTL:true})
+    }
+
 }

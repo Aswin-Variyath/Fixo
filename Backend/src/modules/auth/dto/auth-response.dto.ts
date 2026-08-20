@@ -19,6 +19,11 @@ export interface SignupResponseDto {
     createdAt:Date
 }
 
+export interface SignupResult {
+    user: SignupResponseDto;
+    accessToken: string;
+    refreshToken: string;
+}
 
 export interface LoginUserResponseDto {
     id:string;

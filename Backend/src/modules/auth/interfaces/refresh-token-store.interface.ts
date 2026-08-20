@@ -8,12 +8,13 @@ export type RefreshRotationResult =
     | {status: "FAMILY_INVALID"}
 
 export interface RotateRefreshTokenData {
-    currentTokenHash:string
-    newTokenHash:string
+    currentTokenHash: string
+    newTokenHash: string
     familyId: string
-    newTokenExpiresAt:string
-    ttlSeconds:number
-    sessionId:string
+    newTokenExpiresAt: string
+    now: string
+    ttlSeconds: number
+    sessionId: string
 }
 
 export interface IRefreshTokenStore {
@@ -21,4 +22,5 @@ export interface IRefreshTokenStore {
     findByHash(tokenHash:string):Promise<RefreshTokenRecord | null>
     rotate(data:RotateRefreshTokenData):Promise<RefreshRotationResult>
     deleteByHash(sessionId:string):Promise<void>
+    revokeByHash(tokenHash:string):Promise<void>
 }

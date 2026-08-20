@@ -21,7 +21,7 @@ router.post("/reset-password",validate(resetPasswordSchema), authController.rese
 router.post("/refresh",authController.refresh)
 
 //Tasker side
-router.post("/tasker-sigup",validate(taskerSignupSchema),authController.taskerSignup)
+router.post("/tasker-signup",validate(taskerSignupSchema),authController.taskerSignup)
 router.post("/become-customer",authMiddleware.authenticate,authController.becomeCustomer)
 router.post("/become-tasker",authMiddleware.authenticate,authController.becomeTasker)
 

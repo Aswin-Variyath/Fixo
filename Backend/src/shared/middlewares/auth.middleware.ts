@@ -21,6 +21,8 @@ export class AuthMiddleware implements IAuthMiddleWare {
         
         const payload = this.accessTokenService.verify(accessToken)
 
+        console.log("THhis is payload", payload)
+
         const session = await this.sessionStore.findById(payload.sessionId)
         
         if(!session) throw new AppError(401, "Session not found")
