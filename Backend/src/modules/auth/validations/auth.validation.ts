@@ -24,10 +24,6 @@ export type loginInput = z.infer<typeof loginSchema>["body"]
 
 
 
-
-
-
-
 export const resetPasswordSchema = z.object({
     body:z.object({
         token:z.string().trim().min(1,"Reset token is required"),
@@ -46,5 +42,11 @@ export const taskerSignupSchema = z.object({
         password:z.string().min(8,"Password must contain at least 8 characters").max(128)
     })
 })
-
 export type TaskerSignupInput = z.infer<typeof taskerSignupSchema>["body"]
+
+
+
+export const switchRoleSchema = z.object({
+    role:z.enum(['customer','tasker'])
+})
+export type switchRoleDto = z.infer<typeof switchRoleSchema>

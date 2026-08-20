@@ -4,14 +4,15 @@ import {  ZodType } from "zod";
 
 export const validate = (schema: ZodType)=>{
   return (req:Request, res: Response, next: NextFunction):void=> {
-    console.log("daf", req.body)
+
     const result = schema.safeParse({
       body: req.body,
       query: req.query,
       params: req.params
     })
-    
+    console.log("THisis asdfjasldflaskdflk",result)
     if(!result.success) {
+      console.log("After error")
       res.status(400).json({
         success:false,
         message: "Validation failed",
@@ -22,7 +23,7 @@ export const validate = (schema: ZodType)=>{
       })
       return
     }
-
+    console.log("Not passed")
     next()
   }
 }

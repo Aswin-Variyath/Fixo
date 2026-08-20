@@ -6,6 +6,7 @@ import { loginSchema, resetPasswordSchema, signupSchema, taskerSignupSchema } fr
 import { AuthMiddleware } from "../../../shared/middlewares/auth.middleware";
 import { AuthorizationMiddleware } from "../../../shared/middlewares/authorization.middleware";
 import { forgotPasswordSchema } from "../validations/forgot-password.validation";
+import { SwitchRoleSchema } from "../validations/switch-role.validation";
 
 const router = Router();
 
@@ -24,6 +25,10 @@ router.post("/refresh",authController.refresh)
 router.post("/tasker-signup",validate(taskerSignupSchema),authController.taskerSignup)
 router.post("/become-customer",authMiddleware.authenticate,authController.becomeCustomer)
 router.post("/become-tasker",authMiddleware.authenticate,authController.becomeTasker)
+
+//Both side sharing APIs
+router.post("/switch-role",authMiddleware.authenticate,validate(SwitchRoleSchema),authController.switchRole)
+
 
 // test api =======
 router.get("/admin-test",authMiddleware.authenticate,authorizationMiddleware.authorize("admin"),(req,res)=>{

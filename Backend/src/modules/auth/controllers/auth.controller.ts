@@ -121,4 +121,26 @@ export class AuthController {
         await this.authCommandService.becomeTasker(req.user.userId)
         res.status(StatusCodes.OK).json(successResponse("Tasker Role added successfully"))
     }
+
+    switchRole = async (req: Request,res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    const sessionId = req.user?.sessionId;
+
+    if (!userId || !sessionId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication information is missing")
+    
+    const result = await this.authCommandService.switchRole(userId,sessionId,req.body.role)
+
+    res.cookie(
+        "accessToken",
+        result.accessToken,
+        {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        }
+    )
+
+    res.status(StatusCodes.OK).json(successResponse("Role switched successfully",{activeRole: result.activeRole}))
+};
 }

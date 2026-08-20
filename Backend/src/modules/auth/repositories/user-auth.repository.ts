@@ -1,18 +1,19 @@
 import { inject, injectable } from "inversify";
 import prisma from "../../../database/prisma/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
-import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord } from "../interfaces/user-auth-repository.interface";
+import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord, userRoleRecord } from "../interfaces/user-auth-repository.interface";
 import { TYPES } from "../../../di";
 import { PrismaClient, User } from "../../../database/generated/prisma/client";
 import { email } from "zod";
 import { profile } from "node:console";
+import { ActiveRole } from "../types/auth-session.types";
+import { SwitchRoleResult } from "../dto/switch-role.dto";
 
 @injectable()
 export class UserAuthRepository implements IUserAuthRespository {
    
     constructor(@inject(TYPES.PrismaClient) private readonly prisma: PrismaClient) {}
-   
-
+ 
     async existByEmail(email: string): Promise<Boolean> {
         const user = await prisma.user.findUnique({where:{email},select:{id:true}})
         return user != null
@@ -291,5 +292,27 @@ export class UserAuthRepository implements IUserAuthRespository {
     }
     async findForLogin(email: string): Promise<LoginUserRecord | null> {
     return this.findLoginUser({ email });
-}
+    }
+
+    async findUserRoleByType(userId: string, roleType: ActiveRole): Promise<userRoleRecord | null> {
+        const userRole = await this.prisma.userRole.findFirst({
+            where:{
+                userId,
+                role:{
+                    type:roleType
+                }
+            },
+            select:{
+                role:{
+                    select:{
+                        type:true,
+                        title:true,
+                        isActive:true
+                    }
+                }
+            }
+        })
+        if(!userRole) return null
+        return userRole.role
+    }
 }

@@ -23,6 +23,7 @@ import { StatusCodes } from "http-status-codes";
 import { ActiveRole } from "../types/auth-session.types";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { ta } from "zod/v4/locales";
+import { SwitchRoleResult } from "../dto/switch-role.dto";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -377,6 +378,32 @@ export class AuthCommandService implements IAuthCommandService {
             sessionId
         })
         return {accessToken, refreshToken}
+    }
+
+   async switchRole(userId: string,sessionId: string,requestedRole: ActiveRole): Promise<SwitchRoleResult> {
+    console.log("CURRENT USER ID:", userId);
+    console.log("CURRENT SESSION ID:", sessionId);
+    console.log("REQUESTED ROLE:", requestedRole);
+    const session = await this.sessionStore.findById(sessionId);
+    if (!session) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication session not found")
+    if (session.status !== "ACTIVE") throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication session is no longer active")
+    if (session.userId !== userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid authentication session")
+    const role = await this.userAuthRepository.findUserRoleByType(
+        userId,
+        requestedRole
+    )
+    if (!role) throw new AppError(StatusCodes.FORBIDDEN,"You are not registered with this role")
+    if (!role.isActive) throw new AppError(StatusCodes.FORBIDDEN,"This role is currently inactive")
+    
+    await this.sessionStore.updateActiveRole(sessionId, requestedRole)
+
+    const accessToken = this.accessTokenService.generate({userId,role: requestedRole,sessionId})
+
+    return {accessToken,activeRole: {
+                type: role.type as ActiveRole,
+                title: role.title
+            }
+        }
     }
 
 }
