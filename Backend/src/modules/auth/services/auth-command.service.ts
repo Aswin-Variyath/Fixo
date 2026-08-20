@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
-import { IUserAuthRespository } from "../interfaces/user-auth-repository.interface";
+import { IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
-import { SignupResponseDto } from "../dto/auth-response.dto";
+import { SignupResponseDto, SignupResult } from "../dto/auth-response.dto";
 import { SignupDto } from "../dto/signup.dto";
 import { IPasswordService } from "../interfaces/password-service.interface";
 import { LoginDto } from "../dto/login.dto";
@@ -42,38 +42,48 @@ export class AuthCommandService implements IAuthCommandService {
     
     
     
-    async signup(data: SignupDto): Promise<SignupResponseDto> {
-        const emailExists = await this.userAuthRepository.existByEmail(data.email)
-        if(emailExists) {
-            throw new AppError(StatusCodes.CONFLICT, "Email is already registered")
+    async signup(data: SignupDto): Promise<SignupResult> {
+       const customerRole = await this.userAuthRepository.findByRoleByType("customer")
+       const defaultLanguage = await this.userAuthRepository.findLanguageById("en")
+       const activeStatus = await this.userAuthRepository.findStatusById("active")
+       if(!customerRole || !defaultLanguage || !activeStatus) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Required signup reference data is missing")
+        const existingUser = await this.userAuthRepository.findByEmail(data.email)
+       if(existingUser) {
+        const customerRoleExists = await this.userAuthRepository.findUserRole(existingUser.id,customerRole.id)
+        if(customerRoleExists) throw new AppError(StatusCodes.CONFLICT, "User is already registered as a customer")
+        await this.userAuthRepository.createUserRole(existingUser.id,customerRole.id)
+        const updatedUser = await this.userAuthRepository.findUserWithRoleById(existingUser.id,customerRole.id)
+        if(!updatedUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to retrive user after adding customer role")
+        const authUser = await this.userAuthRepository.findForLoginById(existingUser.id)
+        if(!authUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to initialize authentication session")
+        const {accessToken, refreshToken} = await this.createAuthenticationSession(authUser,"customer")
+        return {
+            user:updatedUser,
+            accessToken,
+            refreshToken
         }
-        const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
-        if(phoneExists) {
-            throw new AppError(StatusCodes.CONFLICT, "Phone number is already registered")
-        }
-
-        const customerRole = await this.userAuthRepository.findByRoleByType("customer")
-        const defaultLanguage = await this.userAuthRepository.findLanguageById("en")
-        const activeStatus = await this.userAuthRepository.findStatusById("active")
-        
-
-        if(!customerRole || !defaultLanguage || !activeStatus) {
-            throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Required signup reference data is missing")
-        }
-
+       }
+       const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
+       if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")
         const passwordHash = await this.passwordService.hash(data.password)
-
-        return this.userAuthRepository.createSignupUser({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phone: data.phone,
-            passwordHash,
-             roleId: customerRole.id,
-             languageId: defaultLanguage.id,
-             statusId:activeStatus.id
-        })
-
+       const createdUser = await this.userAuthRepository.createSignupUser({
+        firstName:data.firstName,
+        lastName:data.lastName,
+        email:data.email,
+        phone:data.phone,
+        passwordHash,
+        roleId:customerRole.id,
+        languageId:defaultLanguage.id,
+        statusId:activeStatus.id
+       })
+       const authUser = await this.userAuthRepository.findForLoginById(createdUser.id)
+       if(!authUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to initialize authentication session")
+        const {accessToken,refreshToken} = await this.createAuthenticationSession(authUser,"customer")
+    return {
+        user:createdUser,
+        accessToken,
+        refreshToken
+    }
     }
 
     async login(data: LoginDto): Promise<LoginResult> {
@@ -84,37 +94,8 @@ export class AuthCommandService implements IAuthCommandService {
         const requestedRole = user.roles.find((role)=>role.type === data.role)
         if(!requestedRole) throw new AppError(StatusCodes.FORBIDDEN,"You are not registered with this role")
         if(!user.status.isActive || user.status.type !== "active") throw new AppError(StatusCodes.FORBIDDEN,"Account access is not allowed")
-        const sessionId = randomUUID()
-        const familyId = randomUUID()
-        const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
-        const now = new Date()
-        const expiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
-        await this.tokenFamilyStore.create(familyId,{sessionId,status:"ACTIVE"},ENV.AUTH.TOKEN.FAMILY_TTL_SECONDS)
         const activeRole = requestedRole.type as ActiveRole
-        await this.sessionStore.create(sessionId,{
-            userId:user.id,
-            activeRole,
-            familyId,
-            refreshTokenHash:tokenHash,
-            status:"ACTIVE",
-            createdAt:now.toISOString(),
-            expiresAt:expiresAt.toISOString(),
-            lastUsedAt:null
-        },ENV.AUTH.TOKEN.SESSION_TTL_SECONDS)
-        await this.refreshTokenStore.create(
-            tokenHash,{
-                sessionId,
-                familyId,
-                status:"ACTIVE",
-                expiresAt:expiresAt.toISOString(),
-                replacedByHash:null,
-            },ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS)
-        await this.sessionIndexStore.addSession(user.id, sessionId)
-        const accessToken = this.accessTokenService.generate({
-            userId:user.id,
-            role:requestedRole.type,
-            sessionId
-        })
+        const {accessToken,refreshToken} = await this.createAuthenticationSession(user,activeRole)
         return {
             accessToken,
             refreshToken,
@@ -304,18 +285,31 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
 
-    async taskerSignup(data: TaskerSignupDto): Promise<SignupResponseDto> {
-        const emailExists = await this.userAuthRepository.existByEmail(data.email)
-        if(emailExists) throw new AppError(StatusCodes.CONFLICT,"Email is already registered")
-        const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
-        if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")
+    async taskerSignup(data: TaskerSignupDto): Promise<SignupResult> {
         const taskerRole = await this.userAuthRepository.findByRoleByType("tasker")
         const defaultLanguage = await this.userAuthRepository.findLanguageById("en")
         const activeStatus = await this.userAuthRepository.findStatusById("active")
-        if(!taskerRole || !defaultLanguage || !activeStatus) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, "Required signup reference data is missing")
-
+        if(!taskerRole || !defaultLanguage || !activeStatus) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Required signup reference data is missing")
+        const existingUser = await this.userAuthRepository.findByEmail(data.email)
+        if(existingUser) {
+            const taskerRoleExists = await this.userAuthRepository.findUserRole(existingUser.id,taskerRole.id)
+            if (taskerRoleExists) throw new AppError(StatusCodes.CONFLICT,"User is already registered as a tasker")
+            await this.userAuthRepository.createUserRole(existingUser.id,taskerRole.id)
+            const updatedUser = await this.userAuthRepository.findUserWithRoleById(existingUser.id,taskerRole.id)
+            if(!updatedUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to retrive user after adding tasker role")
+            const authUser = await this.userAuthRepository.findForLoginById(existingUser.id)
+            if(!authUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to initilalize authentication session")
+            const {accessToken, refreshToken} = await this.createAuthenticationSession(authUser,"tasker")
+            return {
+                user:updatedUser,
+                accessToken,
+                refreshToken
+            }
+        }
+        const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
+        if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")
         const passwordHash = await this.passwordService.hash(data.password)
-        return this.userAuthRepository.createSignupUser({
+        const createdUser = await this.userAuthRepository.createSignupUser({
             firstName:data.firstName,
             lastName:data.lastName,
             email:data.email,
@@ -325,6 +319,10 @@ export class AuthCommandService implements IAuthCommandService {
             languageId:defaultLanguage.id,
             statusId:activeStatus.id
         })
+        const authUser = await this.userAuthRepository.findForLoginById(createdUser.id)
+        if(!authUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to initialize authentication session")
+        const {accessToken,refreshToken} = await this.createAuthenticationSession(authUser,"tasker")
+        return { user:createdUser, accessToken, refreshToken }
     }
 
     async becomeTasker(userId:string):Promise<void> {
@@ -346,4 +344,39 @@ export class AuthCommandService implements IAuthCommandService {
 
         await this.userAuthRepository.createUserRole(userId,customerRole.id)
     }
+
+
+    private async createAuthenticationSession(user:LoginUserRecord,activeRole:ActiveRole):Promise<{accessToken:string,refreshToken:string}> {
+        const sessionId = randomUUID()
+        const familyId = randomUUID()
+        const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
+        const now = new Date()
+        const expiresAt = new Date(now.getTime() + ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000)
+        await this.tokenFamilyStore.create(familyId,{sessionId,status:"ACTIVE"},ENV.AUTH.TOKEN.FAMILY_TTL_SECONDS)
+        await this.sessionStore.create(sessionId,{
+            userId:user.id,
+            activeRole,
+            familyId,
+            refreshTokenHash:tokenHash,
+            status:"ACTIVE",
+            createdAt:now.toISOString(),
+            expiresAt:expiresAt.toISOString(),
+            lastUsedAt:null
+        },ENV.AUTH.TOKEN.SESSION_TTL_SECONDS)
+        await this.refreshTokenStore.create(tokenHash,{
+            sessionId,
+            familyId,
+            status:"ACTIVE",
+            expiresAt:expiresAt.toISOString(),
+            replacedByHash:null
+        },ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS)
+        await this.sessionIndexStore.addSession(user.id,sessionId)
+        const accessToken = this.accessTokenService.generate({
+            userId:user.id,
+            role:activeRole,
+            sessionId
+        })
+        return {accessToken, refreshToken}
+    }
+
 }

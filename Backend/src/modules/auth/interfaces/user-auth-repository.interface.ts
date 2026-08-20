@@ -41,12 +41,14 @@ export interface IUserAuthRespository {
     findLanguageById(type:string):Promise<AuthReferenceRecord | null>
     findStatusById(type:string):Promise<AuthReferenceRecord | null>
     createSignupUser(data:CreateSignupUserData):Promise<SignupResponseDto>
-    findForLogin(email:string):Promise<LoginUserRecord | null>
     findByIdForAuth(id:string):Promise<RefreshAuthUserRecord | null>
     findByEmail(email:string):Promise<User | null>
     updatePassword(userId:string, passwordHash:string):Promise<void>
     findUserRole(userId:string,roleId:string):Promise<boolean>
     createUserRole(userId:string,roleId:string):Promise<void>
+    findUserWithRoleById(userId:string,roleId:string):Promise<SignupResponseDto | null>
+    findForLoginById(userId:string):Promise<LoginUserRecord | null>
+    findForLogin(email: string): Promise<LoginUserRecord | null>;
 }
 
 export interface LoginUserRecord {

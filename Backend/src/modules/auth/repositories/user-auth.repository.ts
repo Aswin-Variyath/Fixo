@@ -4,6 +4,8 @@ import { SignupResponseDto } from "../dto/auth-response.dto";
 import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord } from "../interfaces/user-auth-repository.interface";
 import { TYPES } from "../../../di";
 import { PrismaClient, User } from "../../../database/generated/prisma/client";
+import { email } from "zod";
+import { profile } from "node:console";
 
 @injectable()
 export class UserAuthRepository implements IUserAuthRespository {
@@ -30,6 +32,7 @@ export class UserAuthRepository implements IUserAuthRespository {
         
     }
     async createSignupUser(data: CreateSignupUserData): Promise<SignupResponseDto> {
+        console.log("CREATE USER ROLE ID:", data.roleId);
         const user = await this.prisma.user.create({
             data: {
                 firstName: data.firstName,
@@ -99,66 +102,6 @@ export class UserAuthRepository implements IUserAuthRespository {
         }
     }
     
-     
-    async findForLogin(email: string): Promise<LoginUserRecord | null> {
-        const user = await prisma.user.findUnique({
-            where:{email},
-            select:{
-                id:true,
-                firstName:true,
-                lastName:true,
-                email:true,
-                phone:true,
-                profileImage:true,
-                password:true,
-                deletedAt:true,
-                userRoles:{
-                    select:{
-                        role:{
-                            select:{
-                                type:true,
-                                title:true,
-                                isActive:true
-                            }
-                        }
-                    }
-                },
-                language:{
-                    select:{
-                        type:true,
-                        name:true
-                    }
-                },
-                status:{
-                    select:{
-                        type:true,
-                        title:true,
-                        isActive:true
-                    }
-                }
-            }
-        })
-        if(!user) {
-            return null
-        }
-        return {
-            id:user.id,
-            firstName:user.firstName,
-            lastName:user.lastName,
-            email:user.email,
-            phone:user.phone,
-            passwordHash:user.password,
-            profileImage:user.profileImage,
-            deletedAt:user.deletedAt,
-            roles:user.userRoles.map((userRole)=>({
-                type:userRole.role.type,
-                title:userRole.role.title,
-                isActive:userRole.role.isActive
-            })),
-            language:user.language,
-            status:user.status
-        }
-    }
 
      async findByIdForAuth(id: string): Promise<RefreshAuthUserRecord | null> {
         const user = await this.prisma.user.findUnique({
@@ -196,8 +139,8 @@ export class UserAuthRepository implements IUserAuthRespository {
         }
     }
 
-    findByEmail(email: string): Promise<User | null> {
-        return this.prisma.user.findUnique({where:{email}})
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.prisma.user.findUnique({where:{email}})
     }
 
      async updatePassword(userId: string, passwordHash: string): Promise<void> {
@@ -231,5 +174,122 @@ export class UserAuthRepository implements IUserAuthRespository {
         })
     }
 
+    async findUserWithRoleById(userId: string,roleId:string): Promise<SignupResponseDto | null> {
+        const user = await this.prisma.user.findUnique({
+            where:{id:userId},
+            select:{
+                id:true,
+                firstName:true,
+                lastName:true,
+                phone:true,
+                email:true,
+                userRoles:{
+                    where:{
+                        roleId:roleId
+                    },
+                    select:{
+                        role:{
+                            select:{
+                                type:true,
+                                title:true
+                            }
+                        }
+                    }
+                },
+                language:{
+                    select:{
+                        type:true,
+                        name:true
+                    }
+                },
+                status:{
+                    select:{
+                        type:true,
+                        title:true
+                    }
+                },
+                createdAt:true
+            }
+        })
+        if(!user) return null
+        const role = user.userRoles[0]?.role
+        if(!role) return null;
+        return {
+            id:user.id,
+            firstName:user.firstName,
+            lastName:user.lastName,
+            email:user.email,
+            phone:user.phone,
+            role:role,
+            language:user.language,
+            status:user.status,
+            createdAt:user.createdAt
 
+        }
+    }
+
+    private async findLoginUser(where:{email:string} | {id:string}):Promise<LoginUserRecord | null> {
+        const user = await this.prisma.user.findUnique({
+            where,
+            select:{
+                id:true,
+                firstName:true,
+                lastName:true,
+                email:true,
+                phone:true,
+                profileImage:true,
+                password:true,
+                deletedAt:true,
+                userRoles:{
+                    select:{
+                        role:{
+                            select:{
+                                type:true,
+                                title:true,
+                                isActive:true
+                            }
+                        }
+                    }
+                },
+                language:{
+                    select:{
+                        type:true,
+                        name:true
+                    }
+                },
+                status:{
+                    select:{
+                        type:true,
+                        title:true,
+                        isActive:true
+                    }
+                }
+            }
+        })
+        if(!user) return null
+        return {
+            id:user.id,
+            firstName: user.firstName,
+            lastName:user.lastName,
+            email:user.email,
+            phone:user.phone,
+            passwordHash:user.password,
+            profileImage:user.profileImage,
+            deletedAt:user.deletedAt,
+            roles:user.userRoles.map(userRole=>({
+                type:userRole.role.type,
+                title:userRole.role.title,
+                isActive:userRole.role.isActive
+            })),
+            language:user.language,
+            status:user.status
+        }
+    }
+
+    async findForLoginById(userId: string): Promise<LoginUserRecord | null> {
+        return this.findLoginUser({id:userId})
+    }
+    async findForLogin(email: string): Promise<LoginUserRecord | null> {
+    return this.findLoginUser({ email });
+}
 }
