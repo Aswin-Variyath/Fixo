@@ -1,5 +1,7 @@
 import { User } from "../../../database/generated/prisma/client"
 import { SignupResponseDto } from "../dto/auth-response.dto"
+import { SwitchRoleResult } from "../dto/switch-role.dto"
+import { ActiveRole } from "../types/auth-session.types"
 
 export interface CreateSignupUserData {
     firstName: string
@@ -49,6 +51,7 @@ export interface IUserAuthRespository {
     findUserWithRoleById(userId:string,roleId:string):Promise<SignupResponseDto | null>
     findForLoginById(userId:string):Promise<LoginUserRecord | null>
     findForLogin(email: string): Promise<LoginUserRecord | null>;
+    findUserRoleByType(userId:string,roleType:ActiveRole):Promise<userRoleRecord | null>
 }
 
 export interface LoginUserRecord {
@@ -76,4 +79,11 @@ export interface LoginUserRecord {
         title:string
         isActive:boolean
     }
+}
+
+
+export interface userRoleRecord {
+    type:string
+    title:string
+    isActive:boolean
 }

@@ -5,4 +5,5 @@ export interface IsessionStore {
     findById(sessionId:string):Promise<AuthSession | null>
     deleteById(sessionId:string):Promise<void>
     revokeById(sessionId:string):Promise<void>
+    updateActiveRole(sessionId:string,activeRole:AuthSession["activeRole"]):Promise<void>
 }

@@ -15,12 +15,12 @@ app.use(cors({
 
 app.use(cookieParser())
 app.use(express.json());
-app.use((req, _res, next) => {
-  console.log("METHOD:", req.method);
-  console.log("CONTENT TYPE:", req.headers["content-type"]);
-  console.log("BODY:", req.body);
-  next();
-});
+// app.use((req, _res, next) => {
+//   console.log("METHOD:", req.method);
+//   console.log("CONTENT TYPE:", req.headers["content-type"]);
+//   console.log("BODY:", req.body);
+//   next();
+// });
 
 
 

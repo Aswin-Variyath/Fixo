@@ -2,7 +2,9 @@ import { loginResponseDto, SignupResponseDto, SignupResult } from "../dto/auth-r
 import { LoginDto } from "../dto/login.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { SignupDto } from "../dto/signup.dto";
+import { SwitchRoleResult } from "../dto/switch-role.dto";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
+import { ActiveRole } from "../types/auth-session.types";
 
 export interface LoginResult {
     response:loginResponseDto,
@@ -27,4 +29,6 @@ export interface IAuthCommandService {
     taskerSignup(data:TaskerSignupDto):Promise<SignupResult>
     becomeTasker(userId:string):Promise<void>
     becomeCustomer(userId:string):Promise<void>
+    switchRole(userId:string,sessionId:string,role:ActiveRole):Promise<SwitchRoleResult>
+
 }
