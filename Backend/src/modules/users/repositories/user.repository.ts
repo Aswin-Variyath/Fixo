@@ -1,9 +1,9 @@
 import prisma from "../../../database/prisma/prisma";
 import { IUserRepository } from "../interfaces/user-repository.interface";
-import { CurrentUser } from "../types/user.types";
+import { CurrentUser, UserFromDatabase } from "../types/user.types";
 export class UserRepository implements IUserRepository {
-  async findById(userId: string): Promise<CurrentUser | null> {
-    return prisma.user.findUnique({
+  async findById(userId: string): Promise<UserFromDatabase | null> {
+    const user = await prisma.user.findUnique({
       where:{
         id:userId
       },
@@ -14,13 +14,17 @@ export class UserRepository implements IUserRepository {
         email:true,
         phone:true,
         profileImage:true,
-        role:{
+        userRoles:{
           select:{
-            type:true,
-            title:true
+            role:{
+              select:{
+                type:true,
+                title:true
+              }
+            }
           }
         },
-        language: {
+        language:{
           select:{
             type:true,
             name:true
@@ -33,7 +37,24 @@ export class UserRepository implements IUserRepository {
           }
         }
       }
-    })
+    }) 
+    if(!user) return null
+
+return {
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phone: user.phone,
+    profileImage: user.profileImage,
+
+    roles: user.userRoles.map((userRole) => ({
+        type: userRole.role.type,
+        title: userRole.role.title
+    })),
+
+    language: user.language,
+    status: user.status
+}
   }
-    
 }
