@@ -42,7 +42,7 @@
               Join Fixo to start booking premium home services.
             </p>
           </div>
-          <form class="space-y-6" >
+          <form class="space-y-6" [formGroup]="signupForm" (ngSubmit)="submit()">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="relative group">
                 <span
@@ -53,6 +53,7 @@
                   class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                   placeholder="First Name"
                   type="text"
+                  formControlName="firstName"
                 />
               </div>
               <div class="relative group">
@@ -64,6 +65,7 @@
                   class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                   placeholder="Last Name"
                   type="text"
+                  formControlName="lastName"
                 />
               </div>
             </div>
@@ -76,6 +78,7 @@
                 class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 placeholder="Email Address"
                 type="email"
+                formControlName="email"
               />
             </div>
             <div class="relative group">
@@ -87,6 +90,7 @@
                 class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 placeholder="Phone Number"
                 type="tel"
+                formControlName="phone"
               />
             </div>
             <div class="relative group">
@@ -98,6 +102,7 @@
                 class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 placeholder="Password"
                 type="password"
+                formControlName="password"
               />
             </div>
             <div class="relative group">
@@ -109,7 +114,16 @@
                 class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 placeholder="Confirm Password"
                 type="password"
+                formControlName="confirmPassword"
               />
+              @if (
+  signupForm.controls.confirmPassword.touched &&
+  signupForm.hasError('passwordMismatch')
+) {
+  <p class="text-red-500 text-sm">
+    Passwords do not match
+  </p>
+}
             </div>
             <button
               class="w-full bg-gradient-primary text-white font-bold py-4 rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-royal-blue/30 mt-2"
@@ -117,6 +131,11 @@
             >
               Sign Up
             </button>
+            @if (errorMessage) {
+  <p class="text-red-500">
+    {{ errorMessage }}
+  </p>
+}
             <div class="relative py-4 flex items-center">
               <div class="flex-grow border-t border-glass-stroke"></div>
               <span class="flex-shrink mx-4 text-outline font-label-sm uppercase"

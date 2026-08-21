@@ -51,7 +51,7 @@
           Sign in to your Tasker Account
         </p>
       </div>
-      <form class="flex flex-col gap-5">
+      <form class="flex flex-col gap-5" [formGroup]="loginForm" (ngSubmit)="submit()">
         <div class="relative group">
           <span
             class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary transition-colors group-focus-within:text-sky-blue flex items-center justify-center"
@@ -62,7 +62,14 @@
             placeholder="Email Address"
             required=""
             type="email"
+            formControlName="email"
           />
+          @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('required')) {
+            <p class="text-red-400 text-sm mt-1">Email is required</p>
+          }
+          @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('email')) {
+            <p class="text-red-400 text-sm mt-1">Please enter a valid email address</p>
+          }
         </div>
         <div class="relative group">
           <span
@@ -74,7 +81,11 @@
             placeholder="Password"
             required=""
             type="password"
+            formControlName="password"
           />
+          @if (loginForm.controls.password.touched && loginForm.controls.password.hasError('password')) {
+            <p class="text-red-400 text-sm mt-1">password is required</p>
+          }
         </div>
         <div class="flex items-center justify-between mt-2">
           <label class="flex items-center gap-2 cursor-pointer group">
@@ -96,9 +107,12 @@
         <button
           class="btn-primary w-full py-4 rounded-full font-body-md text-body-md font-medium text-white mt-4 flex justify-center items-center gap-2"
           type="submit"
+          [disabled]="isSubmitting"
         >
-          Sign In
-          <span class="material-symbols-outlined">arrow_forward</span>
+          {{isSubmitting ? 'signing in...' : 'sign In'}}
+          @if(!isSubmitting) {
+            <span class="material-symbols-outlined">arrow_forward</span>
+          }
         </button>
         <div class="relative flex items-center py-4">
           <div class="flex-grow border-t border-glass-stroke"></div>
@@ -130,6 +144,11 @@
           Continue with Google
         </button>
       </form>
+      @if (errorMessage) {
+  <p class="text-red-400 text-sm text-center">
+    {{ errorMessage }}
+  </p>
+}
       <div class="text-center mt-2">
         <p class="font-body-md text-on-surface-variant text-sm">
           Don't have an account?
