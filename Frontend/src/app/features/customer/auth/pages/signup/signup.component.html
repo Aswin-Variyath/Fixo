@@ -24,7 +24,7 @@
           Join Fixo to start booking premium home services.
         </p>
       </div>
-      <form class="space-y-6">
+      <form class="space-y-6" [formGroup]="signupForm" (ngSubmit)="submit()">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- First Name -->
           <div class="relative group">
@@ -36,6 +36,7 @@
               class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               placeholder="First Name"
               type="text"
+              formControlName="firstName"
             />
           </div>
           <!-- Last Name -->
@@ -48,7 +49,11 @@
               class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               placeholder="Last Name"
               type="text"
+              formControlName="lastName"
             />
+            @if (signupForm.controls.email.touched && signupForm.controls.email.hasError('required')) {
+              <p class="tex-red-500 text-sm">Email is required</p>
+            }
           </div>
         </div>
         <!-- Email Address -->
@@ -61,7 +66,11 @@
             class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="Email Address"
             type="email"
+            formControlName="email"
           />
+          @if (signupForm.controls.email.touched && signupForm.controls.email.hasError('email')) {
+            <p class="tex-red-500 text-sm">Enter valid email address</p>
+          }
         </div>
         <!-- Phone Number -->
         <div class="relative group">
@@ -73,7 +82,11 @@
             class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="Phone Number"
             type="tel"
+            formControlName="phone"
           />
+          @if (signupForm.controls.phone.touched && signupForm.controls.phone.hasError('phone')) {
+            Phone number is required
+          }
         </div>
         <!-- Password -->
         <div class="relative group">
@@ -85,6 +98,7 @@
             class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="Password"
             type="password"
+            formControlName="password"
           />
         </div>
         <!-- Confirm Password -->
@@ -97,13 +111,22 @@
             class="w-full bg-surface-container-lowest border border-glass-stroke rounded-xl pl-12 pr-4 py-3.5 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="Confirm Password"
             type="password"
+            formControlName="confirmPassword"
           />
+          @if (
+  signupForm.controls.confirmPassword.touched &&
+  signupForm.hasError('passwordMismatch')
+) {
+  <p class="text-red-500 text-sm">
+    Passwords do not match
+  </p>
+}
         </div>
         <button
           class="w-full bg-gradient-primary text-white font-bold py-4 rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-royal-blue/30 mt-2"
           type="submit"
         >
-          Sign Up
+          {{ isSubmitting ? 'Creating Account...' : 'Create Account' }}
         </button>
         <div class="relative py-4 flex items-center">
           <div class="flex-grow border-t border-glass-stroke"></div>
@@ -135,6 +158,11 @@
           </svg>
           <span class="font-body-md">Continue with Google</span>
         </button>
+        @if (errorMessage) {
+  <p class="text-red-500">
+    {{ errorMessage }}
+  </p>
+}
       </form>
       <div class="mt-8 text-center">
         <p class="text-on-surface-variant">

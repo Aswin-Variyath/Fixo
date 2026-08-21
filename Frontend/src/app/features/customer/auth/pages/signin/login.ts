@@ -22,7 +22,7 @@ export class Login {
     }),
     password: new FormControl('',{
       nonNullable:true,
-      validators: [Validators.required]
+      validators: [Validators.required,Validators.minLength(8),Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)]
     })
   })
 
@@ -30,13 +30,14 @@ export class Login {
   errorMessage:string = ''
 
   submit():void {
+    console.log('LOGIN SUBMIT CLICKED');
     if(this.loginForm.invalid) {
       this.loginForm.markAllAsTouched()
       return
     }
     this.isSubmitting = true
     this.errorMessage = ""
-    this.authService.login(this.loginForm.getRawValue()).subscribe({
+    this.authService.login({...this.loginForm.getRawValue(),role: 'customer'}).subscribe({
       next:() => {
         this.isSubmitting = false;
 

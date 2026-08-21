@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { AuthApiService } from './auth-api.service';
 import { AuthStore } from './auth.store';
-import { LoginRequest } from './auth.types';
+import { LoginRequest, SignupRequest } from './auth.types';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 
 @Service()
@@ -46,5 +46,20 @@ export class AuthService {
     refresh() {
         return this.authApiService.refresh()
     }
+    signup(request:SignupRequest) {
+        return this.authApiService.signup(request).pipe(
+            tap((response)=>{
+                this.authStore.setAuthenticated(response.data)
+            })
+        )
+    }
 
-}
+    signupTasker(request: SignupRequest) {
+        return this.authApiService.signupTasker(request).pipe(
+            tap((response) => {
+            this.authStore.setAuthenticated(response.data);
+                })
+            );
+            }
+
+}   

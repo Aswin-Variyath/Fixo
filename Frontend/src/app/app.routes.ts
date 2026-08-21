@@ -12,6 +12,7 @@ export const routes: Routes = [
     },
     {
         path:"signup",
+        canActivate:[guestGuard],
         loadComponent:()=>
             import("./features/customer/auth/pages/signup/signup.component").then((m)=>m.SignupComponent)
 
@@ -40,11 +41,13 @@ export const routes: Routes = [
     },
     {
         path:"tasker/login",
+        canActivate:[guestGuard],
         loadComponent:()=>
             import("./features/tasker/auth/pages/tasker-signin/tasker-login").then((m)=>m.TaskerLogin)
     },
     {
         path:"tasker/signup",
+        canActivate:[guestGuard],
         loadComponent:()=>
             import("./features/tasker/auth/pages/tasker-signup/tasker-signup").then((m)=>m.TaskerSignup)
     },
@@ -57,6 +60,12 @@ export const routes: Routes = [
         path:"tasker/reset-password",
         loadComponent:()=>
             import("./features/tasker/auth/pages/tasker-reset-password/tasker-reset-password").then((m)=>m.TaskerResetPassword)
+    },
+    {
+        path:'tasker/home',
+        canActivate:[authGuard],
+        loadComponent:()=>
+            import("./features/tasker/tasker-home/tasker-home").then((m)=>m.TaskerHome)
     },
     // Admin routers
     {

@@ -5,14 +5,11 @@ import { AuthService } from '../auth/auth.service';
 export const guestGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService)
   const router = inject(Router)
-  console.log(
-        'GuestGuard:',
-        authService.isAuthenticated(),
-        authService.user()
-    );
-  if(authService.isAuthenticated()) {
-    console.log('BLOCK LOGIN');
-    return router.createUrlTree(['/'])
+  if(!authService.isAuthenticated()) {
+    return true
   }
-  return true;
+  const user = authService.user()
+  if(user?.activeRole.type === 'tasker') return router.createUrlTree(['/tasker/home'])
+  if(user?.activeRole.type === 'customer') return router.createUrlTree(['/customer/home'])
+  return router.createUrlTree(['/'])
 };
