@@ -26,24 +26,32 @@ export interface SignupResult {
 }
 
 export interface LoginUserResponseDto {
-    id:string;
-    firstName:string
-    lastName:string
-    email:string
-    phone:string
-    profileImage:string | null
-    role: {
-        type:string
-        title:string
-    }
-    language:{
-        type:string
-        name:string
-    }
-    status:{
-        type:string
-        title:string
-    }
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  profileImage: string | null;
+
+  roles: {
+    type: string;
+    title: string;
+  }[];
+
+  activeRole: {
+    type: string;
+    title: string;
+  };
+
+  language: {
+    type: string;
+    name: string;
+  };
+
+  status: {
+    type: string;
+    title: string;
+  };
 }
 
 export interface loginResponseDto {

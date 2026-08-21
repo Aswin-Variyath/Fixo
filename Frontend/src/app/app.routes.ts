@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest-guard';
 import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
     // Customer routers
@@ -63,7 +64,7 @@ export const routes: Routes = [
     },
     {
         path:'tasker/home',
-        canActivate:[authGuard],
+        canActivate:[authGuard,roleGuard('tasker')],
         loadComponent:()=>
             import("./features/tasker/tasker-home/tasker-home").then((m)=>m.TaskerHome)
     },
@@ -91,7 +92,7 @@ export const routes: Routes = [
     // testing routes
     {
     path: 'customer/home',
-    canActivate:[authGuard],
+    canActivate:[authGuard,roleGuard('customer')],
     loadComponent: () =>
         import('./features/customer/home/pages/customer-home/customer-home')
             .then((m) => m.CustomerHome)
