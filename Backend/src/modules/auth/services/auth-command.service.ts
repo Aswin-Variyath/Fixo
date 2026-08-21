@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
 import { IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
-import { SignupResponseDto, SignupResult } from "../dto/auth-response.dto";
+import {  SignupResult } from "../dto/auth-response.dto";
 import { SignupDto } from "../dto/signup.dto";
 import { IPasswordService } from "../interfaces/password-service.interface";
 import { LoginDto } from "../dto/login.dto";
@@ -24,6 +24,7 @@ import { ActiveRole } from "../types/auth-session.types";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { ta } from "zod/v4/locales";
 import { SwitchRoleResult } from "../dto/switch-role.dto";
+import { title } from "node:process";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -109,7 +110,11 @@ export class AuthCommandService implements IAuthCommandService {
                     email:user.email,
                     phone:user.phone,
                     profileImage:user.profileImage,
-                    role:{
+                    roles:user.roles.map((role)=>({
+                        type:role.type,
+                        title:role.title
+                    })),
+                    activeRole:{
                         type:requestedRole.type,
                         title:requestedRole.title
                     },

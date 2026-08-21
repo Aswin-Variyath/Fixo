@@ -106,8 +106,20 @@ export class AuthController {
     }
 
     taskerSignup = async(req:Request<Record<string, never>, unknown, TaskerSignupDto>, res:Response):Promise<void> => {
-        const user = await this.authCommandService.taskerSignup(req.body)
-        res.status(StatusCodes.CREATED).json(successResponse(HttpResponse.AUTH.SIGNUP_SUCCESS,user))
+        const result = await this.authCommandService.taskerSignup(req.body)
+        res.cookie("accessToken",result.accessToken,{
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === "production",
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        })
+        res.cookie("refreshToken",result.refreshToken, {
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === "production",
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
+        res.status(StatusCodes.CREATED).json(successResponse(HttpResponse.AUTH.SIGNUP_SUCCESS,result.user))
     }
 
     becomeCustomer = async(req:Request,res:Response):Promise<void> => {
