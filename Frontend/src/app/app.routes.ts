@@ -9,7 +9,7 @@ export const routes: Routes = [
         path:"",
         pathMatch: 'full',
         loadComponent:()=>
-            import("./features/customer/landing/pages/customer/home.component").then((m)=>m.HomeLanding)
+            import("./features/customer/landing/landing.component").then((m)=>m.HomeLanding)
     },
     {
         path:"signup",
@@ -94,7 +94,13 @@ export const routes: Routes = [
     path: 'customer/home',
     canActivate:[authGuard,roleGuard('customer')],
     loadComponent: () =>
-        import('./features/customer/home/pages/customer-home/customer-home')
+        import('./features/customer/home/customer-home')
             .then((m) => m.CustomerHome)
+    },
+    {
+    path: 'customer/discovery',
+    loadComponent: () =>
+        import('./features/customer/discovery/discovery')
+            .then((m) => m.Discovery)
     }
 ];

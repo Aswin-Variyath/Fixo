@@ -1,14 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { NavbarComponent } from '../../../landing/components/navbar/navbar.component';
-import { FooterComponent } from '../../../landing/components/footer/footer.component';
 import { AuthService } from '../../../../../core/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { from } from 'rxjs';
+import { Navbar } from '../../../../../shared/components/navbar/navbar';
+import { Footer } from '../../../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-signup',
-  imports: [NavbarComponent, FooterComponent,ReactiveFormsModule],
+  imports: [Navbar, Footer, ReactiveFormsModule, RouterLink],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
