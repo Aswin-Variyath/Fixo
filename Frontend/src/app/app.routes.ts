@@ -107,5 +107,11 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./features/customer/tasker-profile/tasker-profile')
             .then((m) => m.TaskerProfile)
+    },
+    {
+    path: 'customer/booking/appointment',
+    loadComponent: () =>
+        import('./features/customer/booking/appointment/appointment')
+            .then((m) => m.Appointment)
     }
 ];

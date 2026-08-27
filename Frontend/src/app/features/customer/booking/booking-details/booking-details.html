@@ -1,0 +1,537 @@
+<!doctype html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Fixo - Booking Details</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'on-secondary-container': '#99bbe4',
+              'surface-container-lowest': '#0d0e12',
+              'sky-blue': '#7CC4FA',
+              'on-tertiary-container': '#fffaf8',
+              'secondary-fixed': '#d0e4ff',
+              'on-primary-fixed-variant': '#2e3aa2',
+              'on-secondary': '#063254',
+              'tertiary-fixed': '#ffddbb',
+              error: '#ffb4ab',
+              'on-secondary-fixed-variant': '#25496c',
+              'on-primary': '#121f8b',
+              'on-tertiary': '#482900',
+              'surface-variant': '#343439',
+              'error-container': '#93000a',
+              'primary-fixed-dim': '#bdc2ff',
+              'surface-tint': '#bdc2ff',
+              'surface-bright': '#38393e',
+              'accent-glow': 'rgba(94, 106, 210, 0.4)',
+              'on-primary-container': '#fdfaff',
+              'deep-navy': '#0B111B',
+              'on-surface-variant': '#c6c5d5',
+              'on-secondary-fixed': '#001d35',
+              'royal-blue': '#2E4AD1',
+              'on-error': '#690005',
+              'surface-container-highest': '#343439',
+              'inverse-on-surface': '#2f3035',
+              'secondary-fixed-dim': '#a7caf3',
+              'on-primary-fixed': '#000965',
+              background: '#121317',
+              primary: '#bdc2ff',
+              tertiary: '#ffb867',
+              secondary: '#a7caf3',
+              'surface-container': '#1e1f24',
+              'inverse-surface': '#e3e2e8',
+              'outline-variant': '#454652',
+              'glass-stroke': 'rgba(255, 255, 255, 0.15)',
+              'on-tertiary-fixed-variant': '#673d00',
+              'secondary-container': '#274b6e',
+              'on-tertiary-fixed': '#2b1700',
+              'on-surface': '#e3e2e8',
+              'primary-container': '#5e6ad2',
+              'primary-fixed': '#dfe0ff',
+              'surface-container-low': '#1a1b20',
+              'surface-container-high': '#292a2e',
+              'tertiary-container': '#a56500',
+              'surface-dim': '#121317',
+              outline: '#908f9e',
+              surface: '#121317',
+              'inverse-primary': '#4854bb',
+              'on-error-container': '#ffdad6',
+              'on-background': '#e3e2e8',
+              'tertiary-fixed-dim': '#ffb867',
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+            spacing: {
+              gutter: '24px',
+              'stack-sm': '8px',
+              'section-gap': '80px',
+              'stack-md': '16px',
+              'margin-mobile': '16px',
+              'container-max': '1200px',
+            },
+            fontFamily: {
+              'display-lg': ['Hanken Grotesk'],
+              'label-sm': ['JetBrains Mono'],
+              'headline-lg-mobile': ['Hanken Grotesk'],
+              'body-xl': ['Inter'],
+              'body-md': ['Inter'],
+              'headline-lg': ['Hanken Grotesk'],
+            },
+            fontSize: {
+              'display-lg': [
+                '64px',
+                { lineHeight: '72px', letterSpacing: '-0.02em', fontWeight: '700' },
+              ],
+              'label-sm': [
+                '12px',
+                { lineHeight: '16px', letterSpacing: '0.05em', fontWeight: '500' },
+              ],
+              'headline-lg-mobile': ['32px', { lineHeight: '40px', fontWeight: '600' }],
+              'body-xl': ['20px', { lineHeight: '32px', fontWeight: '400' }],
+              'body-md': ['16px', { lineHeight: '24px', fontWeight: '400' }],
+              'headline-lg': [
+                '40px',
+                { lineHeight: '48px', letterSpacing: '-0.01em', fontWeight: '600' },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-card {
+        background: rgba(11, 17, 27, 0.7);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+      .glow-shadow {
+        position: relative;
+      }
+      .glow-shadow::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, transparent 70%);
+        z-index: -1;
+        border-radius: inherit;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #2e4ad1 0%, #7cc4fa 100%);
+        transition: all 0.2s ease;
+      }
+      .btn-primary:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(124, 196, 250, 0.4);
+      }
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.2s ease;
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased relative overflow-x-hidden"
+  >
+    <!-- TopNavBar -->
+    <nav
+      class="bg-deep-navy/70 backdrop-blur-xl text-primary font-body-md text-body-md fixed top-0 w-full z-50 border-b border-glass-stroke shadow-md shadow-accent-glow/10"
+    >
+      <div
+        class="flex justify-between items-center h-20 px-margin-mobile md:px-gutter max-w-container-max mx-auto"
+      >
+        <div class="font-headline-lg text-primary tracking-tighter cursor-pointer">Fixo</div>
+        <div class="hidden md:flex space-x-8 items-center">
+          <a
+            class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md hover:bg-white/10 rounded-lg p-2 active:scale-95 transition-transform"
+            href="#"
+            >Home</a
+          >
+          <a
+            class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md hover:bg-white/10 rounded-lg p-2 active:scale-95 transition-transform"
+            href="#"
+            >Services</a
+          >
+          <a class="text-primary border-b-2 border-primary pb-1 font-body-md" href="#">Bookings</a>
+          <a
+            class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md hover:bg-white/10 rounded-lg p-2 active:scale-95 transition-transform"
+            href="#"
+            >Favorites</a
+          >
+        </div>
+        <div class="flex items-center space-x-4">
+          <button
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 p-2 rounded-lg active:scale-95 transition-transform"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          <div
+            class="w-10 h-10 rounded-full bg-surface-container-high border border-glass-stroke overflow-hidden cursor-pointer hover:border-primary transition-colors"
+          >
+            <img
+              alt="User avatar"
+              class="w-full h-full object-cover"
+              data-alt="A small circular avatar placeholder image showing a minimalistic abstract glowing shape in deep blue and purple hues on a dark background, representing a user profile in a premium tech interface."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_Eqh5LZZ1jrjx8USU5QvoQ5I005uSixXwBIybyNvdjGQPCn-pnk6GK3sSz3xwFD8wL2qAgFVlcO5CUrba-_o71_b0ycLopfldZsE6xSxdmtOpt7sDylkFra3e3FDIkgSSdKTUrnGCM9yAnt2DXZd8PBYcdXwF-zba7OMf18MvwsAXZ9rdcmwvjndWUSfSOwtJ_txH-n8-gk0mvbHwr43tsK7ZuElL-6y_-Fv8HSWMMEIDUWeUCwng"
+            />
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Main Content -->
+    <main
+      class="flex-grow pt-28 pb-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full"
+    >
+      <!-- Progress Indicator -->
+      <div class="flex items-center justify-center space-x-4 md:space-x-8 mb-12">
+        <div class="flex items-center text-primary">
+          <div
+            class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary mr-2 font-label-sm text-label-sm"
+          >
+            <span class="material-symbols-outlined text-[16px]">check</span>
+          </div>
+          <span class="font-body-md text-body-md">Appointment</span>
+        </div>
+        <div class="w-8 md:w-16 h-px bg-primary/50"></div>
+        <div class="flex items-center text-primary">
+          <div
+            class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary mr-2 font-label-sm text-label-sm"
+          >
+            2
+          </div>
+          <span class="font-body-md text-body-md font-semibold">Booking Details</span>
+        </div>
+        <div class="w-8 md:w-16 h-px bg-glass-stroke"></div>
+        <div class="flex items-center text-on-surface-variant">
+          <div
+            class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center border border-glass-stroke mr-2 font-label-sm text-label-sm"
+          >
+            3
+          </div>
+          <span class="font-body-md text-body-md">Payment</span>
+        </div>
+        <div class="w-8 md:w-16 h-px bg-glass-stroke"></div>
+        <div class="flex items-center text-on-surface-variant">
+          <div
+            class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center border border-glass-stroke mr-2 font-label-sm text-label-sm"
+          >
+            4
+          </div>
+          <span class="font-body-md text-body-md">Confirmation</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-md lg:gap-gutter">
+        <!-- Left Column: Form -->
+        <div class="lg:col-span-8 flex flex-col space-y-stack-md">
+          <!-- Customer Details Section -->
+          <section class="glass-card rounded-xl p-6">
+            <h2 class="font-body-xl text-body-xl text-on-background mb-6 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">person</span>
+              Customer Details
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-label-sm text-on-surface-variant mb-2">FIRST NAME</label>
+                <input
+                  class="w-full bg-surface-container-lowest border border-glass-stroke rounded-lg p-3 text-on-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-colors opacity-60"
+                  readonly="true"
+                  type="text"
+                  value="Anjali"
+                />
+              </div>
+              <div>
+                <label class="block font-label-sm text-on-surface-variant mb-2">LAST NAME</label>
+                <input
+                  class="w-full bg-surface-container-lowest border border-glass-stroke rounded-lg p-3 text-on-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-colors opacity-60"
+                  readonly="true"
+                  type="text"
+                  value="Menon"
+                />
+              </div>
+              <div>
+                <label class="block font-label-sm text-on-surface-variant mb-2">PHONE NUMBER</label>
+                <input
+                  class="w-full bg-surface-container-lowest border border-glass-stroke rounded-lg p-3 text-on-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-colors opacity-60"
+                  readonly="true"
+                  type="tel"
+                  value="+91 98765 43210"
+                />
+              </div>
+              <div>
+                <label class="block font-label-sm text-on-surface-variant mb-2"
+                  >EMAIL ADDRESS</label
+                >
+                <input
+                  class="w-full bg-surface-container-lowest border border-glass-stroke rounded-lg p-3 text-on-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-colors opacity-60"
+                  readonly="true"
+                  type="email"
+                  value="anjali.menon@example.com"
+                />
+              </div>
+            </div>
+          </section>
+          <!-- Address Section -->
+          <section class="glass-card rounded-xl p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="font-body-xl text-body-xl text-on-background flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">location_on</span>
+                Service Address
+              </h2>
+              <button
+                class="text-primary hover:text-sky-blue font-label-sm transition-colors uppercase"
+              >
+                Change Address
+              </button>
+            </div>
+            <div
+              class="rounded-lg p-4 border border-primary bg-primary/5 relative overflow-hidden group"
+            >
+              <div class="absolute top-4 right-4 text-primary">
+                <span
+                  class="material-symbols-outlined"
+                  data-weight="fill"
+                  style="font-variation-settings: 'FILL' 1"
+                  >check_circle</span
+                >
+              </div>
+              <div class="font-label-sm text-primary mb-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">home</span> HOME
+              </div>
+              <p class="font-body-md text-on-surface">123 Beach Road</p>
+              <p class="font-body-md text-on-surface-variant text-sm mt-1">
+                Kozhikode, Kerala, India 673001
+              </p>
+            </div>
+          </section>
+          <!-- Work Description -->
+          <section class="glass-card rounded-xl p-6">
+            <h2 class="font-body-xl text-body-xl text-on-background mb-6 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">description</span>
+              Additional Notes (Optional)
+            </h2>
+            <div>
+              <textarea
+                class="w-full bg-surface-container-lowest border border-glass-stroke rounded-lg p-4 text-on-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-colors resize-none h-32"
+                placeholder="Any special instructions for arrival, parking, gate code, etc."
+              ></textarea>
+            </div>
+          </section>
+          <section class="glass-card rounded-xl p-6">
+            <h2 class="font-body-xl text-body-xl text-on-background mb-2 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">photo_camera</span>
+              Photos of the Work
+            </h2>
+            <p class="text-on-surface-variant font-body-md text-sm mb-6">
+              Add photos to help the Tasker understand the work before arriving.
+            </p>
+            <div
+              class="border-2 border-dashed border-glass-stroke rounded-lg p-8 flex flex-col items-center justify-center text-center space-y-4 hover:border-primary transition-colors cursor-pointer group"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform"
+              >
+                <span class="material-symbols-outlined text-3xl">upload_file</span>
+              </div>
+              <div>
+                <p class="font-body-md text-on-surface font-medium">Upload photos of the work</p>
+                <p class="font-body-md text-on-surface-variant text-sm mt-1">
+                  Help your Tasker understand the job before arriving.
+                </p>
+              </div>
+              <button
+                class="btn-secondary text-on-background font-body-md text-sm font-medium py-2 px-6 rounded-full"
+              >
+                Upload Photos
+              </button>
+            </div>
+            <p class="text-on-surface-variant font-body-md text-xs mt-4 italic">
+              Photos help the Tasker understand the work before arriving, but do not replace an
+              on-site assessment.
+            </p>
+            <p class="text-on-surface-variant font-label-sm text-xs mt-4">
+              Optional • Up to 5 photos • JPG or PNG • Max 5 MB each
+            </p>
+          </section>
+        </div>
+        <!-- Right Column: Summary Card -->
+        <div class="lg:col-span-4 relative">
+          <div class="sticky top-28 glass-card rounded-xl p-6 glow-shadow">
+            <h3
+              class="font-body-xl text-body-xl mb-6 text-on-background border-b border-glass-stroke pb-4"
+            >
+              Booking Summary
+            </h3>
+            <div class="space-y-4 mb-6">
+              <!-- Tasker Profile -->
+              <div class="flex items-center space-x-4 mb-2">
+                <div
+                  class="w-12 h-12 rounded-full overflow-hidden border border-glass-stroke shrink-0"
+                >
+                  <img
+                    alt="Tasker"
+                    class="w-full h-full object-cover"
+                    data-alt="A professional headshot of a confident South Asian male electrician wearing a dark blue utility uniform, softly lit against a blurred dark high-tech background, matching a premium glassmorphic UI aesthetic."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTsDPcpRmDZJ4ilNTK0XHFOGZ82axj_6MRumnF0ePiJpxJUsdXEMwAsXoI4ZVzMClTNhTstcFSooxcAjNBCe7igX-PU75fBMrcyYq6_6Gm5rur82dsRCLD0AOMi6xXZj2Lhw73fRLF2qzn4DamhbR5BVagH3lvrErWsYMF_mal2t5dX5oYU3Buj4UcAg3ZOjUJ7iZyt-PrKppIh4dQuJWYw6C9cAh9q8h_0vl1WXyyfJAuEX6H-OzM"
+                  />
+                </div>
+                <div>
+                  <div class="flex items-center space-x-1">
+                    <h4 class="font-body-md text-on-background font-medium">Ramesh Kumar</h4>
+                    <span
+                      class="material-symbols-outlined text-sky-blue text-sm"
+                      style="font-variation-settings: 'FILL' 1"
+                      >verified</span
+                    >
+                  </div>
+                  <div class="flex items-center text-primary text-xs mt-0.5">
+                    <span
+                      class="material-symbols-outlined text-[14px]"
+                      data-weight="fill"
+                      style="font-variation-settings: 'FILL' 1"
+                      >star</span
+                    >
+                    <span>4.9</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-between pt-2">
+                <span class="text-on-surface-variant font-body-md text-body-md">Service</span>
+                <span class="text-on-background font-body-md text-body-md font-medium text-right"
+                  >Electrical Wiring</span
+                >
+              </div>
+              <div class="flex justify-between">
+                <span class="text-on-surface-variant font-body-md text-body-md">Schedule</span>
+                <span class="text-on-background font-body-md text-body-md font-medium text-right"
+                  >Aug 25, 2026<br />10:00 AM</span
+                >
+              </div>
+              <div class="flex justify-between">
+                <span class="text-on-surface-variant font-body-md text-body-md">Duration</span>
+                <span class="text-on-background font-body-md text-body-md font-medium text-right"
+                  >2 hours</span
+                >
+              </div>
+            </div>
+            <div class="border-t border-glass-stroke pt-4 mb-6 space-y-2">
+              <div class="flex justify-between text-on-surface-variant font-body-md text-sm">
+                <span>Tasker Rate</span><span>₹400 / hour</span>
+              </div>
+              <div class="flex justify-between text-on-surface-variant font-body-md text-sm">
+                <span>Estimated Duration</span><span>2 hours</span>
+              </div>
+              <div
+                class="flex justify-between text-on-surface-variant font-body-md text-body-md pt-1"
+              >
+                <span>Estimated Service Amount</span><span>₹800</span>
+              </div>
+              <div class="flex justify-between text-on-surface-variant font-body-md text-body-md">
+                <span>Platform Fee</span><span>₹49</span>
+              </div>
+              <div class="flex justify-between items-end pt-2 border-t border-glass-stroke/50">
+                <span class="text-on-background font-body-md text-body-md font-semibold"
+                  >Estimated Total</span
+                ><span class="font-headline-lg-mobile text-headline-lg-mobile text-primary"
+                  >₹849</span
+                >
+              </div>
+              <div class="mt-4 space-y-1">
+                <p class="text-on-surface-variant font-label-sm text-[11px] leading-tight">
+                  Final amount is calculated based on the actual work duration.
+                </p>
+                <p class="text-on-surface-variant font-label-sm text-[11px] leading-tight">
+                  The estimated amount may change if the actual service duration differs from the
+                  estimated duration.
+                </p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="text-on-surface-variant font-label-sm text-xs mb-2 text-center">
+                By continuing, you agree to Fixo's
+                <a class="text-primary hover:text-sky-blue underline transition-colors" href="#"
+                  >Cancellation and Refund Policy</a
+                >.
+              </p>
+              <button
+                class="w-full btn-primary text-white font-body-md text-body-md font-semibold py-3 rounded-full flex justify-center items-center shadow-accent-glow/20"
+              >
+                Continue to Payment
+                <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
+              </button>
+              <button
+                class="w-full btn-secondary text-on-background font-body-md text-body-md font-medium py-3 rounded-full flex justify-center items-center"
+              >
+                Back
+              </button>
+            </div>
+            <p class="text-center text-on-surface-variant font-label-sm text-label-sm mt-4">
+              You won't be charged yet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer -->
+    <footer
+      class="bg-deep-navy text-primary font-body-md text-body-md w-full py-section-gap border-t border-glass-stroke mt-auto"
+    >
+      <div
+        class="max-w-container-max mx-auto px-margin-mobile md:px-gutter grid grid-cols-1 md:grid-cols-4 gap-stack-md"
+      >
+        <div>
+          <div class="font-headline-lg text-primary mb-4">Fixo</div>
+          <p class="text-on-surface-variant font-body-md text-sm">
+            © 2024 Fixo Home Services. All rights reserved.
+          </p>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <a
+            class="text-on-surface-variant hover:text-sky-blue transition-colors font-body-md"
+            href="#"
+            >Privacy Policy</a
+          >
+          <a
+            class="text-on-surface-variant hover:text-sky-blue transition-colors font-body-md"
+            href="#"
+            >Terms of Service</a
+          >
+        </div>
+        <div class="flex flex-col space-y-2">
+          <a
+            class="text-on-surface-variant hover:text-sky-blue transition-colors font-body-md"
+            href="#"
+            >Help Center</a
+          >
+          <a
+            class="text-on-surface-variant hover:text-sky-blue transition-colors font-body-md"
+            href="#"
+            >Contact Us</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
