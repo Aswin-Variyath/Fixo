@@ -1,0 +1,33 @@
+<!-- Payment Failed Header: animated error icon, heading, subtitle, status badge -->
+<div class="w-full max-w-2xl mx-auto flex flex-col items-center text-center">
+
+  <!-- Animated failure icon -->
+  <div class="relative mb-stack-md error-animation">
+    <!-- Blurred red glow ring behind the circle -->
+    <div class="absolute inset-0 bg-error rounded-full blur-xl opacity-30"></div>
+    <!-- Icon circle with error glow -->
+    <div class="w-24 h-24 rounded-full bg-deep-navy border border-glass-stroke flex items-center justify-center relative z-10 error-glow">
+      <span
+        class="material-symbols-outlined text-5xl text-error"
+        style="font-variation-settings: 'FILL' 1;"
+      >cancel</span>
+    </div>
+  </div>
+
+  <!-- Heading -->
+  <h1
+    class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-sm tracking-tighter"
+  >Payment Failed</h1>
+
+  <!-- Subtitle -->
+  <p class="font-body-xl text-body-xl text-on-surface-variant mb-section-gap max-w-lg mx-auto">
+    We couldn't complete your payment for this booking.
+  </p>
+
+  <!-- Status badge -->
+  <div class="mb-stack-md inline-flex items-center px-4 py-2 rounded-full bg-error/10 border border-error/20">
+    <span class="w-2 h-2 rounded-full bg-error mr-2"></span>
+    <span class="font-label-sm text-label-sm text-error uppercase">PAYMENT FAILED</span>
+  </div>
+
+</div>

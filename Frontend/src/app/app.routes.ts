@@ -131,5 +131,11 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./features/customer/booking/confirmation/confirmation')
             .then((m) => m.Confirmation)
+    },
+    {
+    path: 'customer/booking/payment-failed',
+    loadComponent: () =>
+        import('./features/customer/booking/payment-failed/payment-failed')
+            .then((m) => m.PaymentFailed)
     }
 ];
