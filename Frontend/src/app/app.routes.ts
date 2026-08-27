@@ -113,5 +113,11 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./features/customer/booking/appointment/appointment')
             .then((m) => m.Appointment)
+    },
+    {
+    path: 'customer/booking/booking-details',
+    loadComponent: () =>
+        import('./features/customer/booking/booking-details/booking-details')
+            .then((m) => m.BookingDetails)
     }
 ];

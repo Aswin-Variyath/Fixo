@@ -1,17 +1,64 @@
-<!-- Progress Indicator -->
+<!-- Booking Progress Indicator
+     ─────────────────────────────────────────────────────────────────
+     Renders a horizontal step-tracker for the booking flow.
+
+     Step states (driven by [currentStep] input):
+       completed  → stepNumber < currentStep  : check icon, primary ring
+       active     → stepNumber === currentStep : number,     primary ring, bold label
+       upcoming   → stepNumber > currentStep  : number,     glass-stroke ring, muted text
+
+     Connector states:
+       connector after step N  → primary/50 if N < currentStep, else glass-stroke
+     ─────────────────────────────────────────────────────────────────  -->
 <div class="flex items-center justify-center space-x-4 md:space-x-8 mb-12">
-  <div class="flex items-center text-primary">
-    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary mr-2 font-label-sm text-label-sm">1</div>
-    <span class="font-body-md text-body-md font-semibold">Appointment</span>
-  </div>
-  <div class="w-8 md:w-16 h-px bg-glass-stroke"></div>
-  <div class="flex items-center text-on-surface-variant">
-    <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center border border-glass-stroke mr-2 font-label-sm text-label-sm">2</div>
-    <span class="font-body-md text-body-md">Details</span>
-  </div>
-  <div class="w-8 md:w-16 h-px bg-glass-stroke"></div>
-  <div class="flex items-center text-on-surface-variant">
-    <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center border border-glass-stroke mr-2 font-label-sm text-label-sm">3</div>
-    <span class="font-body-md text-body-md">Review</span>
-  </div>
+
+  @for (step of steps; track step.number) {
+
+    <!-- Step bubble + label -->
+    <div
+      class="flex items-center"
+      [ngClass]="{
+        'text-primary':          step.number <= currentStep(),
+        'text-on-surface-variant': step.number > currentStep()
+      }"
+    >
+      <!-- Circle bubble -->
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center border mr-2 font-label-sm text-label-sm"
+        [ngClass]="{
+          'bg-primary/20 border-primary': step.number <= currentStep(),
+          'bg-surface-variant border-glass-stroke': step.number > currentStep()
+        }"
+      >
+        @if (step.number < currentStep()) {
+          <!-- Completed: show checkmark icon -->
+          <span class="material-symbols-outlined text-[16px]">check</span>
+        } @else {
+          <!-- Active or upcoming: show step number -->
+          {{ step.number }}
+        }
+      </div>
+
+      <!-- Step label -->
+      <span
+        class="font-body-md text-body-md"
+        [ngClass]="{ 'font-semibold': step.number === currentStep() }"
+      >
+        {{ step.label }}
+      </span>
+    </div>
+
+    <!-- Connector line (rendered between steps, not after the last) -->
+    @if (step.number < steps.length) {
+      <div
+        class="w-8 md:w-16 h-px"
+        [ngClass]="{
+          'bg-primary/50':   step.number < currentStep(),
+          'bg-glass-stroke': step.number >= currentStep()
+        }"
+      ></div>
+    }
+
+  }
+
 </div>
