@@ -89,7 +89,6 @@ export const routes: Routes = [
         loadComponent:()=>
             import("./features/admin/dashboard/dashboard").then((m)=>m.Dashboard)
     },
-    // testing routes
     {
     path: 'customer/home',
     canActivate:[authGuard,roleGuard('customer')],
@@ -102,5 +101,11 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./features/customer/discovery/discovery')
             .then((m) => m.Discovery)
+    },
+    {
+    path: 'customer/tasker-profile',
+    loadComponent: () =>
+        import('./features/customer/tasker-profile/tasker-profile')
+            .then((m) => m.TaskerProfile)
     }
 ];
