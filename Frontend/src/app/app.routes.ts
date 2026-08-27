@@ -119,5 +119,11 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./features/customer/booking/booking-details/booking-details')
             .then((m) => m.BookingDetails)
+    },
+    {
+    path: 'customer/booking/booking-details/payment',
+    loadComponent: () =>
+        import('./features/customer/booking/booking-details/booking-details')
+            .then((m) => m.BookingDetails)
     }
 ];

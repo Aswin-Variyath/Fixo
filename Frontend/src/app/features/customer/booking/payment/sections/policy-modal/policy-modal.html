@@ -1,0 +1,75 @@
+<!-- Policy Modal Overlay -->
+@if (isOpen()) {
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-margin-mobile" id="policy-modal">
+    <!-- Backdrop Overlay (click to close) -->
+    <div class="absolute inset-0 bg-deep-navy/80 backdrop-blur-xl" (click)="close()"></div>
+
+    <!-- Modal Content Card -->
+    <div class="glass-panel glass-inner-border relative w-full max-w-xl p-6 md:p-8 flex flex-col gap-6 overflow-hidden">
+      <!-- Decorative background element -->
+      <div class="absolute -top-20 -right-20 w-40 h-40 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col gap-2">
+        <h2 class="font-headline-lg-mobile md:font-headline-lg text-on-surface">Review &amp; Agree to Fixo Policy</h2>
+        <p class="text-on-surface-variant font-body-md">Please review our important company policies before making your payment.</p>
+      </div>
+
+      <div class="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
+        <div class="flex flex-col gap-1">
+          <h4 class="font-semibold text-primary text-sm uppercase tracking-wider">Cancellation Policy</h4>
+          <p class="text-on-surface-variant text-sm" id="modal-cancellation-text">The advance payment is non-refundable when you cancel under our customer cancellation policy.</p>
+        </div>
+        <div class="flex flex-col gap-1">
+          <h4 class="font-semibold text-primary text-sm uppercase tracking-wider">Tasker No-Show</h4>
+          <p class="text-on-surface-variant text-sm">If the Tasker fails to arrive within the 24-hour window, your eligible payment will be refunded through Fixo.</p>
+        </div>
+        <div class="flex flex-col gap-1">
+          <h4 class="font-semibold text-primary text-sm uppercase tracking-wider">Final Billing</h4>
+          <p class="text-on-surface-variant text-sm">Service is billed based on actual work duration. The initial amount is an estimate; the final total will be calculated upon completion.</p>
+        </div>
+        <div class="flex flex-col gap-1">
+          <h4 class="font-semibold text-primary text-sm uppercase tracking-wider">Payment Protection</h4>
+          <p class="text-on-surface-variant text-sm">Your payment is made to Fixo, not directly to the Tasker. Fixo manages settlement and refunds.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6 pt-4 border-t border-glass-stroke">
+        <label class="flex items-start gap-3 cursor-pointer group">
+          <div class="relative flex items-center">
+            <input
+              class="peer h-5 w-5 rounded border-glass-stroke bg-surface-container-lowest text-primary focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer"
+              id="policy-agree-checkbox"
+              type="checkbox"
+              [checked]="isAgreed()"
+              (change)="toggleAgreement($any($event.target).checked)"
+            />
+          </div>
+          <span class="text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">I have read and agree to Fixo's Cancellation, Refund, and Payment Policy.</span>
+        </label>
+        <div class="flex gap-4">
+          <button
+            class="px-6 py-3 rounded-full border border-glass-stroke font-body-md text-on-surface hover:bg-white/5 transition-all cursor-pointer"
+            id="close-modal-btn"
+            type="button"
+            (click)="close()"
+          >
+            Cancel
+          </button>
+          <button
+            class="flex-grow px-6 py-3 rounded-full bg-primary text-on-primary font-bold transition-all"
+            [class.opacity-50]="!isAgreed()"
+            [class.cursor-not-allowed]="!isAgreed()"
+            [class.cursor-pointer]="isAgreed()"
+            [class.hover:shadow-[0_0_15px_rgba(189,194,255,0.4)]]="isAgreed()"
+            [disabled]="!isAgreed()"
+            id="confirm-payment-btn"
+            type="button"
+            (click)="confirm()"
+          >
+            Agree &amp; Continue to Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
