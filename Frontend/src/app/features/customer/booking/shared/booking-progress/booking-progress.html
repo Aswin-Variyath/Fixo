@@ -24,7 +24,7 @@
     >
       <!-- Circle bubble -->
       <div
-        class="w-8 h-8 rounded-full flex items-center justify-center border mr-2 font-label-sm text-label-sm"
+        class="w-8 h-8 rounded-full flex items-center justify-center border mr-0 md:mr-2 font-label-sm text-label-sm shrink-0"
         [ngClass]="{
           'bg-primary/20 border-primary': step.number <= currentStep(),
           'bg-surface-variant border-glass-stroke': step.number > currentStep()
@@ -41,7 +41,7 @@
 
       <!-- Step label -->
       <span
-        class="font-body-md text-body-md"
+        class="font-body-md text-body-md hidden md:block"
         [ngClass]="{ 'font-semibold': step.number === currentStep() }"
       >
         {{ step.label }}

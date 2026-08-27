@@ -183,6 +183,9 @@ html:not(.dark) {
   --color-background:    #f8f9fc;
   --color-on-background: #1a1b20;
 
+  /* Primary container text */
+  --color-on-primary-container: #1a1b20;
+
   /* Surface text roles */
   --color-on-surface:         #1a1b20;
   --color-on-surface-variant: #44475a;

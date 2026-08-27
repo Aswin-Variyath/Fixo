@@ -123,7 +123,13 @@ export const routes: Routes = [
     {
     path: 'customer/booking/booking-details/payment',
     loadComponent: () =>
-        import('./features/customer/booking/booking-details/booking-details')
-            .then((m) => m.BookingDetails)
+        import('./features/customer/booking/payment/payment')
+            .then((m) => m.Payment)
+    },
+    {
+    path: 'customer/booking/confirmation',
+    loadComponent: () =>
+        import('./features/customer/booking/confirmation/confirmation')
+            .then((m) => m.Confirmation)
     }
 ];

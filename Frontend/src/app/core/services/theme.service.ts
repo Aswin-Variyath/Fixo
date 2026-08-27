@@ -32,9 +32,12 @@ export class ThemeService {
   readonly theme = signal<Theme>(this.getInitialTheme());
 
   constructor() {
-    // Whenever theme signal changes, sync the .dark class on <html>
+    // Whenever theme signal changes, sync the .dark class on <html> and persist
     effect(() => {
       const currentTheme = this.theme();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fixo-theme', currentTheme);
+      }
       if (currentTheme === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
@@ -53,15 +56,14 @@ export class ThemeService {
     this.theme.set(theme);
   }
 
-  /** Read system preference on first load */
+  /** Read system preference or saved preference on first load */
   private getInitialTheme(): Theme {
-    // If the OS prefers dark mode, start dark; otherwise light
-    if (
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-      return 'dark';
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fixo-theme') as Theme | null;
+      if (saved === 'light' || saved === 'dark') {
+        return saved;
+      }
     }
-    return 'light';
+    return 'dark';
   }
 }
