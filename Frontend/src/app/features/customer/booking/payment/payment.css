@@ -1,0 +1,11 @@
+/*
+ * payment.css
+ * -----------
+ * Page-level styles for the Payment page.
+ */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}

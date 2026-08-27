@@ -9,7 +9,7 @@ export const routes: Routes = [
         path:"",
         pathMatch: 'full',
         loadComponent:()=>
-            import("./features/customer/landing/pages/customer/home.component").then((m)=>m.HomeLanding)
+            import("./features/customer/landing/landing.component").then((m)=>m.HomeLanding)
     },
     {
         path:"signup",
@@ -89,12 +89,53 @@ export const routes: Routes = [
         loadComponent:()=>
             import("./features/admin/dashboard/dashboard").then((m)=>m.Dashboard)
     },
-    // testing routes
     {
     path: 'customer/home',
     canActivate:[authGuard,roleGuard('customer')],
     loadComponent: () =>
-        import('./features/customer/home/pages/customer-home/customer-home')
+        import('./features/customer/home/customer-home')
             .then((m) => m.CustomerHome)
+    },
+    {
+    path: 'customer/discovery',
+    loadComponent: () =>
+        import('./features/customer/discovery/discovery')
+            .then((m) => m.Discovery)
+    },
+    {
+    path: 'customer/tasker-profile',
+    loadComponent: () =>
+        import('./features/customer/tasker-profile/tasker-profile')
+            .then((m) => m.TaskerProfile)
+    },
+    {
+    path: 'customer/booking/appointment',
+    loadComponent: () =>
+        import('./features/customer/booking/appointment/appointment')
+            .then((m) => m.Appointment)
+    },
+    {
+    path: 'customer/booking/booking-details',
+    loadComponent: () =>
+        import('./features/customer/booking/booking-details/booking-details')
+            .then((m) => m.BookingDetails)
+    },
+    {
+    path: 'customer/booking/booking-details/payment',
+    loadComponent: () =>
+        import('./features/customer/booking/payment/payment')
+            .then((m) => m.Payment)
+    },
+    {
+    path: 'customer/booking/confirmation',
+    loadComponent: () =>
+        import('./features/customer/booking/confirmation/confirmation')
+            .then((m) => m.Confirmation)
+    },
+    {
+    path: 'customer/booking/payment-failed',
+    loadComponent: () =>
+        import('./features/customer/booking/payment-failed/payment-failed')
+            .then((m) => m.PaymentFailed)
     }
 ];

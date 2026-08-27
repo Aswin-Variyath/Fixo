@@ -1,130 +1,276 @@
 /*
  * _components.css
  * ---------------
- * PURPOSE : Reusable multi-property component classes used across multiple
- *           sections or modules of the application.
- *
- * BELONGS : .glass-card, .btn-primary, .btn-secondary, .floating-blob,
- *           .service-card, .carousel-container, .carousel-btn,
- *           .magnetic-target — all with their hover states and dark/light
- *           mode variants. Preserved exactly from the Google Stitch CSS.
- *
- * NEVER   : Design tokens (belong in _tokens.css), @keyframes (belong in
- *           _animations.css), single-property helpers (belong in _utilities.css),
- *           page-specific one-off overrides (belong in component .css files).
+ * PURPOSE : Reusable multi-property component classes used across
+ *           multiple sections/modules of the application.
  */
 
 /* ============================================================
    GLASS CARD
-   The primary surface container used across cards, navbars,
-   modals, and overlay elements throughout the design.
 ============================================================ */
+
 .glass-card {
   background: rgba(11, 17, 27, 0.7);
   backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+
   border: 1px solid rgba(255, 255, 255, 0.15);
+
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
   transition:
     background 0.5s ease,
     border-color 0.5s ease,
     box-shadow 0.5s ease;
 }
 
-/* Light mode override for glass-card */
+/* Light mode */
+
 html:not(.dark) .glass-card {
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.08);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
+
 /* ============================================================
-   BTN PRIMARY
-   Gradient CTA button — used for main conversion actions.
-   Gradient direction: 135deg, royal-blue → sky-blue.
+   GLASS PANEL
+   Used for:
+   - Discovery search panel
+   - Filter sidebar
+   - Tasker result containers
+   - Large content panels
 ============================================================ */
+
+.glass-panel {
+  background: rgba(11, 17, 27, 0.7);
+
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  border-radius: 1.25rem;
+}
+
+/* Light mode */
+
+html:not(.dark) .glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+
+/* ============================================================
+   GLASS INNER BORDER
+   Inner subtle border used by glass panels and cards.
+============================================================ */
+
+.glass-inner-border {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+html:not(.dark) .glass-inner-border {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ============================================================
+   GLASS INPUT
+   Used by Discovery search fields.
+============================================================ */
+
+.glass-input {
+  background-color: #0b111b;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.glass-input:focus-within {
+  border-color: #bdc2ff;
+
+  box-shadow: 0 0 0 1px #bdc2ff;
+
+  background-color: rgba(11, 17, 27, 0.8);
+}
+
+/* Light mode */
+
+html:not(.dark) .glass-input {
+  background-color: rgba(255, 255, 255, 0.8);
+
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+html:not(.dark) .glass-input:focus-within {
+  background-color: rgba(255, 255, 255, 0.95);
+
+  border-color: #5e6ad2;
+
+  box-shadow: 0 0 0 1px #5e6ad2;
+}
+
+
+/* ============================================================
+   INPUT GLASS
+   Existing reusable input component.
+============================================================ */
+
+.input-glass {
+  background: rgba(13, 14, 18, 0.8);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  transition: all 0.2s ease-in-out;
+}
+
+.input-glass:focus-within {
+  border-color: #5e6ad2;
+
+  background: rgba(26, 27, 32, 0.9);
+
+  box-shadow: 0 0 0 2px rgba(94, 106, 210, 0.2);
+}
+
+
+/* ============================================================
+   BUTTON PRIMARY
+============================================================ */
+
 .btn-primary {
-  background: linear-gradient(135deg, #2e4ad1 0%, #7cc4fa 100%);
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  box-shadow: 0 4px 15px rgba(46, 74, 209, 0.3);
+  background: linear-gradient(
+    135deg,
+    #2e4ad1 0%,
+    #7cc4fa 100%
+  );
+
+  transition:
+    all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+
+  box-shadow:
+    0 4px 15px rgba(46, 74, 209, 0.3);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 0 20px rgba(94, 106, 210, 0.4);
+  box-shadow:
+    0 0 20px rgba(94, 106, 210, 0.4);
+
   transform: scale(1.02);
 }
 
+
 /* ============================================================
-   BTN SECONDARY
-   Ghost/outline button — used alongside btn-primary for
-   secondary conversion paths (e.g. "Explore Services").
+   BUTTON SECONDARY
 ============================================================ */
+
 .btn-secondary {
   border: 1px solid rgba(255, 255, 255, 0.15);
+
   background: rgba(255, 255, 255, 0.05);
+
   transition: all 0.3s ease;
 }
 
-/* Light mode override */
+/* Light mode */
+
 html:not(.dark) .btn-secondary {
   border-color: rgba(0, 0, 0, 0.1);
+
   background: rgba(0, 0, 0, 0.02);
+
   color: #1a1b20;
 }
 
 /* Dark mode hover */
+
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.1);
+
   border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Light mode hover */
+
 html:not(.dark) .btn-secondary:hover {
   background: rgba(0, 0, 0, 0.05);
+
   border-color: rgba(0, 0, 0, 0.2);
 }
 
+
 /* ============================================================
    FLOATING BLOB
-   Decorative background gradient blobs used in Hero and CTA sections.
-   position: absolute is set here so parent only needs relative + overflow-hidden.
-   z-index: -1 keeps blobs behind content layers.
-   animation: float is defined in _animations.css.
 ============================================================ */
+
 .floating-blob {
   position: absolute;
+
   filter: blur(100px);
+
   z-index: 0;
+
   border-radius: 50%;
+
   opacity: 0.4;
-  animation: float 15s infinite alternate ease-in-out;
+
+  animation:
+    float 15s infinite alternate ease-in-out;
+
   pointer-events: none;
 }
 
-/* Light mode — blobs are much more subtle */
+/* Light mode */
+
 html:not(.dark) .floating-blob {
   opacity: 0.15;
 }
 
+
+/* ============================================================
+   AMBIENT BLOB
+   Fixed background lighting blobs used in booking flows.
+============================================================ */
+
+.ambient-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -2;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+html:not(.dark) .ambient-blob {
+  opacity: 0.1;
+}
+
+
 /* ============================================================
    SERVICE CARD
-   Used inside the Services carousel. Extends glass-card.
-   The hover lift effect is defined here separately so it can
-   be overridden per breakpoint without touching glass-card.
 ============================================================ */
+
 .service-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px -10px rgba(94, 106, 210, 0.3);
+
+  box-shadow:
+    0 20px 40px -10px rgba(94, 106, 210, 0.3);
 }
+
 
 /* ============================================================
    CAROUSEL CONTAINER
-   Horizontal scroll container with hidden scrollbar.
-   scroll-behavior: smooth for native browser smooth scrolling.
-   The JS (Angular directive) calls scrollBy() on this element.
 ============================================================ */
+
 .carousel-container {
   scroll-behavior: smooth;
+
   -ms-overflow-style: none;
+
   scrollbar-width: none;
 }
 
@@ -132,31 +278,34 @@ html:not(.dark) .floating-blob {
   display: none;
 }
 
+
 /* ============================================================
    CAROUSEL BUTTON
-   Prev/Next navigation buttons for the services carousel.
-   Cubic-bezier easing matches the btn-primary timing.
-   Glow + border highlight on hover for discoverability.
 ============================================================ */
+
 .carousel-btn {
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition:
+    all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .carousel-btn:hover {
-  box-shadow: 0 0 15px rgba(94, 106, 210, 0.5);
-  border-color: rgba(189, 194, 255, 0.5);
+  box-shadow:
+    0 0 15px rgba(94, 106, 210, 0.5);
+
+  border-color:
+    rgba(189, 194, 255, 0.5);
 }
+
 
 /* ============================================================
    MAGNETIC TARGET
-   Applied to buttons that use the MagneticDirective.
-   display: inline-block is required so transform works correctly.
-   The directive sets transform via Renderer2 on mousemove/mouseleave.
-   The CSS transition here controls the ease-back on mouseleave.
 ============================================================ */
+
 .magnetic-target {
   display: inline-block;
-  transition: transform 0.2s ease-out;
+
+  transition:
+    transform 0.2s ease-out;
 }
 
 
@@ -165,42 +314,91 @@ html:not(.dark) .floating-blob {
 ============================================================ */
 
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #2E4AD1 0%, #7CC4FA 100%);
+  background:
+    linear-gradient(
+      135deg,
+      #2e4ad1 0%,
+      #7cc4fa 100%
+    );
 }
+
 
 /* ============================================================
    PRIMARY GLOW
 ============================================================ */
 
 .glow-shadow-primary {
-  box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
+  box-shadow:
+    0 0 40px rgba(94, 106, 210, 0.15);
 }
+
+
+/* ============================================================
+   GLOW SHADOW (pseudo-element radial gradient)
+   Used by booking-summary sticky card.
+   Preserved verbatim from Stitch inline <style> block.
+   Distinct from .glow-shadow-primary (which uses box-shadow).
+============================================================ */
+
+.glow-shadow {
+  position: relative;
+}
+
+.glow-shadow::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, transparent 70%);
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   CUSTOM RADIO
+   Used by service-selector — styled radio buttons with peer pattern.
+   Preserved verbatim from Stitch inline <style> block.
+============================================================ */
+
+.custom-radio:checked + div {
+  border-color: #bdc2ff;
+  background: rgba(189, 194, 255, 0.05);
+}
+
+.custom-radio:checked + div .radio-inner {
+  background-color: #bdc2ff;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  scale: 1;
+  transform: scale(1);
+}
+
+/* Inner radio ring border — turns primary on selection.
+   The Tailwind peer-checked variant cannot target descendants (only siblings),
+   so this global selector fills the gap. */
+.custom-radio:checked + div .radio-ring {
+  border-color: #bdc2ff;
+}
+
 
 /* ============================================================
    LOGIN PAGE
 ============================================================ */
 
 .login-gradient-bg {
-  background: radial-gradient(circle at 0% 0%, #0b111b 0%, #121317 100%);
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      #0b111b 0%,
+      #121317 100%
+    );
 }
 
 .input-focus-glow:focus {
-  box-shadow: 0 0 15px rgba(94, 106, 210, 0.3);
-  border-color: #bdc2ff;
-}
+  box-shadow:
+    0 0 15px rgba(94, 106, 210, 0.3);
 
-/* ============================================================
-   INPUT GLASS
-============================================================ */
-
-.input-glass {
-  background: rgba(13, 14, 18, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.2s ease-in-out;
-}
-
-.input-glass:focus-within {
-  border-color: #5e6ad2;
-  background: rgba(26, 27, 32, 0.9);
-  box-shadow: 0 0 0 2px rgba(94, 106, 210, 0.2);
+  border-color:
+    #bdc2ff;
 }

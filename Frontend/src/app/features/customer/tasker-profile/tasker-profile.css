@@ -1,0 +1,32 @@
+/*
+ * tasker-profile.css
+ * ------------------
+ * Page-specific styles for the Tasker Profile page.
+ *
+ * NOTE: .glass-card, .btn-primary, .btn-secondary are defined globally
+ * in styles/_components.css and do NOT need to be repeated here.
+ *
+ * ViewEncapsulation.None is set on TaskerProfile so these styles
+ * pierce into the child section components.
+ */
+
+/* ============================================================
+   GLOW SHADOW
+   Used by booking-card: sticky card outer glow.
+   Not defined globally (global has .glow-shadow-primary at 0.15 opacity,
+   this is the stronger page-specific variant at 0.2 opacity).
+============================================================ */
+.glow-shadow {
+  box-shadow: 0 0 40px rgba(94, 106, 210, 0.2);
+}
+
+/* ============================================================
+   TEXT GRADIENT
+   Used for gradient text on this page (primary → sky-blue).
+============================================================ */
+.text-gradient {
+  background: linear-gradient(to right, #bdc2ff, #7cc4fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

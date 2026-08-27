@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Navbar } from '../../../landing/components/navbar/navbar';
-import { Footer } from '../../../landing/components/footer/footer';
+import { Footer } from '../../../../../shared/components/footer/footer';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../../core/auth/auth.service';
 import { Router } from '@angular/router';

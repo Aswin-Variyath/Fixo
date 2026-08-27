@@ -1,0 +1,146 @@
+<aside class="w-full lg:w-80 flex-shrink-0">
+          <div
+            class="glass-panel p-stack-md sticky top-[100px]
+           flex flex-col gap-stack-md
+           max-h-[calc(100vh-120px)]
+           overflow-y-auto"
+          >
+            <div class="flex justify-between items-center mb-2">
+              <h2 class="text-lg font-semibold">Filters</h2>
+              <button class="text-sm text-primary hover:text-sky-blue transition-colors">
+                Clear All
+              </button>
+            </div>
+            <!-- Location Radius -->
+            <div class="flex flex-col gap-3">
+              <h3 class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">
+                Location Radius
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  class="px-4 py-2 rounded-full border border-glass-stroke bg-transparent text-sm hover:bg-white/10 transition-colors"
+                >
+                  2 km
+                </button>
+                <button
+                  class="px-4 py-2 rounded-full border border-primary bg-primary/10 text-primary text-sm hover:bg-primary/20 transition-colors"
+                >
+                  5 km
+                </button>
+                <button
+                  class="px-4 py-2 rounded-full border border-glass-stroke bg-transparent text-sm hover:bg-white/10 transition-colors"
+                >
+                  10 km
+                </button>
+                <button
+                  class="px-4 py-2 rounded-full border border-glass-stroke bg-transparent text-sm hover:bg-white/10 transition-colors"
+                >
+                  25 km
+                </button>
+              </div>
+            </div>
+            <hr class="border-glass-stroke my-2" />
+            <!-- Rating -->
+            <div class="flex flex-col gap-3">
+              <h3 class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">
+                Rating
+              </h3>
+              <div class="flex flex-col gap-2">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    class="form-radio text-primary bg-surface border-glass-stroke focus:ring-primary focus:ring-offset-0"
+                    name="rating"
+                    type="radio"
+                  />
+                  <span class="flex items-center gap-1 group-hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-tertiary text-sm" data-weight="fill"
+                      >star</span
+                    >
+                    <span>4.5 &amp; up</span>
+                  </span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    checked=""
+                    class="form-radio text-primary bg-surface border-glass-stroke focus:ring-primary focus:ring-offset-0"
+                    name="rating"
+                    type="radio"
+                  />
+                  <span class="flex items-center gap-1 group-hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-tertiary text-sm" data-weight="fill"
+                      >star</span
+                    >
+                    <span>4.0 &amp; up</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+            <hr class="border-glass-stroke my-2" />
+            <!-- Price Range -->
+            <div class="flex flex-col gap-3">
+              <h3 class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">
+                Price per Hour
+              </h3>
+              <div class="px-2">
+                <input
+                  class="w-full accent-primary h-1 bg-surface-variant rounded-lg appearance-none cursor-pointer"
+                  max="1500"
+                  min="200"
+                  type="range"
+                  value="800"
+                />
+                <div class="flex justify-between text-sm text-on-surface-variant mt-2">
+                  <span>₹200</span>
+                  <span>₹1500</span>
+                </div>
+              </div>
+            </div>
+            <hr class="border-glass-stroke my-2" />
+            <!-- Availability -->
+            <div class="flex flex-col gap-3">
+              <h3 class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">
+                Availability
+              </h3>
+              <div class="flex flex-col gap-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input
+                    class="form-checkbox text-primary bg-surface border-glass-stroke rounded focus:ring-primary focus:ring-offset-0"
+                    type="checkbox"
+                  />
+                  <span>Available Now</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input
+                    checked=""
+                    class="form-checkbox text-primary bg-surface border-glass-stroke rounded focus:ring-primary focus:ring-offset-0"
+                    type="checkbox"
+                  />
+                  <span>Available Today</span>
+                </label>
+              </div>
+            </div>
+            <hr class="border-glass-stroke my-2" />
+            <!-- Verification -->
+            <div class="flex flex-col gap-3 mb-4">
+              <h3 class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">
+                Verification
+              </h3>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input
+                  checked=""
+                  class="form-checkbox text-primary bg-surface border-glass-stroke rounded focus:ring-primary focus:ring-offset-0"
+                  type="checkbox"
+                />
+                <span class="flex items-center gap-2"
+                  >Verified Taskers Only
+                  <span class="material-symbols-outlined text-sky-blue text-sm" data-weight="fill"
+                    >verified</span
+                  ></span
+                >
+              </label>
+            </div>
+            <button class="btn-primary w-full py-3 rounded-xl font-medium mt-auto">
+              Apply Filters
+            </button>
+          </div>
+        </aside>

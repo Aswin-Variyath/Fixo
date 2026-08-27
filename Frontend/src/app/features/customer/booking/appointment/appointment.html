@@ -1,0 +1,39 @@
+<!-- Decorative Background Blobs -->
+<div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+  <div
+    class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-container/20 blur-[120px]"
+  ></div>
+  <div
+    class="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-sky-blue/10 blur-[150px]"
+  ></div>
+</div>
+
+<!-- Navigation Bar -->
+<app-navbar></app-navbar>
+
+<!-- Main Content -->
+<main class="flex-grow pt-28 pb-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full">
+
+  <!-- Progress Indicator -->
+  <app-booking-progress [currentStep]="1"></app-booking-progress>
+
+  <!-- Two-Column Layout Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-md lg:gap-gutter">
+
+    <!-- Left Column: Form Content -->
+    <div class="lg:col-span-8 space-y-stack-md">
+      <app-booking-tasker-summary></app-booking-tasker-summary>
+      <app-service-selector></app-service-selector>
+      <app-date-picker></app-date-picker>
+      <app-time-slot-selector></app-time-slot-selector>
+      <app-duration-picker></app-duration-picker>
+    </div>
+
+    <!-- Right Column: Sticky Summary -->
+    <div class="lg:col-span-4 relative">
+      <app-booking-summary></app-booking-summary>
+    </div>
+
+  </div>
+</main>
+<app-footer></app-footer>

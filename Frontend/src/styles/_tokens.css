@@ -159,3 +159,41 @@
   --radius-xl: 0.75rem;
   --radius-full: 9999px;
 }
+
+/* ============================================================
+   LIGHT MODE TOKEN OVERRIDES
+   Override dark-first MD3 surface tokens for light mode.
+   Applied when the .dark class is NOT present on <html>.
+   Mirrors the same pattern used in _base.css and _components.css.
+============================================================ */
+
+html:not(.dark) {
+  /* Surface container hierarchy — light mode values */
+  --color-surface-container-highest: #e6e7ec;
+  --color-surface-variant:           #e6e7ec;
+  --color-surface:                   #f8f9fc;
+  --color-surface-bright:            #ffffff;
+  --color-surface-dim:               #f0f1f6;
+  --color-surface-container:         #f0f1f6;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-high:    #e8e9ee;
+  --color-surface-container-low:     #f4f5fa;
+
+  /* Background */
+  --color-background:    #f8f9fc;
+  --color-on-background: #1a1b20;
+
+  /* Primary container text */
+  --color-on-primary-container: #1a1b20;
+
+  /* Surface text roles */
+  --color-on-surface:         #1a1b20;
+  --color-on-surface-variant: #44475a;
+
+  /* Outline */
+  --color-outline:         #74768a;
+  --color-outline-variant: #c8cad8;
+
+  /* Glass stroke — slightly more opaque in light mode */
+  --color-glass-stroke: rgba(0, 0, 0, 0.10);
+}

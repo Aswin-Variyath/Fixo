@@ -1,0 +1,35 @@
+<!-- Ambient Background Lighting -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+  <div
+    class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-container rounded-full mix-blend-screen filter blur-[100px] opacity-20"
+  ></div>
+  <div
+    class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-blue rounded-full mix-blend-screen filter blur-[100px] opacity-10"
+  ></div>
+</div>
+
+<!-- Top Navigation Bar -->
+<app-navbar></app-navbar>
+
+<!-- Main Content Area -->
+<main
+  class="flex-grow flex flex-col items-center justify-start relative z-10 px-margin-mobile pt-32 pb-section-gap md:pb-[120px]"
+>
+  <!-- Progress Indicator -->
+  <app-booking-progress [currentStep]="4"></app-booking-progress>
+
+  <!-- Main Confirmation Layout -->
+  <div class="w-full max-w-2xl mx-auto flex flex-col items-center text-center">
+    <app-confirmation-header class="w-full"></app-confirmation-header>
+
+    <div class="w-full flex flex-col gap-stack-md mb-stack-md">
+      <app-confirmation-details class="w-full"></app-confirmation-details>
+      <app-confirmation-payment-summary class="w-full"></app-confirmation-payment-summary>
+    </div>
+
+    <app-confirmation-actions class="w-full"></app-confirmation-actions>
+  </div>
+</main>
+
+<!-- Footer -->
+<app-footer></app-footer>

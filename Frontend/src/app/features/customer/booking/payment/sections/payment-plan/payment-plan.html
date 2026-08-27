@@ -1,0 +1,38 @@
+<div class="glass-panel glass-inner-border p-6 flex flex-col gap-4 relative overflow-hidden">
+  <!-- Decorative background element -->
+  <div class="absolute -top-20 -right-20 w-40 h-40 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- Payment Plan Options -->
+  <label class="group relative flex flex-col p-4 rounded-xl border border-primary-container bg-primary-container/10 cursor-pointer transition-all hover:bg-primary-container/20">
+    <div class="flex items-start">
+      <div class="w-5 h-5 rounded-full border-2 border-primary-container flex items-center justify-center mt-1 mr-4 shrink-0">
+        <div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+      </div>
+      <div class="flex-grow">
+        <div class="flex justify-between items-center mb-1">
+          <h3 class="font-body-md text-body-md font-semibold text-on-surface">Pay 50% Advance (Recommended)</h3>
+          <span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-xs font-semibold">Recommended</span>
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant mb-2">Estimated Service Amount: ₹1,200 (based on ₹400/hr for 3hrs)</p>
+        <div class="flex gap-4 text-sm mb-2">
+          <div><span class="text-outline">Pay Now:</span> <span class="text-on-surface font-semibold">₹600</span></div>
+          <div><span class="text-outline">Remaining:</span> <span class="text-on-surface font-semibold">₹600</span></div>
+        </div>
+        <p class="text-xs text-outline italic">Your final amount will be calculated based on the actual work duration. The remaining amount will be settled after the work is completed.</p>
+      </div>
+    </div>
+    <!-- Inner Glow for selected state -->
+    <div class="absolute inset-0 rounded-xl shadow-[inset_0_0_20px_rgba(94,106,210,0.15)] pointer-events-none"></div>
+    <input checked="" class="hidden" name="payment_plan" type="radio" value="advance"/>
+  </label>
+  <label class="flex flex-col p-4 rounded-xl border border-glass-stroke bg-surface-container-low/30 cursor-pointer transition-all hover:bg-white/5 hover:border-outline-variant">
+    <div class="flex items-start">
+      <div class="w-5 h-5 rounded-full border-2 border-outline flex items-center justify-center mt-1 mr-4 shrink-0"></div>
+      <div class="flex-grow">
+        <h3 class="font-body-md text-body-md font-medium text-on-surface mb-1">Pay Full Estimated Amount</h3>
+        <p class="font-label-sm text-label-sm text-on-surface-variant mb-2">Pay Now: <span class="text-on-surface font-semibold">₹1,200</span></p>
+        <p class="text-xs text-outline italic">Your final amount will be recalculated based on the actual work duration after the service is completed.</p>
+      </div>
+    </div>
+    <input class="hidden" name="payment_plan" type="radio" value="full"/>
+  </label>
+</div>

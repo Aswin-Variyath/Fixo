@@ -1,0 +1,28 @@
+<!-- Navbar -->
+<app-navbar></app-navbar>
+
+<!-- Main Discovery Page -->
+<main
+  class="w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 pb-section-gap"
+>
+  <!-- Discovery Header -->
+  <app-discovery-header></app-discovery-header>
+
+  <!-- Discovery Content -->
+  <section
+    class="mt-10 flex flex-col lg:flex-row items-start gap-10"
+  >
+    <!-- Filters -->
+    <div class="w-full lg:w-80 lg:flex-shrink-0">
+      <app-filters></app-filters>
+    </div>
+
+    <!-- Tasker Results -->
+    <div class="w-full lg:flex-1 min-w-0">
+      <app-tasker-results></app-tasker-results>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<app-footer></app-footer>

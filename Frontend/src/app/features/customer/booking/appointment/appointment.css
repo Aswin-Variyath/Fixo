@@ -1,0 +1,15 @@
+/*
+ * appointment.css
+ * ---------------
+ * Page-level styles for the Appointment booking page.
+ * IMPORTANT: Global component classes (glass-card, btn-primary, custom-radio, etc.)
+ * are defined in src/styles/_components.css. Do NOT duplicate them here.
+ */
+
+/* The host element must be a flex column so that main.flex-grow
+   can push the footer to the bottom of the viewport. */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}

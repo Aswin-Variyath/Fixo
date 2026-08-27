@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { NavbarComponent } from '../../../landing/components/navbar/navbar.component';
-import { FooterComponent } from '../../../landing/components/footer/footer.component';
 import { AuthService } from '../../../../../core/auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms'
+import { Navbar } from '../../../../../shared/components/navbar/navbar';
+import { Footer } from '../../../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-login',
-  imports: [NavbarComponent, FooterComponent, ReactiveFormsModule, RouterLink],
+  imports: [Navbar, Footer, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
