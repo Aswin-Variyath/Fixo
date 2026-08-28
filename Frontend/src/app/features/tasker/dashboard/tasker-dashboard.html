@@ -1,0 +1,214 @@
+<!-- Ambient Lighting Background -->
+<div class="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+  <div
+    class="absolute top-0 left-[20%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] mix-blend-screen"
+  ></div>
+  <div
+    class="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] bg-royal-blue/5 rounded-full blur-[120px] mix-blend-screen"
+  ></div>
+</div>
+
+<!-- Shared Top Navigation -->
+<app-navbar />
+
+<!-- State Switcher Toolbar (Dev Preview Control for effortless state verification) -->
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24">
+  <div
+    class="flex items-center justify-between pb-2 border-b border-glass-stroke/50 text-xs gap-2 flex-wrap"
+  >
+    <div class="flex items-center gap-2">
+      <span class="text-on-surface-variant font-mono">Dashboard Preview:</span>
+      <span
+        class="px-2.5 py-0.5 rounded-full font-label-sm uppercase tracking-wider font-semibold"
+        [class.bg-success-container/40]="isKycVerified()"
+        [class.text-success]="isKycVerified()"
+        [class.border]="true"
+        [class.border-success/30]="isKycVerified()"
+        [class.bg-error-container/20]="!isKycVerified()"
+        [class.text-error]="!isKycVerified()"
+        [class.border-error/30]="!isKycVerified()"
+      >
+        {{ isKycVerified() ? 'KYC Verified (Live Mode)' : 'KYC Pending (Unverified Mode)' }}
+      </span>
+    </div>
+    <button
+      type="button"
+      (click)="toggleKycState()"
+      class="glass-panel px-3 py-1 rounded-full text-xs text-on-surface hover:text-primary hover:border-primary transition-all cursor-pointer font-medium"
+      title="Toggle between KYC Pending and KYC Verified states"
+    >
+      Switch to {{ isKycVerified() ? 'Pending State' : 'Verified State' }}
+    </button>
+  </div>
+</div>
+
+<!-- Main Content Container -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter pb-section-gap">
+  @if (!isKycVerified()) {
+    <!-- =========================================================================
+         STATE 1: KYC PENDING / UNVERIFIED DASHBOARD
+         ========================================================================= -->
+    <!-- Dashboard Header -->
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 mt-8">
+      <div>
+        <div class="flex items-center gap-3 mb-2 flex-wrap">
+          <h1
+            class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface"
+          >
+            Good morning, Ramesh
+          </h1>
+          <span
+            class="bg-error-container/20 text-error border border-error/30 px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider flex items-center gap-1 backdrop-blur-md"
+          >
+            <span
+              class="material-symbols-outlined text-sm icon-fill"
+              style="font-variation-settings: 'FILL' 1"
+              >error</span
+            >
+            Verification Required
+          </span>
+        </div>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Manage your services, track earnings, and review upcoming jobs.
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="openKycModal()"
+        class="btn-primary text-white px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 cursor-pointer flex-shrink-0"
+      >
+        Complete KYC Now
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Left Column: Main Dashboard Content (8 cols) -->
+      <div class="lg:col-span-8 space-y-6">
+        <!-- Availability Card (Disabled State) -->
+        <app-availability-card [isKycVerified]="false" />
+
+        <!-- Statistics Grid (2x2) -->
+        <app-stats-grid [isKycVerified]="false" />
+
+        <!-- Job Requests (Empty State) -->
+        <div
+          class="glass-panel rounded-[20px] p-10 flex flex-col items-center justify-center text-center border-dashed border-2 border-glass-stroke"
+        >
+          <div
+            class="w-20 h-20 rounded-full bg-surface-variant/50 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-4xl text-outline-variant">inbox</span>
+          </div>
+          <h3 class="font-body-xl text-body-xl text-on-surface mb-2 font-semibold">
+            No job requests yet
+          </h3>
+          <p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto mb-6">
+            Complete your KYC verification to start receiving local service requests from customers
+            in your area.
+          </p>
+          <button
+            type="button"
+            (click)="openKycModal()"
+            class="btn-primary text-white px-6 py-2 rounded-full font-medium cursor-pointer"
+          >
+            Verify Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar & Actions (4 cols) -->
+      <div class="lg:col-span-4 space-y-6">
+        <!-- Profile Completion Card -->
+        <app-profile-setup />
+
+        <!-- Locked Quick Actions Card -->
+        <app-quick-actions [isKycVerified]="false" />
+      </div>
+    </div>
+
+    <!-- KYC Modal Overlay -->
+    <app-kyc-modal [isOpen]="isKycModalOpen()" (close)="closeKycModal()" />
+  } @else {
+    <!-- =========================================================================
+         STATE 2: KYC VERIFIED DASHBOARD
+         ========================================================================= -->
+    <div class="space-y-gutter pt-8">
+      <!-- Verified Hero Section (3 cols: 2 cols Profile + 1 col Availability) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+        <!-- Profile Card -->
+        <div
+          class="glass-card p-6 md:col-span-2 flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden"
+        >
+          <div
+            class="absolute -right-20 -top-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none"
+          ></div>
+          <div class="w-24 h-24 rounded-full border-2 border-primary p-1 flex-shrink-0">
+            <img
+              alt="Ramesh Profile"
+              class="w-full h-full rounded-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZDh2T7Ljc8ZIE7Wse78mDsuSeoQKO7TyiBuvd3Py2K5ylnQVG4ZXTJ80o6mdE4Z29u5Dx6fvIFs2sboklXeNryEyraCGuBzrsq7ZzptEQt3TMkXz3uvox6Cp25k2nI9vaqkOXFOX0nIRes3rF2e6rYAqlZqKD4BjWSNb0TurlcSbkAZnnADwY6rxQralGsv5-wM6I1V2K4EDYKy97QrTCBHcK_stJx34mX2jEgeKCcDGQAkP50RDI"
+            />
+          </div>
+          <div
+            class="flex flex-col items-center md:items-start text-center md:text-left space-y-2 flex-grow"
+          >
+            <div class="flex items-center gap-2 flex-wrap justify-center md:justify-start">
+              <h2 class="font-body-xl text-body-xl font-bold text-on-surface">Ramesh Kumar</h2>
+              <div
+                class="flex items-center gap-1 bg-success/10 px-2 py-0.5 rounded-full border border-success/20"
+              >
+                <span
+                  class="material-symbols-outlined text-success text-sm icon-fill"
+                  style="font-variation-settings: 'FILL' 1"
+                  >verified</span
+                >
+                <span
+                  class="font-label-sm text-label-sm text-success uppercase tracking-wider font-semibold"
+                  >Verified</span
+                >
+              </div>
+            </div>
+            <p class="font-body-md text-body-md text-on-surface-variant">
+              Electrician &amp; Home Repairs Specialist
+            </p>
+            <div
+              class="flex items-center gap-4 mt-2 pt-4 border-t border-glass-stroke w-full justify-center md:justify-start"
+            >
+              <div class="flex items-center gap-1">
+                <span
+                  class="material-symbols-outlined text-tertiary icon-fill"
+                  style="font-variation-settings: 'FILL' 1"
+                  >star</span
+                >
+                <span class="font-label-sm text-label-sm font-bold text-on-surface">4.9</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant"
+                  >(120 Reviews)</span
+                >
+              </div>
+              <div class="w-1 h-1 rounded-full bg-glass-stroke"></div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">Since Jan 2023</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability Card -->
+        <div class="md:col-span-1">
+          <app-availability-card [isKycVerified]="true" />
+        </div>
+      </div>
+
+      <!-- Work Overview (4 Metric Cards) -->
+      <app-stats-grid [isKycVerified]="true" />
+
+      <!-- Quick Actions Grid (4 Interactive Tiles) -->
+      <app-quick-actions [isKycVerified]="true" />
+
+      <!-- Visibility Status Banner -->
+      <app-visibility-banner />
+    </div>
+  }
+</main>
+
+<!-- Shared Footer -->
+<app-footer />

@@ -1,0 +1,31 @@
+<div class="glass-panel rounded-[20px] p-12 md:p-24 flex flex-col items-center justify-center text-center max-w-2xl w-full relative overflow-hidden group">
+  <!-- Subtle atmospheric glow behind icon -->
+  <div class="absolute inset-0 bg-gradient-to-b from-royal-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+  
+  <div class="glow-shadow mb-8">
+    <div class="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center border border-glass-stroke shadow-inner">
+      <span class="material-symbols-outlined text-[48px] text-on-surface-variant opacity-50" data-icon="inbox" data-weight="fill" style="font-variation-settings: 'FILL' 1;">
+        inbox
+      </span>
+    </div>
+  </div>
+  
+  <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-md">
+    No Pending Requests
+  </h1>
+  
+  <p class="font-body-xl text-body-xl text-on-surface-variant max-w-md mx-auto mb-10 leading-relaxed">
+    You're all caught up. New customer requests will appear here.
+  </p>
+  
+  <button
+    type="button"
+    (click)="onRefresh()"
+    class="bg-gradient-to-r from-royal-blue to-sky-blue text-white px-8 py-4 rounded-full font-label-sm text-label-sm uppercase tracking-wider hover:scale-[1.02] transition-transform duration-300 glow-shadow relative overflow-hidden group/btn cursor-pointer">
+    <span class="relative z-10 flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">refresh</span>
+      Refresh Dashboard
+    </span>
+    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
+  </button>
+</div>
