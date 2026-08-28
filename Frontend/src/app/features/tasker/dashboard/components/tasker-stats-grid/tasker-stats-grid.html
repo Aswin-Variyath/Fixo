@@ -1,0 +1,87 @@
+@if (!isKycVerified()) {
+  <!-- Statistics Grid (Pending State: 2x2 inside left column) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-body-md text-body-md text-on-surface-variant">Today's Jobs</span>
+        <span class="material-symbols-outlined text-outline">calendar_today</span>
+      </div>
+      <div class="font-headline-lg text-headline-lg text-on-surface">0</div>
+    </div>
+    <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-body-md text-body-md text-on-surface-variant">Upcoming</span>
+        <span class="material-symbols-outlined text-outline">schedule</span>
+      </div>
+      <div class="font-headline-lg text-headline-lg text-on-surface">0</div>
+    </div>
+    <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-body-md text-body-md text-on-surface-variant">Completed</span>
+        <span class="material-symbols-outlined text-outline">task_alt</span>
+      </div>
+      <div class="font-headline-lg text-headline-lg text-on-surface">0</div>
+    </div>
+    <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-body-md text-body-md text-on-surface-variant">Total Earnings</span>
+        <span class="material-symbols-outlined text-outline">payments</span>
+      </div>
+      <div class="font-headline-lg text-headline-lg text-on-surface">₹0</div>
+    </div>
+  </div>
+} @else {
+  <!-- Work Overview (Verified State: 4 Columns with Semantic Highlights) -->
+  <div>
+    <h3 class="font-body-xl text-body-xl font-semibold text-on-surface mb-stack-md flex items-center gap-2">
+      <span class="material-symbols-outlined">dashboard</span> Overview
+    </h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass-card p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+          <span class="material-symbols-outlined text-outline">pending_actions</span>
+          <span
+            class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface group-hover:text-primary transition-colors"
+            >0</span
+          >
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pending Requests</p>
+      </div>
+      <div class="glass-card p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+          <span class="material-symbols-outlined text-secondary">calendar_today</span>
+          <span
+            class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface group-hover:text-secondary transition-colors"
+            >0</span
+          >
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Upcoming Jobs</p>
+      </div>
+      <div class="glass-card p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+        <div class="flex justify-between items-start mb-2">
+          <span class="material-symbols-outlined text-success">task_alt</span>
+          <span
+            class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface group-hover:text-success transition-colors"
+            >24</span
+          >
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Completed Jobs</p>
+      </div>
+      <div
+        class="glass-card p-4 hover:bg-white/5 transition-colors cursor-pointer group relative overflow-hidden"
+      >
+        <div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent"></div>
+        <div class="flex justify-between items-start mb-2 relative z-10">
+          <span class="material-symbols-outlined text-tertiary">payments</span>
+          <span
+            class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface group-hover:text-tertiary transition-colors"
+            >₹0</span
+          >
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase relative z-10">
+          Today's Earnings
+        </p>
+      </div>
+    </div>
+  </div>
+}

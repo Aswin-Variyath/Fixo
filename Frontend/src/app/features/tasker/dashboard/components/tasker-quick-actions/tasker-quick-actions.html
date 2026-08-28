@@ -1,0 +1,108 @@
+@if (!isKycVerified()) {
+  <!-- Quick Actions (Pending State: Sidebar List with Locks) -->
+  <div class="glass-panel rounded-[20px] p-6">
+    <h3 class="font-body-xl text-body-xl text-on-surface mb-4 font-semibold">Quick Actions</h3>
+    <div class="space-y-2">
+      <div
+        class="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors opacity-50 cursor-not-allowed"
+      >
+        <div class="flex items-center gap-3 text-on-surface-variant">
+          <span class="material-symbols-outlined">event_available</span>
+          <span class="font-body-md text-body-md">Manage Availability</span>
+        </div>
+        <span class="material-symbols-outlined text-outline">lock</span>
+      </div>
+      <div
+        class="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors opacity-50 cursor-not-allowed"
+      >
+        <div class="flex items-center gap-3 text-on-surface-variant">
+          <span class="material-symbols-outlined">work</span>
+          <span class="font-body-md text-body-md">View Jobs</span>
+        </div>
+        <span class="material-symbols-outlined text-outline">lock</span>
+      </div>
+      <div
+        class="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors opacity-50 cursor-not-allowed"
+      >
+        <div class="flex items-center gap-3 text-on-surface-variant">
+          <span class="material-symbols-outlined">account_balance_wallet</span>
+          <span class="font-body-md text-body-md">Earnings</span>
+        </div>
+        <span class="material-symbols-outlined text-outline">lock</span>
+      </div>
+      <div
+        class="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors opacity-50 cursor-not-allowed"
+      >
+        <div class="flex items-center gap-3 text-on-surface-variant">
+          <span class="material-symbols-outlined">chat</span>
+          <span class="font-body-md text-body-md">Messages</span>
+        </div>
+        <span class="material-symbols-outlined text-outline">lock</span>
+      </div>
+      <div class="h-px w-full bg-glass-stroke my-2"></div>
+      <a
+        class="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+        href="javascript:void(0)"
+      >
+        <div class="flex items-center gap-3 text-on-surface">
+          <span class="material-symbols-outlined text-primary">edit</span>
+          <span class="font-body-md text-body-md">Edit Profile</span>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+      </a>
+    </div>
+  </div>
+} @else {
+  <!-- Quick Actions (Verified State: 4 Interactive Action Cards) -->
+  <div>
+    <h3 class="font-body-xl text-body-xl font-semibold text-on-surface mb-stack-md flex items-center gap-2">
+      <span class="material-symbols-outlined">bolt</span> Quick Actions
+    </h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <button
+        type="button"
+        class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:bg-primary/10 transition-all hover:-translate-y-1 group text-center cursor-pointer"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center group-hover:bg-primary group-hover:text-surface-container-lowest transition-colors text-primary border border-glass-stroke"
+        >
+          <span class="material-symbols-outlined">search</span>
+        </div>
+        <span class="font-body-md text-body-md font-medium text-on-surface">Find Jobs</span>
+      </button>
+      <button
+        type="button"
+        class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:bg-secondary/10 transition-all hover:-translate-y-1 group text-center cursor-pointer"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center group-hover:bg-secondary group-hover:text-surface transition-colors text-secondary border border-glass-stroke"
+        >
+          <span class="material-symbols-outlined">event_available</span>
+        </div>
+        <span class="font-body-md text-body-md font-medium text-on-surface">Manage Availability</span>
+      </button>
+      <button
+        type="button"
+        class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:bg-tertiary/10 transition-all hover:-translate-y-1 group text-center cursor-pointer"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center group-hover:bg-tertiary group-hover:text-surface transition-colors text-tertiary border border-glass-stroke relative"
+        >
+          <span class="material-symbols-outlined">chat</span>
+        </div>
+        <span class="font-body-md text-body-md font-medium text-on-surface">Messages</span>
+      </button>
+      <button
+        type="button"
+        class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:bg-primary/10 transition-all hover:-translate-y-1 group text-center cursor-pointer"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center group-hover:bg-primary group-hover:text-surface-container-lowest transition-colors text-primary border border-glass-stroke"
+        >
+          <span class="material-symbols-outlined">account_balance_wallet</span>
+        </div>
+        <span class="font-body-md text-body-md font-medium text-on-surface">Earnings</span>
+      </button>
+    </div>
+  </div>
+}

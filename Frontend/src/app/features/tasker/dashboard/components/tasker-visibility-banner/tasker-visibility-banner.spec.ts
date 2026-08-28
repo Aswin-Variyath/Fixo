@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskerHome } from './tasker-home';
+import { TaskerVisibilityBanner } from './tasker-visibility-banner';
 
-describe('TaskerHome', () => {
-  let component: TaskerHome;
-  let fixture: ComponentFixture<TaskerHome>;
+describe('TaskerVisibilityBanner', () => {
+  let component: TaskerVisibilityBanner;
+  let fixture: ComponentFixture<TaskerVisibilityBanner>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskerHome],
+      imports: [TaskerVisibilityBanner],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TaskerHome);
+    fixture = TestBed.createComponent(TaskerVisibilityBanner);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

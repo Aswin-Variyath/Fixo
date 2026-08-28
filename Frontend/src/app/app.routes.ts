@@ -63,10 +63,9 @@ export const routes: Routes = [
             import("./features/tasker/auth/pages/tasker-reset-password/tasker-reset-password").then((m)=>m.TaskerResetPassword)
     },
     {
-        path:'tasker/home',
-        canActivate:[authGuard,roleGuard('tasker')],
+        path:"tasker/dashboard",
         loadComponent:()=>
-            import("./features/tasker/tasker-home/tasker-home").then((m)=>m.TaskerHome)
+            import("./features/tasker/dashboard/pages/tasker-dashboard/tasker-dashboard").then((m)=>m.TaskerDashboard)
     },
     // Admin routers
     {

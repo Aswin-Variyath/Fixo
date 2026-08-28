@@ -1,0 +1,90 @@
+@if (isOpen()) {
+  <!-- KYC Modal Overlay -->
+  <div
+    class="modal-backdrop fixed inset-0 z-[100] flex items-center justify-center px-4 bg-background/80 backdrop-blur-sm transition-opacity duration-300"
+    (click)="onBackdropClick($event)"
+  >
+    <div
+      class="glass-panel w-full max-w-lg rounded-2xl overflow-hidden relative shadow-2xl transform scale-100 transition-transform duration-300"
+    >
+      <!-- Modal Header -->
+      <div
+        class="px-6 py-5 border-b border-glass-stroke flex justify-between items-center bg-surface/50"
+      >
+        <h2
+          class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface m-0 leading-tight font-semibold"
+        >
+          Complete Your KYC Verification
+        </h2>
+        <button
+          type="button"
+          (click)="onClose()"
+          class="text-on-surface-variant hover:text-on-surface w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="p-6 space-y-6">
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          To ensure the safety of our customers and platform, all Taskers must complete a brief
+          identity verification process.
+        </p>
+        <div class="space-y-4">
+          <div class="flex gap-4 p-4 rounded-xl bg-surface-variant/30 border border-glass-stroke">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary"
+            >
+              <span class="material-symbols-outlined">badge</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-on-surface mb-1 font-body-md">Government-issued ID</h4>
+              <p class="text-sm text-on-surface-variant">
+                Aadhaar card, PAN card, or Driving License.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-4 rounded-xl bg-surface-variant/30 border border-glass-stroke">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary"
+            >
+              <span class="material-symbols-outlined">face</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-on-surface mb-1 font-body-md">Identity Verification</h4>
+              <p class="text-sm text-on-surface-variant">
+                A clear selfie to match against your provided ID.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-4 rounded-xl bg-surface-variant/30 border border-glass-stroke">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary"
+            >
+              <span class="material-symbols-outlined">account_balance</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-on-surface mb-1 font-body-md">Bank Details</h4>
+              <p class="text-sm text-on-surface-variant">
+                Account information to receive your earnings securely.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Footer -->
+      <div class="px-6 py-5 border-t border-glass-stroke bg-surface/50">
+        <button
+          type="button"
+          class="btn-primary w-full py-3 rounded-full text-white font-medium flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
+        >
+          <span class="material-symbols-outlined">upload_file</span>
+          Upload KYC Documents
+        </button>
+        <p class="text-xs text-center text-on-surface-variant mt-4">
+          Verification typically takes 24-48 hours.
+        </p>
+      </div>
+    </div>
+  </div>
+}
