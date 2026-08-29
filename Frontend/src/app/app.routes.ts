@@ -100,6 +100,12 @@ export const routes: Routes = [
                 .then((m) => m.TodaysEarnings),
     },
     {
+        path: 'tasker/find-jobs',
+        loadComponent: () =>
+            import('./features/tasker/find-jobs/find-jobs')
+                .then((m) => m.FindJobs),
+    },
+    {
         path:"tasker/upcoming-job-details",
         loadComponent:()=>
             import("./features/tasker/upcoming-job-details/upcoming-job-details").then((m)=>m.UpcomingJobDetails)

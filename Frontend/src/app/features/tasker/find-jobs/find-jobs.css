@@ -1,0 +1,5 @@
+:host { display: flex; flex-direction: column; min-height: 100vh; }
+.ambient-glow { position: absolute; border-radius: 50%; pointer-events: none; }
+.ambient-glow-left { top: 0; left: -15vw; width: 60vw; height: 70vh; background: radial-gradient(circle, rgba(94, 106, 210, 0.08) 0%, transparent 70%); }
+.ambient-glow-right { top: -10vh; right: -15vw; width: 55vw; height: 60vh; background: radial-gradient(circle, rgba(124, 196, 250, 0.05) 0%, transparent 70%); }
+.find-jobs-title { color: var(--color-primary); background: linear-gradient(135deg, #bdc2ff, #7cc4fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
