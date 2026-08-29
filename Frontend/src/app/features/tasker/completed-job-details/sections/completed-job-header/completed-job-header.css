@@ -1,0 +1,17 @@
+:host { display: block; }
+
+.completed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 9999px;
+  background: rgba(6, 78, 59, 0.3);
+  color: #4ade80;
+  font-family: var(--font-label-sm);
+  font-size: var(--text-label-sm);
+  font-weight: 500;
+  line-height: var(--text-label-sm--line-height);
+  letter-spacing: var(--text-label-sm--letter-spacing);
+}

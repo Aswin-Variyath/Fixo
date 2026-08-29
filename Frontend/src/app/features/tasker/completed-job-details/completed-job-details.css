@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.ambient-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, transparent 70%);
+}
+
+.ambient-glow-top {
+  top: 0;
+  left: 0;
+}
+
+.ambient-glow-bottom {
+  right: 0;
+  bottom: 0;
+}
+
+.back-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  color: white;
+  font-family: var(--font-body-md);
+  font-size: var(--text-body-md);
+  font-weight: 600;
+}

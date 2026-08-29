@@ -1,0 +1,4 @@
+:host { display: block; }
+.section-title { margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-glass-stroke); color: var(--color-on-surface); font-family: var(--font-body-xl); font-size: var(--text-body-xl); font-weight: 600; line-height: var(--text-body-xl--line-height); }
+.stars { display: inline-flex; align-items: center; color: var(--color-tertiary); }
+.stars .material-symbols-outlined { font-variation-settings: 'FILL' 1; }

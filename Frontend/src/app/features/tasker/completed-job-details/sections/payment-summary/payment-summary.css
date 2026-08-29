@@ -1,0 +1,14 @@
+:host { display: block; }
+.amount-card { border-radius: 1.25rem; }
+.amount-tint { position: absolute; inset: 0; background: rgba(94, 106, 210, 0.05); pointer-events: none; }
+.paid-badge { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.5rem 1rem; border: 1px solid rgba(74, 222, 128, 0.2); border-radius: 9999px; background: rgba(6, 78, 59, 0.3); color: #4ade80; font-family: var(--font-label-sm); font-size: var(--text-label-sm); line-height: var(--text-label-sm--line-height); letter-spacing: var(--text-label-sm--letter-spacing); }
+.section-title { margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-glass-stroke); color: var(--color-on-surface); font-family: var(--font-body-xl); font-size: var(--text-body-xl); font-weight: 600; line-height: var(--text-body-xl--line-height); }
+.payment-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--color-on-surface); }
+.payment-row dt { color: var(--color-on-surface-variant); }
+.paid-text { color: #4ade80; }
+.invoice-row { margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--color-glass-stroke); }
+.invoice-id { padding: 0.25rem 0.5rem; border-radius: 0.25rem; background: var(--color-surface-container); font-family: var(--font-label-sm); font-size: var(--text-label-sm); }
+.invoice-action { display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; padding: 0.75rem; border: 1px solid var(--color-glass-stroke); border-radius: 9999px; background: transparent; color: var(--color-on-surface); cursor: pointer; font-family: var(--font-body-md); font-size: var(--text-body-md); font-weight: 500; transition: background-color 0.3s ease; }
+.invoice-action:hover { background: rgba(255, 255, 255, 0.05); }
+.invoice-action .material-symbols-outlined { transition: transform 0.2s ease; }
+.invoice-action:hover .material-symbols-outlined { transform: translateX(0.25rem); }
