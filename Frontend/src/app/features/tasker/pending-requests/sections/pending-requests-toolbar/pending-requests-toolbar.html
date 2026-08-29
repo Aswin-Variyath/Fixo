@@ -1,0 +1,66 @@
+<div class="glass-panel rounded-xl p-4 mb-stack-md flex flex-col lg:flex-row gap-4 items-center justify-between z-10 relative">
+  <!-- Search Input -->
+  <div class="relative w-full lg:w-96 group">
+    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">
+      search
+    </span>
+    <input
+      type="text"
+      class="w-full bg-surface-container-highest/50 border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm"
+      placeholder="Search requests..."
+    />
+  </div>
+
+  <!-- Filter Pills and Sort -->
+  <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+    <div class="flex items-center gap-2 flex-grow sm:flex-grow-0 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
+      <button
+        type="button"
+        (click)="setFilter('all')"
+        [class]="activeFilter() === 'all'
+          ? 'whitespace-nowrap px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 font-label-sm text-label-sm cursor-pointer transition-all'
+          : 'whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-variant/50 text-on-surface-variant border border-glass-stroke hover:bg-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm cursor-pointer'">
+        All
+      </button>
+      <button
+        type="button"
+        (click)="setFilter('today')"
+        [class]="activeFilter() === 'today'
+          ? 'whitespace-nowrap px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 font-label-sm text-label-sm cursor-pointer transition-all'
+          : 'whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-variant/50 text-on-surface-variant border border-glass-stroke hover:bg-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm cursor-pointer'">
+        Today
+      </button>
+      <button
+        type="button"
+        (click)="setFilter('tomorrow')"
+        [class]="activeFilter() === 'tomorrow'
+          ? 'whitespace-nowrap px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 font-label-sm text-label-sm cursor-pointer transition-all'
+          : 'whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-variant/50 text-on-surface-variant border border-glass-stroke hover:bg-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm cursor-pointer'">
+        Tomorrow
+      </button>
+      <button
+        type="button"
+        (click)="setFilter('this_week')"
+        [class]="activeFilter() === 'this_week'
+          ? 'whitespace-nowrap px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 font-label-sm text-label-sm cursor-pointer transition-all'
+          : 'whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-variant/50 text-on-surface-variant border border-glass-stroke hover:bg-surface-variant hover:text-on-surface transition-colors font-label-sm text-label-sm cursor-pointer'">
+        This Week
+      </button>
+    </div>
+
+    <div class="h-6 w-px bg-glass-stroke hidden sm:block"></div>
+
+    <!-- Sort Dropdown -->
+    <div class="relative flex-grow sm:flex-grow-0">
+      <select
+        class="w-full sm:w-auto appearance-none bg-surface-container-highest/50 border border-outline-variant rounded-lg pl-4 pr-10 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm cursor-pointer">
+        <option>Newest First</option>
+        <option>Soonest</option>
+        <option>Highest Amount</option>
+      </select>
+      <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">
+        sort
+      </span>
+    </div>
+  </div>
+</div>

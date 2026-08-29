@@ -1,0 +1,6 @@
+:host { display: block; }
+.back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--color-primary); font-family: var(--font-label-sm); font-size: var(--text-label-sm); line-height: var(--text-label-sm--line-height); letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s ease; }
+.back-link:hover { color: var(--color-sky-blue); }
+.save-button { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2rem; border: 0; border-radius: 9999px; background: linear-gradient(to right, #2e4ad1, #7cc4fa); color: white; cursor: pointer; font-family: var(--font-body-md); font-size: var(--text-body-md); font-weight: 500; transition: transform .3s ease, box-shadow .3s ease; }
+.save-button:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 0 20px rgba(124, 196, 250, .4); }
+.save-button:disabled { border: 1px solid var(--color-glass-stroke); background: var(--color-surface-variant); color: var(--color-on-surface-variant); opacity: .5; cursor: not-allowed; }

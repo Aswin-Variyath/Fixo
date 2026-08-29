@@ -1,0 +1,24 @@
+<app-navbar />
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+  <div class="ambient-shape ambient-shape-one"></div>
+  <div class="ambient-shape ambient-shape-two"></div>
+</div>
+
+<main class="flex-grow relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-32 pb-section-gap flex flex-col gap-8">
+  <header class="flex flex-col gap-2 pt-8 pb-4 md:items-center md:text-center">
+    <h1 class="font-headline-lg-mobile md:font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface tracking-tight">
+      Today’s Earnings
+    </h1>
+    <p class="font-body-xl text-body-xl text-on-surface-variant max-w-2xl mx-auto">
+      Track your earnings from jobs completed today.
+    </p>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <app-earnings-overview class="lg:col-span-1" />
+    <app-todays-jobs class="lg:col-span-2" />
+  </div>
+</main>
+
+<app-footer />

@@ -1,0 +1,14 @@
+<div class="mb-stack-md flex flex-col md:flex-row md:items-end justify-between gap-4">
+  <div>
+    <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">
+      Pending Requests
+    </h1>
+    <p class="text-on-surface-variant text-body-md font-body-md">
+      Review customer requests and decide which jobs you'd like to accept.
+    </p>
+  </div>
+  <div class="bg-surface-variant/50 backdrop-blur-md px-4 py-2 rounded-full border border-glass-stroke inline-flex items-center gap-2 self-start md:self-auto">
+    <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+    <span class="font-label-sm text-label-sm text-on-surface">{{ count() }} Pending Requests</span>
+  </div>
+</div>

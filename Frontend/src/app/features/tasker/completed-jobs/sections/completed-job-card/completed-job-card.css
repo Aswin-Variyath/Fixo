@@ -1,0 +1,90 @@
+:host {
+  display: block;
+}
+
+.completed-job-card {
+  border-radius: 20px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.completed-job-card:hover {
+  background: rgba(11, 17, 27, 0.8);
+  transform: translateY(-1px);
+}
+
+.card-hover-tint {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: rgba(94, 106, 210, 0.05);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.completed-job-card:hover .card-hover-tint {
+  opacity: 1;
+}
+
+.badge-paid,
+.badge-completed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-family: var(--font-label-sm);
+  font-size: var(--text-label-sm);
+  font-weight: 500;
+  line-height: var(--text-label-sm--line-height);
+  letter-spacing: var(--text-label-sm--letter-spacing);
+}
+
+.badge-paid {
+  background-color: #1c3627;
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.badge-completed {
+  background: var(--color-surface-variant);
+  color: var(--color-on-surface);
+  border-color: var(--color-glass-stroke);
+}
+
+.details-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-sky-blue);
+  cursor: pointer;
+  font-family: var(--font-label-sm);
+  font-size: var(--text-label-sm);
+  font-weight: 500;
+  line-height: var(--text-label-sm--line-height);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.details-action:hover {
+  color: var(--color-primary);
+}
+
+.details-action .material-symbols-outlined {
+  transition: transform 0.2s ease;
+}
+
+.details-action:hover .material-symbols-outlined {
+  transform: translateX(0.25rem);
+}
+
+@media (max-width: 767px) {
+  .details-action {
+    width: 100%;
+  }
+}

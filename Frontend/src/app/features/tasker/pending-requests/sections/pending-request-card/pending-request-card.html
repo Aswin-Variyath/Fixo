@@ -1,0 +1,71 @@
+<div class="glass-panel rounded-2xl p-6 group hover:border-primary/50 transition-colors duration-300">
+  <div class="flex flex-col lg:flex-row justify-between gap-6">
+    <div class="flex flex-col gap-4 flex-grow">
+      <div class="flex justify-between items-start">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full overflow-hidden border border-glass-stroke bg-surface-container">
+            <span class="material-symbols-outlined w-full h-full flex items-center justify-center text-secondary text-2xl" [attr.data-icon]="request().serviceIcon">
+              {{ request().serviceIcon }}
+            </span>
+          </div>
+          <div>
+            <h3 class="font-body-xl text-body-xl text-on-surface font-medium">
+              {{ request().serviceTitle }}
+            </h3>
+            <div class="flex items-center gap-2 mt-1">
+              <div class="w-5 h-5 rounded-full overflow-hidden border border-glass-stroke">
+                <img
+                  [src]="request().customerAvatar"
+                  [alt]="request().customerName"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <span class="text-on-surface-variant text-sm">{{ request().customerName }}</span>
+            </div>
+          </div>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm text-label-sm flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]" data-icon="pending">pending</span>
+          {{ request().status }}
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary opacity-70 mt-0.5 text-xl" data-icon="event">event</span>
+          <div>
+            <p class="text-on-surface-variant text-xs mb-0.5">Appointment</p>
+            <p class="text-on-surface text-sm font-medium">{{ request().appointmentDateTime }}</p>
+            <p class="text-on-surface-variant text-xs mt-0.5">{{ request().duration }}</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary opacity-70 mt-0.5 text-xl" data-icon="location_on">location_on</span>
+          <div>
+            <p class="text-on-surface-variant text-xs mb-0.5">Location</p>
+            <p class="text-on-surface text-sm font-medium">{{ request().location }}</p>
+            <p class="text-primary hover:underline text-xs mt-0.5 cursor-pointer inline-flex items-center gap-1">
+              View on Map <span class="material-symbols-outlined text-[12px]" data-icon="arrow_outward">arrow_outward</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="h-px w-full bg-glass-stroke lg:w-px lg:h-auto my-2 lg:my-0"></div>
+
+    <div class="flex flex-col justify-between items-start lg:items-end min-w-[200px]">
+      <div class="text-left lg:text-right w-full mb-4 lg:mb-0">
+        <p class="text-on-surface-variant text-xs mb-1">Estimated Total</p>
+        <p class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">{{ request().price }}</p>
+        <p class="text-tertiary text-xs mt-1 flex items-center gap-1 lg:justify-end">
+          <span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+          {{ request().requestedTime }}
+        </p>
+      </div>
+      <button class="btn-primary w-full lg:w-auto px-6 py-3 rounded-full text-white font-medium flex items-center justify-center gap-2 text-sm cursor-pointer">
+        View Request <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</div>

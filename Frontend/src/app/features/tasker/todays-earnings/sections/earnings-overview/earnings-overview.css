@@ -1,0 +1,12 @@
+:host { display: block; }
+.total-card { box-shadow: 0 0 40px rgba(94, 106, 210, 0.2); transition: transform 0.3s ease; }
+.total-card:hover { transform: translateY(-0.25rem); }
+.total-card-tint { position: absolute; inset: 0; background: linear-gradient(to bottom right, rgba(94, 106, 210, 0.1), transparent); opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+.total-card:hover .total-card-tint { opacity: 1; }
+.total-amount { color: var(--color-primary); background: linear-gradient(135deg, #bdc2ff, #7cc4fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-headline-lg); font-size: 3rem; font-weight: 700; line-height: 1; filter: drop-shadow(0 0 15px rgba(189, 194, 255, 0.3)); }
+.completion-pill { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.5rem 1rem; border: 1px solid var(--color-glass-stroke); border-radius: 9999px; background: rgba(13, 14, 18, 0.5); color: var(--color-on-surface-variant); }
+.summary-title { margin-bottom: 0.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-glass-stroke); color: var(--color-on-surface); font-family: var(--font-headline-lg-mobile); font-size: var(--text-headline-lg-mobile); font-weight: 600; line-height: var(--text-headline-lg-mobile--line-height); }
+.summary-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; color: var(--color-on-surface-variant); font-family: var(--font-body-md); font-size: var(--text-body-md); line-height: var(--text-body-md--line-height); }
+.summary-total { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; padding: 1rem 0; border-top: 1px solid var(--color-glass-stroke); color: var(--color-on-surface); font-family: var(--font-body-xl); font-size: var(--text-body-xl); font-weight: 500; line-height: var(--text-body-xl--line-height); }
+.summary-total span:last-child { color: var(--color-primary); font-weight: 700; }
+@media (min-width: 768px) { .total-amount { font-size: 3.75rem; } }

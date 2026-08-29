@@ -1,0 +1,8 @@
+:host { display: block; }
+.history-action { display: inline-flex; align-items: center; gap: 0.25rem; border: 0; background: transparent; color: var(--color-primary); cursor: pointer; font-family: var(--font-body-md); font-size: var(--text-body-md); line-height: var(--text-body-md--line-height); transition: color 0.2s ease; }
+.history-action:hover { color: var(--color-sky-blue); }
+.history-action .material-symbols-outlined { transition: transform 0.2s ease; }
+.history-action:hover .material-symbols-outlined { transform: translateX(0.25rem); }
+.job-row { transition: background-color 0.3s ease; }
+.job-row:hover { background: rgba(255, 255, 255, 0.05); }
+.paid-badge { padding: 0.25rem 0.75rem; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 9999px; background: rgba(6, 78, 59, 0.4); color: #6ee7b7; font-family: var(--font-label-sm); font-size: var(--text-label-sm); font-weight: 500; line-height: var(--text-label-sm--line-height); letter-spacing: var(--text-label-sm--letter-spacing); }

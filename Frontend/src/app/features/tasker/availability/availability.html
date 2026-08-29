@@ -1,0 +1,11 @@
+<app-navbar />
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true"><div class="ambient-glow ambient-glow-left"></div><div class="ambient-glow ambient-glow-right"></div></div>
+
+<main class="flex-grow relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-32 pb-section-gap">
+  <app-availability-header [restricted]="isKycRestricted()" />
+  @if (isKycRestricted()) { <app-kyc-restricted-banner /> }
+  <app-availability-schedule [restricted]="isKycRestricted()" />
+</main>
+
+<app-footer />
