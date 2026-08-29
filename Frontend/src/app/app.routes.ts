@@ -77,6 +77,11 @@ export const routes: Routes = [
         loadComponent:()=>
             import("./features/tasker/pending-request-details/pending-request-details").then((m)=>m.PendingRequestDetails)
     },
+    {
+        path:"tasker/upcoming-jobs",
+        loadComponent:()=>
+            import("./features/tasker/upcoming-jobs/upcoming-jobs").then((m)=>m.UpcomingJobs)
+    },
     // Admin routers
     {
         path:"admin/signin",

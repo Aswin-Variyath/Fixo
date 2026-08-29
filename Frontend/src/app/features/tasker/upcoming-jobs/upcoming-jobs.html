@@ -1,0 +1,71 @@
+<app-navbar />
+
+<!-- Abstract Background Elements from Stitch -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+  <div
+    class="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] rounded-full bg-primary/5 blur-[120px] mix-blend-screen"
+  ></div>
+  <div
+    class="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-sky-blue/5 blur-[100px] mix-blend-screen"
+  ></div>
+</div>
+
+<!-- State Switcher Toolbar (Dev Preview Control for effortless state verification) -->
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 z-20 relative">
+  <div
+    class="flex items-center justify-between pb-2 border-b border-glass-stroke/50 text-xs gap-2 flex-wrap"
+  >
+    <div class="flex items-center gap-2">
+      <span class="text-on-surface-variant font-mono">Upcoming Jobs Preview:</span>
+      <span
+        class="px-2.5 py-0.5 rounded-full font-label-sm uppercase tracking-wider font-semibold"
+        [class.bg-primary/20]="!isEmptyState()"
+        [class.text-primary]="!isEmptyState()"
+        [class.border]="true"
+        [class.border-primary/30]="!isEmptyState()"
+        [class.bg-surface-variant/30]="isEmptyState()"
+        [class.text-on-surface-variant]="isEmptyState()"
+        [class.border-glass-stroke]="isEmptyState()"
+      >
+        {{ !isEmptyState() ? 'State 1: Active List' : 'State 2: Empty State' }}
+      </span>
+    </div>
+    <button
+      type="button"
+      (click)="toggleState()"
+      class="glass-panel px-3 py-1 rounded-full text-xs text-on-surface hover:text-primary hover:border-primary transition-all cursor-pointer font-medium"
+      title="Toggle between Active Jobs and Empty states"
+    >
+      Switch to {{ !isEmptyState() ? 'Empty State' : 'Active List State' }}
+    </button>
+  </div>
+</div>
+
+@if (!isEmptyState()) {
+  <!-- STATE 1: Upcoming Jobs List (Stitch Reference) -->
+  <main
+    class="flex-grow z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-stack-md md:py-section-gap relative"
+  >
+    <!-- Header Section -->
+    <app-upcoming-jobs-header [count]="jobs.length" />
+
+    <!-- Toolbar -->
+    <app-upcoming-jobs-toolbar />
+
+    <!-- Job Cards List -->
+    <div class="flex flex-col gap-4">
+      @for (job of jobs; track job.id) {
+        <app-upcoming-job-card [job]="job" />
+      }
+    </div>
+  </main>
+} @else {
+  <!-- STATE 2: Empty Upcoming Jobs -->
+  <main
+    class="flex-grow pt-12 pb-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full flex flex-col justify-center items-center min-h-[calc(100vh-260px)] z-10 relative"
+  >
+    <app-upcoming-jobs-empty (refresh)="toggleState()" />
+  </main>
+}
+
+<app-footer />

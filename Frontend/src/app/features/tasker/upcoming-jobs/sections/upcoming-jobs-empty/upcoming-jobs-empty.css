@@ -1,0 +1,8 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.glow-shadow {
+  box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
+}
