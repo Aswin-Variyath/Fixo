@@ -1,0 +1,40 @@
+<article class="glass-panel completed-job-card relative overflow-hidden p-6 group">
+  <div class="card-hover-tint" aria-hidden="true"></div>
+  <div class="glass-inner-border absolute inset-0 pointer-events-none rounded-[20px]" aria-hidden="true"></div>
+
+  <div class="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div class="flex items-center gap-4 min-w-0">
+      <div class="w-12 h-12 rounded-full overflow-hidden border border-glass-stroke shrink-0">
+        <img [src]="job().customerAvatar" [alt]="job().customerName" class="w-full h-full object-cover" />
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-body-xl text-body-xl text-on-primary-container mb-1 truncate">
+          {{ job().serviceTitle }}
+        </h2>
+        <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2 flex-wrap">
+          <span>{{ job().customerName }}</span>
+          <span class="text-outline-variant" aria-hidden="true">•</span>
+          <span class="material-symbols-outlined text-[16px] text-outline" aria-hidden="true">calendar_today</span>
+          <span>{{ job().date }}</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:items-end gap-3 w-full md:w-auto shrink-0">
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+        <div class="font-headline-lg-mobile text-[24px] leading-none text-primary">{{ job().amount }}</div>
+        <div class="flex gap-2">
+          <span class="badge-paid">
+            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">check_circle</span>
+            Paid
+          </span>
+          <span class="badge-completed">Completed</span>
+        </div>
+      </div>
+      <button type="button" class="details-action">
+        View Details
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</article>

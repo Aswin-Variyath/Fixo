@@ -83,6 +83,11 @@ export const routes: Routes = [
             import("./features/tasker/upcoming-jobs/upcoming-jobs").then((m)=>m.UpcomingJobs)
     },
     {
+        path: "tasker/completed-jobs",
+        loadComponent: () =>
+            import("./features/tasker/completed-jobs/completed-jobs").then((m) => m.CompletedJobs),
+    },
+    {
         path:"tasker/upcoming-job-details",
         loadComponent:()=>
             import("./features/tasker/upcoming-job-details/upcoming-job-details").then((m)=>m.UpcomingJobDetails)
