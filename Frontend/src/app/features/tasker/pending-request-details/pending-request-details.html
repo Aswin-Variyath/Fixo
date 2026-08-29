@@ -1,0 +1,63 @@
+<app-navbar />
+
+<!-- Ambient Lighting Background -->
+<div class="fixed inset-0 z-[-1] pointer-events-none overflow-hidden" aria-hidden="true">
+  <div
+    class="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-primary-container/30 rounded-full blur-[100px] mix-blend-screen"
+  ></div>
+  <div
+    class="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-secondary-container/30 rounded-full blur-[100px] mix-blend-screen"
+  ></div>
+</div>
+
+<!-- Main Content Container -->
+<main
+  class="pt-32 pb-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto z-10 relative"
+>
+  <!-- Header Section -->
+  <div class="mb-10">
+    <div class="flex items-center gap-3 mb-3">
+      <a
+        routerLink="/tasker/pending-requests"
+        class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/5 border border-glass-stroke"
+        title="Back to Pending Requests"
+      >
+        <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+      </a>
+      <span
+        class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant/50 px-3 py-1 rounded-full border border-glass-stroke"
+        >Pending Request</span
+      >
+    </div>
+    <h1
+      class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2 font-bold"
+    >
+      Review Job Request
+    </h1>
+    <p class="text-on-surface-variant font-body-md text-body-md">
+      Please review the details below before accepting the job.
+    </p>
+  </div>
+
+  <!-- 70/30 Grid Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+    <!-- Left Column: Service Details (70%) -->
+    <div class="lg:col-span-8 flex flex-col gap-stack-md">
+      <app-service-details />
+      <app-schedule-location />
+      <app-job-description />
+    </div>
+
+    <!-- Right Column: Customer & Earnings (30%) -->
+    <div class="lg:col-span-4 flex flex-col gap-stack-md">
+      <app-customer-card />
+      <app-estimated-earnings />
+      <app-request-info />
+    </div>
+  </div>
+
+  <!-- Action Area -->
+  <app-action-area />
+</main>
+
+<app-footer />

@@ -1,0 +1,534 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pending Request Details - Fixo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'on-tertiary-container': '#fffaf8',
+              'primary-container': '#5e6ad2',
+              'surface-container-low': '#1a1b20',
+              'primary-fixed-dim': '#bdc2ff',
+              'outline-variant': '#454652',
+              tertiary: '#ffb867',
+              'secondary-container': '#274b6e',
+              'on-error-container': '#ffdad6',
+              'on-primary-container': '#fdfaff',
+              'surface-container': '#1e1f24',
+              surface: '#121317',
+              outline: '#908f9e',
+              'on-secondary': '#063254',
+              'deep-navy': '#0B111B',
+              'on-primary-fixed-variant': '#2e3aa2',
+              'tertiary-container': '#a56500',
+              'on-tertiary': '#482900',
+              'primary-fixed': '#dfe0ff',
+              secondary: '#a7caf3',
+              'inverse-primary': '#4854bb',
+              'on-secondary-fixed': '#001d35',
+              'surface-variant': '#343439',
+              'glass-stroke': 'rgba(255, 255, 255, 0.15)',
+              'on-secondary-container': '#99bbe4',
+              error: '#ffb4ab',
+              'inverse-surface': '#e3e2e8',
+              'surface-container-high': '#292a2e',
+              'error-container': '#93000a',
+              'surface-tint': '#bdc2ff',
+              'on-surface-variant': '#c6c5d5',
+              'surface-bright': '#38393e',
+              'tertiary-fixed': '#ffddbb',
+              'on-primary-fixed': '#000965',
+              background: '#121317',
+              'secondary-fixed-dim': '#a7caf3',
+              'on-secondary-fixed-variant': '#25496c',
+              'royal-blue': '#2E4AD1',
+              'tertiary-fixed-dim': '#ffb867',
+              'surface-container-highest': '#343439',
+              'inverse-on-surface': '#2f3035',
+              'surface-dim': '#121317',
+              primary: '#bdc2ff',
+              'surface-container-lowest': '#0d0e12',
+              'on-surface': '#e3e2e8',
+              'on-tertiary-fixed-variant': '#673d00',
+              'accent-glow': 'rgba(94, 106, 210, 0.4)',
+              'on-primary': '#121f8b',
+              'on-background': '#e3e2e8',
+              'on-error': '#690005',
+              'on-tertiary-fixed': '#2b1700',
+              'secondary-fixed': '#d0e4ff',
+              'sky-blue': '#7CC4FA',
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+            spacing: {
+              'section-gap': '80px',
+              'container-max': '1200px',
+              gutter: '24px',
+              'margin-mobile': '16px',
+              'stack-sm': '8px',
+              'stack-md': '16px',
+            },
+            fontFamily: {
+              'label-sm': ['JetBrains Mono'],
+              'headline-lg': ['Hanken Grotesk'],
+              'headline-lg-mobile': ['Hanken Grotesk'],
+              'display-lg': ['Hanken Grotesk'],
+              'body-md': ['Inter'],
+              'body-xl': ['Inter'],
+            },
+            fontSize: {
+              'label-sm': [
+                '12px',
+                {
+                  lineHeight: '16px',
+                  letterSpacing: '0.05em',
+                  fontWeight: '500',
+                },
+              ],
+              'headline-lg': [
+                '40px',
+                {
+                  lineHeight: '48px',
+                  letterSpacing: '-0.01em',
+                  fontWeight: '600',
+                },
+              ],
+              'headline-lg-mobile': [
+                '32px',
+                {
+                  lineHeight: '40px',
+                  fontWeight: '600',
+                },
+              ],
+              'display-lg': [
+                '64px',
+                {
+                  lineHeight: '72px',
+                  letterSpacing: '-0.02em',
+                  fontWeight: '700',
+                },
+              ],
+              'body-md': [
+                '16px',
+                {
+                  lineHeight: '24px',
+                  fontWeight: '400',
+                },
+              ],
+              'body-xl': [
+                '20px',
+                {
+                  lineHeight: '32px',
+                  fontWeight: '400',
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #121317;
+        color: #e3e2e8;
+      }
+      .glass-card {
+        background: rgba(11, 17, 27, 0.7);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+      }
+      .inner-border {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+      .glow-shadow {
+        box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #2e4ad1 0%, #7cc4fa 100%);
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(94, 106, 210, 0.4);
+      }
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: all 0.3s ease;
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .btn-danger {
+        background: rgba(255, 180, 171, 0.1);
+        border: 1px solid rgba(255, 180, 171, 0.3);
+        color: #ffb4ab;
+        transition: all 0.3s ease;
+      }
+      .btn-danger:hover {
+        background: rgba(255, 180, 171, 0.2);
+      }
+
+      /* Subtle Background Animation */
+      .bg-blob {
+        position: absolute;
+        filter: blur(100px);
+        opacity: 0.3;
+        z-index: -1;
+        border-radius: 50%;
+        animation: float 20s infinite alternate ease-in-out;
+      }
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(50px, -50px) scale(1.1);
+        }
+      }
+    </style>
+  </head>
+  <body class="font-body-md text-body-md min-h-screen relative overflow-x-hidden">
+    <!-- Ambient Background Blobs -->
+    <div class="bg-blob bg-primary-container w-[600px] h-[600px] top-[-200px] left-[-200px]"></div>
+    <div
+      class="bg-blob bg-secondary-container w-[500px] h-[500px] bottom-[-100px] right-[-100px]"
+    ></div>
+    <!-- TopNavBar (Nav suppressed due to transactional nature of a details page, only keeping a simplified header) -->
+    <header
+      class="fixed top-0 w-full z-50 bg-surface/70 dark:bg-surface/70 backdrop-blur-3xl border-b border-glass-stroke shadow-[0_0_20px_rgba(94,106,210,0.1)]"
+    >
+      <div class="flex justify-between items-center h-20 px-gutter max-w-container-max mx-auto">
+        <div class="flex items-center gap-4">
+          <a
+            class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5"
+            href="#"
+          >
+            <span class="material-symbols-outlined">arrow_back</span>
+          </a>
+          <span
+            class="font-headline-lg text-headline-lg font-bold text-royal-blue dark:text-sky-blue"
+            >Fixo</span
+          >
+        </div>
+        <div class="flex items-center">
+          <span
+            class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant/50 px-3 py-1 rounded-full border border-glass-stroke"
+            >Pending Request</span
+          >
+        </div>
+      </div>
+    </header>
+    <!-- Main Content -->
+    <main
+      class="pt-32 pb-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto z-10 relative"
+    >
+      <!-- Header Section -->
+      <div class="mb-10">
+        <h1
+          class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2"
+        >
+          Review Job Request
+        </h1>
+        <p class="text-on-surface-variant font-body-md text-body-md">
+          Please review the details below before accepting the job.
+        </p>
+      </div>
+      <!-- 70/30 Grid Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+        <!-- Left Column: Service Details (70%) -->
+        <div class="lg:col-span-8 flex flex-col gap-stack-md">
+          <!-- Service Details Card -->
+          <div class="glass-card inner-border p-6 md:p-8 relative overflow-hidden group">
+            <div
+              class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"
+            ></div>
+            <div class="flex items-start justify-between mb-6">
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center border border-glass-stroke"
+                >
+                  <span
+                    class="material-symbols-outlined text-primary text-3xl"
+                    style="font-variation-settings: 'FILL' 1"
+                    >electrical_services</span
+                  >
+                </div>
+                <div>
+                  <h2 class="font-body-xl text-body-xl font-semibold text-on-surface">
+                    Electrical Wiring
+                  </h2>
+                  <span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest"
+                    >Electrical</span
+                  >
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-body-xl text-body-xl font-bold text-on-surface">
+                  ₹400<span class="text-on-surface-variant text-sm font-normal">/h</span>
+                </div>
+                <div class="font-label-sm text-label-sm text-on-surface-variant mt-1">Est. 3h</div>
+              </div>
+            </div>
+          </div>
+          <!-- Job Schedule & Location (2 cols on md) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+            <!-- Schedule Card -->
+            <div class="glass-card inner-border p-6 flex flex-col justify-center">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="material-symbols-outlined text-tertiary">calendar_month</span>
+                <h3 class="font-body-md text-body-md font-medium text-on-surface-variant">
+                  Schedule
+                </h3>
+              </div>
+              <div class="font-body-xl text-body-xl font-semibold text-on-surface mb-1">
+                Aug 25, 2026
+              </div>
+              <div class="text-on-surface-variant">10:00 AM (3 hours)</div>
+            </div>
+            <!-- Location Card -->
+            <div class="glass-card inner-border p-6 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="material-symbols-outlined text-sky-blue">location_on</span>
+                  <h3 class="font-body-md text-body-md font-medium text-on-surface-variant">
+                    Location
+                  </h3>
+                </div>
+                <div class="font-body-md text-body-md text-on-surface mb-4">
+                  123 Beach Road<br />
+                  Kozhikode, Kerala
+                </div>
+              </div>
+              <button
+                class="btn-secondary w-full py-2 rounded-lg font-label-sm text-label-sm text-on-surface flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[18px]">map</span>
+                View Location
+              </button>
+            </div>
+          </div>
+          <!-- Job Description Card -->
+          <div class="glass-card inner-border p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-primary">description</span>
+              <h3 class="font-body-md text-body-md font-medium text-on-surface-variant">
+                Job Description
+              </h3>
+            </div>
+            <p class="text-on-surface leading-relaxed">
+              "Need electrical wiring work for a newly renovated 2-bedroom house. Main wiring,
+              switchboard installation, and checking existing connections are required."
+            </p>
+          </div>
+        </div>
+        <!-- Right Column: Customer & Earnings (30%) -->
+        <div class="lg:col-span-4 flex flex-col gap-stack-md">
+          <!-- Customer Details Card -->
+          <div class="glass-card inner-border p-6">
+            <h3 class="font-body-md text-body-md font-medium text-on-surface-variant mb-4">
+              Customer
+            </h3>
+            <div class="flex items-center gap-4 mb-6">
+              <img
+                class="w-16 h-16 rounded-full object-cover border-2 border-surface-container"
+                data-alt="A portrait of an Indian man in his 30s with short hair and a neat beard, wearing a casual dark shirt. He is smiling warmly. The background is a softly blurred modern apartment interior. The lighting is natural and flattering, reflecting a high-quality professional headshot."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsMQvLulH17n5-q1Gx830HwYC5SJ-2KizY0mNQXM59XZYVrRu6bfu1o_xAEsc1YCAnOJX3_BFlqQUs_hhN_zKEBhmcF7RU2Z78IbYBgYyBLMuN_AvkBB16LnnOE9G5dnoTq4bLE-CDIQNioDpz1P_e79637Ot9YKxlyZy1Zmktgl_e4zMk_Q-FdOoqB8-603QG5ly1hbI-sdCKXDd6roWbfWkICb86rKTjOGzPH8LkdpFbXeHDcb8M"
+              />
+              <div>
+                <div class="font-body-xl text-body-xl font-semibold text-on-surface">
+                  Rahul Nair
+                </div>
+                <div class="flex items-center gap-1 mt-1 text-on-surface-variant">
+                  <span
+                    class="material-symbols-outlined text-tertiary text-[16px]"
+                    style="font-variation-settings: 'FILL' 1"
+                    >star</span
+                  >
+                  <span class="font-medium text-on-surface">4.8</span>
+                  <span class="text-sm mx-1">•</span>
+                  <span class="text-sm">24 bookings</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 text-on-surface-variant mb-6 text-sm">
+              <span class="material-symbols-outlined text-[18px]">pin_drop</span>
+              Kozhikode
+            </div>
+            <a
+              class="text-primary hover:text-sky-blue transition-colors font-label-sm text-label-sm flex items-center justify-center gap-1"
+              href="#"
+            >
+              View Profile <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </a>
+          </div>
+          <!-- Estimated Earnings Card -->
+          <div class="glass-card inner-border p-6 glow-shadow">
+            <h3 class="font-body-md text-body-md font-medium text-on-surface-variant mb-2">
+              Estimated Earnings
+            </h3>
+            <div class="font-display-lg text-display-lg text-primary mb-2">₹1,200</div>
+            <div class="text-on-surface-variant text-sm mb-4 border-b border-glass-stroke pb-4">
+              Based on ₹400/h × 3 hours.
+            </div>
+            <div class="flex items-start gap-2 text-on-surface-variant text-sm">
+              <span class="material-symbols-outlined text-[16px] mt-0.5 text-secondary">info</span>
+              <p>Final payout may vary if the job takes more or less time than estimated.</p>
+            </div>
+          </div>
+          <!-- Request Info -->
+          <div class="glass-card inner-border p-6">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-on-surface-variant text-sm">Request ID</span>
+              <span class="font-label-sm text-label-sm text-on-surface">FX-8293410</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-on-surface-variant text-sm">Requested on</span>
+              <span class="text-on-surface text-sm">Aug 24, 2026</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-on-surface-variant text-sm">Status</span>
+              <span
+                class="font-label-sm text-label-sm text-tertiary bg-tertiary/10 px-2 py-1 rounded-md"
+                >Pending</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Action Area (Bottom Sticky-ish) -->
+      <div class="mt-12 pt-8 border-t border-glass-stroke">
+        <div
+          class="flex items-start gap-3 mb-6 bg-secondary-container/20 p-4 rounded-xl border border-secondary-container/30"
+        >
+          <span class="material-symbols-outlined text-secondary mt-0.5">warning</span>
+          <p class="text-on-surface-variant text-sm">
+            <strong class="text-on-surface">Before accepting:</strong> Make sure you are available
+            at the requested date and time. Cancellations affect your reliability score.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-end">
+          <button
+            class="btn-danger w-full sm:w-auto px-8 py-4 rounded-full font-body-md text-body-md font-medium flex items-center justify-center gap-2"
+          >
+            <span class="material-symbols-outlined">close</span>
+            Reject Request
+          </button>
+          <button
+            class="btn-primary w-full sm:w-auto px-8 py-4 rounded-full font-body-md text-body-md font-medium text-white flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(94,106,210,0.3)]"
+          >
+            <span class="material-symbols-outlined">check</span>
+            Accept Request
+          </button>
+        </div>
+      </div>
+    </main>
+    <!-- Footer -->
+    <footer
+      class="w-full mt-section-gap border-t border-outline-variant bg-deep-navy dark:bg-deep-navy flat no shadows text-secondary dark:text-secondary-fixed-dim font-body-md text-body-md"
+    >
+      <div
+        class="grid grid-cols-2 md:grid-cols-4 gap-stack-md px-gutter py-12 max-w-container-max mx-auto"
+      >
+        <div class="col-span-2 md:col-span-1 mb-8 md:mb-0">
+          <span class="font-headline-lg text-headline-lg font-bold text-primary block mb-4"
+            >Fixo</span
+          >
+          <p class="text-on-surface-variant text-sm">
+            © 2024 Fixo Professional Services.<br />All rights reserved.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-on-surface mb-4">Services</h4>
+          <ul class="flex flex-col gap-2">
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Plumbing</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Electrical</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >HVAC</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Cleaning</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-on-surface mb-4">Company</h4>
+          <ul class="flex flex-col gap-2">
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >About Us</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Careers</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Press</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-on-surface mb-4">Legal</h4>
+          <ul class="flex flex-col gap-2">
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Terms of Service</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"
+                >Cookie Policy</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

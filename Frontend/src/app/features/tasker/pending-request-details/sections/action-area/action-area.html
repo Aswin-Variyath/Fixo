@@ -1,0 +1,30 @@
+<div class="mt-12 pt-8 border-t border-glass-stroke">
+  <!-- Warning Banner -->
+  <div
+    class="flex items-start gap-3 mb-6 bg-secondary-container/20 p-4 rounded-xl border border-secondary-container/30"
+  >
+    <span class="material-symbols-outlined text-secondary mt-0.5 flex-shrink-0">warning</span>
+    <p class="text-on-surface-variant text-sm">
+      <strong class="text-on-surface">Before accepting:</strong> Make sure you are available
+      at the requested date and time. Cancellations affect your reliability score.
+    </p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex flex-col sm:flex-row gap-4 justify-end">
+    <button
+      type="button"
+      class="btn-danger w-full sm:w-auto px-8 py-4 rounded-full font-body-md text-body-md font-medium flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
+    >
+      <span class="material-symbols-outlined">close</span>
+      Reject Request
+    </button>
+    <button
+      type="button"
+      class="btn-primary w-full sm:w-auto px-8 py-4 rounded-full font-body-md text-body-md font-medium text-white flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(94,106,210,0.3)] cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
+    >
+      <span class="material-symbols-outlined">check</span>
+      Accept Request
+    </button>
+  </div>
+</div>
