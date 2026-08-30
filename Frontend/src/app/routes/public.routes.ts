@@ -20,11 +20,11 @@ export const publicRoutes: Routes = [
     },
     {
         path:'forgot-password',
-        loadComponent:()=>import("../features/customer/auth/pages/forgot-password/forgot-password").then((m)=>m.ForgotPassword)
+        loadComponent:()=>import("../shared/components/auth/forgot-password/forgot-password").then((m)=>m.ForgotPassword)
     },
     {
         path:'reset-password',
-        loadComponent:()=>import("../features/customer/auth/pages/reset-password/reset-password").then((m)=>m.ResetPassword)
+        loadComponent:()=>import("../shared/components/auth/reset-password/reset-password").then((m)=>m.ResetPassword)
     },
     // Tasker public routes
     {
@@ -41,25 +41,10 @@ export const publicRoutes: Routes = [
         canActivate:[guestGuard],
         loadComponent:()=>import("../features/tasker/auth/pages/tasker-signup/tasker-signup").then((m)=>m.TaskerSignup)
     },
-    {
-        path:'tasker/forgot-password',
-        loadComponent:()=>import("../features/tasker/auth/pages/tasker-forgot-password/tasker-forgot-password").then((m)=>m.TaskerForgotPassword)
-    },
-    {
-        path:'tasker/reset-password',
-        loadComponent:()=>import("../features/tasker/auth/pages/tasker-reset-password/tasker-reset-password").then((m)=>m.TaskerResetPassword)
-    },
-    // Admin public routes
+       // Admin public routes
     {
         path:'admin/signin',
-        loadComponent:()=>import("../features/admin/auth/pages/admin-signin/admin-signin").then((m)=>m.AdminSignin)
+        loadComponent:()=>import("../features/admin/auth/admin-signin/admin-signin").then((m)=>m.AdminSignin)
     },
-    {
-        path:'admin/forgot-password',
-        loadComponent:()=>import("../features/admin/auth/pages/admin-forgot-password/admin-forgot-password").then((m)=>m.AdminForgotPassword)
-    },
-    {
-        path:'admin/reset-password',
-        loadComponent:()=>import("../features/admin/auth/pages/admin-reset-password/admin-reset-password").then((m)=>m.AdminResetPassword)
-    }
+    
 ]
