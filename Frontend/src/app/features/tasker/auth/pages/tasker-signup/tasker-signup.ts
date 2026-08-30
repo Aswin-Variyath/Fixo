@@ -78,7 +78,7 @@ export class TaskerSignup {
     this.authService.signupTasker(signupRequest).subscribe({
       next:()=>{
         this.isSubmitting = false
-        this.router.navigate(['/tasker/home'],{replaceUrl:true})
+        this.router.navigate(['tasker/dashboard'],{replaceUrl:true})
       },
       error:(error) => {
         this.isSubmitting = false

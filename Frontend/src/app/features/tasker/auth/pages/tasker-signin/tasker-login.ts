@@ -40,7 +40,7 @@ export class TaskerLogin {
     this.authService.login({...this.loginForm.getRawValue(),role: 'tasker'}).subscribe({
       next:()=>{
         this.isSubmitting = false
-        this.router.navigate(['/tasker/home'])
+        this.router.navigate(['tasker/dashboard'])
         console.log("Tasker login succesful")
       },
       error:(error)=>{

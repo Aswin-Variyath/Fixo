@@ -67,3 +67,19 @@ export interface SignupRequest {
   password: string;
 }
 
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ForgotPasswordResponse {
+    expiresAt: string;
+}
+
+export interface ResetPasswordTokenResponse {
+    expiresAt: string;
+}
+
+export interface ResetPasswordRequest {
+    token: string;
+    password: string;
+}

@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { AuthApiService } from './auth-api.service';
 import { AuthStore } from './auth.store';
-import { LoginRequest, SignupRequest } from './auth.types';
+import { ForgotPasswordRequest, LoginRequest, ResetPasswordRequest, SignupRequest } from './auth.types';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 
 @Service()
@@ -61,5 +61,17 @@ export class AuthService {
                 })
             );
             }
+
+    forgotPassword(request:ForgotPasswordRequest) {
+        return this.authApiService.forgotPassword(request)
+    }
+
+    validateResetToken(token:string) {
+        return this.authApiService.validateResetToken(token)
+    }
+
+    resetPassword(request: ResetPasswordRequest) {
+        return this.authApiService.resetPassword(request);
+    }
 
 }   

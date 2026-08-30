@@ -19,6 +19,7 @@ router.post("/login", validate(loginSchema),authController.login)
 router.post("/logout", authController.logout)
 router.post("/forgot-password",validate(forgotPasswordSchema),authController.forgotPassword)
 router.post("/reset-password",validate(resetPasswordSchema), authController.resetPassword)
+router.get("/reset-password",authController.getPasswordResetExpiry)
 router.post("/refresh",authController.refresh)
 
 //Tasker side

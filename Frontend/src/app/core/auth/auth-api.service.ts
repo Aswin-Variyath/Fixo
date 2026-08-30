@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { ENV } from '../../../environments/environments';
-import { ApiResponse,  AuthUser, LoginRequest, LoginResponse, RefreshResponse, SignupRequest } from './auth.types';
+import { ApiResponse,  AuthUser, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, RefreshResponse, ResetPasswordRequest,  ResetPasswordTokenResponse,  SignupRequest } from './auth.types';
 
 @Service()
 export class AuthApiService {
@@ -35,6 +35,16 @@ export class AuthApiService {
     return this.http.post<ApiResponse<AuthUser>>(`${this.authUrl}/tasker-signup`,requset)
    }
 
-   
+   forgotPassword(request:ForgotPasswordRequest) {
+    return this.http.post<ApiResponse<ForgotPasswordResponse>>(`${this.authUrl}/forgot-password`,request)
+   }
+
+   validateResetToken(token:string) {
+    return this.http.get<ApiResponse<ResetPasswordTokenResponse>>(`${this.authUrl}/reset-password`,{params:{token}})
+   }
+
+   resetPassword(request:ResetPasswordRequest) {
+    return this.http.post<ApiResponse<null>>(`${this.authUrl}/reset-password`,request)
+   }
 
 }

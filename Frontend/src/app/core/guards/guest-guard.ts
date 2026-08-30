@@ -9,7 +9,7 @@ export const guestGuard: CanActivateFn = (route, state) => {
     return true
   }
   const user = authService.user()
-  if(user?.activeRole.type === 'tasker') return router.createUrlTree(['/tasker/home'])
+  if(user?.activeRole.type === 'tasker') return router.createUrlTree(['/tasker/dashboard'])
   if(user?.activeRole.type === 'customer') return router.createUrlTree(['/customer/home'])
   return router.createUrlTree(['/'])
 };

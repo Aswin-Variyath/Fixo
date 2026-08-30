@@ -22,7 +22,7 @@ export const roleGuard = (allowedRole: string): CanActivateFn => {
     }
 
     if (user.activeRole.type === 'tasker') {
-      return router.createUrlTree(['/tasker/home']);
+      return router.createUrlTree(['/tasker/dashboard']);
     }
 
     return router.createUrlTree(['/']);

@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
 import { IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
-import {  SignupResult } from "../dto/auth-response.dto";
+import {  ForgotPasswordResult, SignupResult } from "../dto/auth-response.dto";
 import { SignupDto } from "../dto/signup.dto";
 import { IPasswordService } from "../interfaces/password-service.interface";
 import { LoginDto } from "../dto/login.dto";
@@ -212,12 +212,12 @@ export class AuthCommandService implements IAuthCommandService {
             
     }
 
-    async forgotPassword(email: string): Promise<void> {
+    async forgotPassword(email: string): Promise<ForgotPasswordResult | null> {
 
         const user = await this.userAuthRepository.findByEmail(email)
         console.log("This is ",user)
 
-        if(!user) return
+        if(!user) return null 
 
         const rateLimitKey = `auth:rate-limit:forgot-password:${email}`
 
@@ -243,6 +243,9 @@ export class AuthCommandService implements IAuthCommandService {
         let maili = await this.mailService.sendPasswordResetEmail(user.email,user.firstName,token)
         console.log("this is a,il",maili)
         await this.rateLimitStore.set(rateLimitKey, 300)
+        return {
+            expiresAt
+        }
     }
 
     async resetPassword(data: ResetPasswordDto): Promise<void> {
@@ -287,6 +290,20 @@ export class AuthCommandService implements IAuthCommandService {
 
         }finally {
             await this.passwordResetRepository.deleteByTokenHash(tokenHash)
+        }
+    }
+
+    async getPasswordResetExpiry(token:string):Promise<{expiresAt:Date}> {
+        const tokenHash = this.opaqueTokenService.hash(token)
+        const resetToken = await this.passwordResetRepository.findByTokenHash(tokenHash)
+        if(!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired reset token")
+
+        if(resetToken.expiresAt.getTime() < Date.now() ) {
+            await this.passwordResetRepository.deleteByTokenHash(tokenHash)
+            throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired reset token")
+        }
+        return {
+            expiresAt: resetToken.expiresAt
         }
     }
 

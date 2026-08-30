@@ -96,13 +96,19 @@ export class AuthController {
     }
 
     forgotPassword = async(req:Request<Record<string, never>, unknown, ForgotPasswordDto>, res:Response):Promise<void> =>{
-        await this.authCommandService.forgotPassword(req.body.email);
-        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_EMAIL_SENT))
+        const result = await this.authCommandService.forgotPassword(req.body.email);
+        console.log("THis is response for forgot password",res)
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_EMAIL_SENT, result))
     }
 
     resetPassword = async(req:Request, res: Response):Promise<void> =>{
         await this.authCommandService.resetPassword(req.body)
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_SUCCESS))
+    }
+
+    getPasswordResetExpiry = async(req:Request, res:Response):Promise<void> => {
+        const result = await this.authCommandService.getPasswordResetExpiry(req.query.token as string)
+        res.status(StatusCodes.OK).json(successResponse("Password reset token is valid", result))
     }
 
     taskerSignup = async(req:Request<Record<string, never>, unknown, TaskerSignupDto>, res:Response):Promise<void> => {

@@ -1,4 +1,4 @@
-import { loginResponseDto, SignupResponseDto, SignupResult } from "../dto/auth-response.dto";
+import { ForgotPasswordResult, loginResponseDto, SignupResponseDto, SignupResult } from "../dto/auth-response.dto";
 import { LoginDto } from "../dto/login.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { SignupDto } from "../dto/signup.dto";
@@ -24,8 +24,9 @@ export interface IAuthCommandService {
     login(data:LoginDto):Promise<LoginResult>
     refresh(refreshToken:string):Promise<RefreshResult>
     logout(refreshToken:string):Promise<void>
-    forgotPassword(email:string):Promise<void>
+    forgotPassword(email:string):Promise<ForgotPasswordResult | null>
     resetPassword(data:ResetPasswordDto):Promise<void>
+    getPasswordResetExpiry(token:string):Promise<{expiresAt:Date}>
     taskerSignup(data:TaskerSignupDto):Promise<SignupResult>
     becomeTasker(userId:string):Promise<void>
     becomeCustomer(userId:string):Promise<void>
