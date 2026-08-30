@@ -1,9 +1,11 @@
+import { AdminLoginDto } from "../dto/admin-login.dto";
 import { ForgotPasswordResult, loginResponseDto, SignupResponseDto, SignupResult } from "../dto/auth-response.dto";
 import { LoginDto } from "../dto/login.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { SignupDto } from "../dto/signup.dto";
 import { SwitchRoleResult } from "../dto/switch-role.dto";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
+import { VerifyAdminOtpDto } from "../dto/verfiy-admin-otp.dto";
 import { ActiveRole } from "../types/auth-session.types";
 
 export interface LoginResult {
@@ -16,6 +18,16 @@ export interface RefreshResult {
     accessToken:string
     refreshToken:string
     accessTokenExpiresIn:number
+}
+
+export interface AdminLoginResult {
+    otpExpiresIn:number
+}
+
+export interface AdminVerifyOtpResult {
+    accessToken: string;
+    refreshToken: string;
+    accessTokenExpiresIn: number;
 }
 
 
@@ -31,5 +43,6 @@ export interface IAuthCommandService {
     becomeTasker(userId:string):Promise<void>
     becomeCustomer(userId:string):Promise<void>
     switchRole(userId:string,sessionId:string,role:ActiveRole):Promise<SwitchRoleResult>
-
+    adminLogin(data:AdminLoginDto):Promise<AdminLoginResult>
+    verifyAdminOtp(userId:string,otp:string):Promise<AdminVerifyOtpResult>
 }

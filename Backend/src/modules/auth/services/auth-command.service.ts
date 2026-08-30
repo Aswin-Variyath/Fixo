@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import { IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
-import { IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
+import { AdminLoginResult, AdminVerifyOtpResult, IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
+import { IUserAuthRespository } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
 import {  ForgotPasswordResult, SignupResult } from "../dto/auth-response.dto";
 import { SignupDto } from "../dto/signup.dto";
@@ -25,6 +25,9 @@ import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { ta } from "zod/v4/locales";
 import { SwitchRoleResult } from "../dto/switch-role.dto";
 import { title } from "node:process";
+import { IAdminOtpStore } from "../interfaces/admin-otp-store.interface";
+import { AdminLoginDto } from "../dto/admin-login.dto";
+import { VerifyAdminOtpDto } from "../dto/verfiy-admin-otp.dto";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -40,6 +43,7 @@ export class AuthCommandService implements IAuthCommandService {
     @inject(TYPES.MailService) private readonly mailService: IMailService,
     @inject(TYPES.RateLimitStore) private readonly rateLimitStore: IRateLimitStore,
     @inject(TYPES.SessionIndexStore) private readonly sessionIndexStore: IsessionIndexStore,
+    @inject(TYPES.AdminOtpStore) private readonly adminOtpStore: IAdminOtpStore,
 ) {}
     
     
@@ -369,7 +373,7 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
 
-    private async createAuthenticationSession(user:LoginUserRecord,activeRole:ActiveRole):Promise<{accessToken:string,refreshToken:string}> {
+    private async createAuthenticationSession(user:{id:string},activeRole:ActiveRole):Promise<{accessToken:string,refreshToken:string}> {
         const sessionId = randomUUID()
         const familyId = randomUUID()
         const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
@@ -425,6 +429,63 @@ export class AuthCommandService implements IAuthCommandService {
                 type: role.type as ActiveRole,
                 title: role.title
             }
+        }
+    }
+
+
+    async adminLogin(data: AdminLoginDto): Promise<AdminLoginResult> {
+        const admin = await this.userAuthRepository.findForAdminLogin(data.email)
+        if(!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+        if(admin.deletedAt) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+        if(!admin.status.isActive) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
+        if(!admin.adminRole.isSuperAdmin) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
+        if(!admin.adminRole.isActive) throw new AppError(StatusCodes.FORBIDDEN,"Admin role is inactive")
+        const isPasswordValid = await this.passwordService.verify(admin.passwordHash,data.password)
+        if(!isPasswordValid) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+        const otp = this.opaqueTokenService.generateOtp()
+        const otpHash = this.opaqueTokenService.hash(otp)
+        const OTP_TTL_SECONDS = 5 * 60
+        const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000)
+        await this.adminOtpStore.create(admin.id,{
+            otpHash,
+            attempts:0,
+            expiresAt
+        },OTP_TTL_SECONDS)
+
+        await this.mailService.sendAdminOtp(admin.email,admin.firstName,otp)
+        return {
+            otpExpiresIn:OTP_TTL_SECONDS
+        }
+    }
+
+    async verifyAdminOtp(userId:string,otp:string): Promise<AdminVerifyOtpResult> {
+        const adminOtp = await this.adminOtpStore.findByUserId(userId)
+        if(!adminOtp) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired OTP")
+        
+        if(adminOtp.attempts >= 5) {
+            await this.adminOtpStore.deleteByUserId(userId)
+            throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Too Many Invalid OTP attempts")
+        }
+
+        const otpHash = this.opaqueTokenService.hash(otp)
+
+        if(otpHash !== adminOtp.otpHash) {
+            await this.adminOtpStore.incrementAttempts(userId)
+            throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid OTP") 
+        }
+
+        await this.adminOtpStore.deleteByUserId(userId)
+
+        const admin = await this.userAuthRepository.findForAdminLogin(userId)
+
+        if(!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Admin account not found")
+        
+        const {accessToken, refreshToken} = await this.createAuthenticationSession(admin,"super_admin")
+
+        return {
+            accessToken,
+            refreshToken,
+            accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS
         }
     }
 

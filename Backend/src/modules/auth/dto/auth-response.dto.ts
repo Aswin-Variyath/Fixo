@@ -62,3 +62,11 @@ export interface loginResponseDto {
 export interface ForgotPasswordResult {
     expiresAt: Date;
 }
+
+export interface AdminLoginResult {
+  otpExpiresIn:number
+}
+
+export interface AdminVerifyOtpResult {
+  accessTokenExpiresIn:number
+}

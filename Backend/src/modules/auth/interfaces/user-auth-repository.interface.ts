@@ -36,6 +36,26 @@ export interface RefreshAuthUserRecord {
     }
 }
 
+export interface AdminLoginUserRecord {
+    id:string
+    firstName:string
+    lastName:string
+    email:string
+    passwordHash:string;
+    deletedAt: Date | null
+    status:{
+        type:string;
+        title:string
+        isActive:boolean
+    }
+    adminRole:{
+        type:string
+        title:string
+        isSuperAdmin:boolean
+        isActive:boolean
+    }
+}
+
 export interface IUserAuthRespository {
     existByEmail(email:string):Promise<Boolean>
     existsByPhone(phone:string):Promise<Boolean>
@@ -52,6 +72,7 @@ export interface IUserAuthRespository {
     findForLoginById(userId:string):Promise<LoginUserRecord | null>
     findForLogin(email: string): Promise<LoginUserRecord | null>;
     findUserRoleByType(userId:string,roleType:ActiveRole):Promise<userRoleRecord | null>
+    findForAdminLogin(email:string):Promise<AdminLoginUserRecord | null>
 }
 
 export interface LoginUserRecord {
