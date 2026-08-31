@@ -73,14 +73,14 @@ export type AdminLoginInput = z.infer<typeof adminLoginSchema>["body"];
 
 export const verifyAdminOtpSchema = z.object({
     body: z.object({
-        userId: z.string()
+        challengeId: z.string()
             .trim()
-            .min(1, "User ID is required"),
+            .min(1, "Challenge ID is required"),
 
         otp: z.string()
             .trim()
-            .length(6, "OTP must contain 6 digits")
-            .regex(/^\d{6}$/, "OTP must contain only digits"),
+            .length(6, "OTP must contain exactly 6 digits")
+            .regex(/^\d{6}$/, "OTP must contain only digits")
     })
 });
 

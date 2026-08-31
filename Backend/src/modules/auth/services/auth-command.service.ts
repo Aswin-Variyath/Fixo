@@ -22,12 +22,9 @@ import { AppError } from "../../../shared/errors/app.error";
 import { StatusCodes } from "http-status-codes";
 import { ActiveRole } from "../types/auth-session.types";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
-import { ta } from "zod/v4/locales";
 import { SwitchRoleResult } from "../dto/switch-role.dto";
-import { title } from "node:process";
 import { IAdminOtpStore } from "../interfaces/admin-otp-store.interface";
 import { AdminLoginDto } from "../dto/admin-login.dto";
-import { VerifyAdminOtpDto } from "../dto/verfiy-admin-otp.dto";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -434,54 +431,57 @@ export class AuthCommandService implements IAuthCommandService {
 
 
     async adminLogin(data: AdminLoginDto): Promise<AdminLoginResult> {
-        const admin = await this.userAuthRepository.findForAdminLogin(data.email)
-        if(!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
-        if(admin.deletedAt) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
-        if(!admin.status.isActive) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
-        if(!admin.adminRole.isSuperAdmin) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
-        if(!admin.adminRole.isActive) throw new AppError(StatusCodes.FORBIDDEN,"Admin role is inactive")
-        const isPasswordValid = await this.passwordService.verify(admin.passwordHash,data.password)
-        if(!isPasswordValid) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
-        const otp = this.opaqueTokenService.generateOtp()
-        const otpHash = this.opaqueTokenService.hash(otp)
-        const OTP_TTL_SECONDS = 5 * 60
-        const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000)
-        await this.adminOtpStore.create(admin.id,{
+    const admin = await this.userAuthRepository.findForAdminLogin(data.email);
+    if (!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")  
+    if (admin.deletedAt) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+    if (!admin.status.isActive) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
+    if (!admin.adminRole.isSuperAdmin)throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
+    if (!admin.adminRole.isActive) throw new AppError(StatusCodes.FORBIDDEN,"Admin role is inactive")
+    const isPasswordValid = await this.passwordService.verify(admin.passwordHash, data.password)
+    if (!isPasswordValid) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+    const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`
+    const isCooldownActive = await this.rateLimitStore.exists(cooldownKey);
+    if (isCooldownActive) throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Please wait before requesting another OTP")
+    const otp = this.opaqueTokenService.generateOtp()
+    const otpHash = this.opaqueTokenService.hash(otp)
+    const OTP_TTL_SECONDS = 5 * 60
+    const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000)
+    const challengeId = this.opaqueTokenService.generate().token
+    await this.adminOtpStore.create(challengeId,
+        {
+            userId: admin.id,
             otpHash,
-            attempts:0,
+            attempts: 0,
             expiresAt
         },OTP_TTL_SECONDS)
-
-        await this.mailService.sendAdminOtp(admin.email,admin.firstName,otp)
-        return {
-            otpExpiresIn:OTP_TTL_SECONDS
+    await this.mailService.sendAdminOtp(admin.email, admin.firstName, otp)
+    await this.rateLimitStore.set(cooldownKey, 60)
+    return {
+        challengeId,
+        otpExpiresIn: OTP_TTL_SECONDS,
+        resendAfter: 60
         }
     }
 
-    async verifyAdminOtp(userId:string,otp:string): Promise<AdminVerifyOtpResult> {
-        const adminOtp = await this.adminOtpStore.findByUserId(userId)
-        if(!adminOtp) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired OTP")
-        
-        if(adminOtp.attempts >= 5) {
-            await this.adminOtpStore.deleteByUserId(userId)
-            throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Too Many Invalid OTP attempts")
+    async verifyAdminOtp(challengeId: string, otp: string): Promise<AdminVerifyOtpResult> {
+        const adminOtp = await this.adminOtpStore.findByChallengeId(challengeId);
+        if (!adminOtp) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired OTP")
+        if (adminOtp.attempts >= 5) {
+            await this.adminOtpStore.deleteByChallengeId(challengeId);
+            throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Too many invalid OTP attempts")
+        }
+        const otpHash = this.opaqueTokenService.hash(otp);
+        if (otpHash !== adminOtp.otpHash) {
+            await this.adminOtpStore.incrementAttempts(challengeId)
+            throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid OTP")
         }
 
-        const otpHash = this.opaqueTokenService.hash(otp)
+        const admin = await this.userAuthRepository.findForAdminLoginById(adminOtp.userId)
+        if (!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Admin account not found")        
 
-        if(otpHash !== adminOtp.otpHash) {
-            await this.adminOtpStore.incrementAttempts(userId)
-            throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid OTP") 
-        }
-
-        await this.adminOtpStore.deleteByUserId(userId)
-
-        const admin = await this.userAuthRepository.findForAdminLogin(userId)
-
-        if(!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Admin account not found")
-        
         const {accessToken, refreshToken} = await this.createAuthenticationSession(admin,"super_admin")
 
+        await this.adminOtpStore.deleteByChallengeId(challengeId)
         return {
             accessToken,
             refreshToken,

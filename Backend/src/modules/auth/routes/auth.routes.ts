@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
 import {TYPES, container} from "../../../di"
 import { validate } from "../../../shared/middlewares/validate.middleware";
-import { adminLoginSchema, loginSchema, resetPasswordSchema, signupSchema, taskerSignupSchema } from "../validations/auth.validation";
+import { adminLoginSchema, loginSchema, resetPasswordSchema, signupSchema, taskerSignupSchema, verifyAdminOtpSchema } from "../validations/auth.validation";
 import { AuthMiddleware } from "../../../shared/middlewares/auth.middleware";
 import { AuthorizationMiddleware } from "../../../shared/middlewares/authorization.middleware";
 import { forgotPasswordSchema } from "../validations/forgot-password.validation";
@@ -31,8 +31,8 @@ router.post("/become-tasker",authMiddleware.authenticate,authController.becomeTa
 router.post("/switch-role",authMiddleware.authenticate,validate(SwitchRoleSchema),authController.switchRole)
 
 // Admin rotues
-router.post("/admin-login",validate(adminLoginSchema),authController.adminLogin);
-
+router.post("/admin-login",validate(adminLoginSchema),authController.adminLogin)
+router.post("/verify-otp",validate(verifyAdminOtpSchema),authController.verifyAdminOtp)
 
 // test api =======
 router.get("/admin-test",authMiddleware.authenticate,authorizationMiddleware.authorize("admin"),(req,res)=>{

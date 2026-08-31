@@ -161,55 +161,38 @@ export class AuthController {
     )
 
     res.status(StatusCodes.OK).json(successResponse("Role switched successfully",{activeRole: result.activeRole}))
-};
+    }
 
-adminLogin = async (
-    req: Request<Record<string, never>, unknown, AdminLoginDto>,
-    res: Response
-): Promise<void> => {
+    adminLogin = async (
+        req: Request<Record<string, never>, unknown, AdminLoginDto>, res: Response): Promise<void> => {
+        const result = await this.authCommandService.adminLogin(req.body);
+        console.log("Admin login result",result)
+        res.status(StatusCodes.OK).json(successResponse("OTP sent successfully",result))
+    }
+    verifyAdminOtp = async (req: Request,res: Response): Promise<void> => {
+        const { challengeId, otp } = req.body;
+        const result = await this.authCommandService.verifyAdminOtp(challengeId,otp)
+        res.cookie("accessToken", result.accessToken, {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        })
 
-    const result = await this.authCommandService.adminLogin(req.body);
+        res.cookie("refreshToken", result.refreshToken, {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
 
-    res.status(StatusCodes.OK).json(
-        successResponse(
-            "OTP sent successfully",
-            result
+        res.status(StatusCodes.OK).json(
+            successResponse(
+                "Admin login successful",
+                {
+                    accessTokenExpiresIn: result.accessTokenExpiresIn
+                }
+            )
         )
-    );
-};
-verifyAdminOtp = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
-
-    const { userId, otp } = req.body;
-
-    const result = await this.authCommandService.verifyAdminOtp(
-        userId,
-        otp
-    );
-
-    res.cookie("accessToken", result.accessToken, {
-        httpOnly: true,
-        secure: ENV.APP.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
-    });
-
-    res.cookie("refreshToken", result.refreshToken, {
-        httpOnly: true,
-        secure: ENV.APP.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
-    });
-
-    res.status(StatusCodes.OK).json(
-        successResponse(
-            "Admin login successful",
-            {
-                accessTokenExpiresIn: result.accessTokenExpiresIn
-            }
-        )
-    );
-};
+    }
 }

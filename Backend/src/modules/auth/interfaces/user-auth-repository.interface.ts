@@ -72,7 +72,8 @@ export interface IUserAuthRespository {
     findForLoginById(userId:string):Promise<LoginUserRecord | null>
     findForLogin(email: string): Promise<LoginUserRecord | null>;
     findUserRoleByType(userId:string,roleType:ActiveRole):Promise<userRoleRecord | null>
-    findForAdminLogin(email:string):Promise<AdminLoginUserRecord | null>
+    findForAdminLogin(email: string): Promise<AdminLoginUserRecord | null>
+    findForAdminLoginById(userId: string): Promise<AdminLoginUserRecord | null>
 }
 
 export interface LoginUserRecord {

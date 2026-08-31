@@ -369,4 +369,62 @@ export class UserAuthRepository implements IUserAuthRespository {
         }
     }
 
+    async findForAdminLoginById(userId: string): Promise<AdminLoginUserRecord | null> {
+    const user = await this.prisma.user.findUnique({
+        where: {
+            id: userId
+        },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            password: true,
+            deletedAt: true,
+
+            status: {
+                select: {
+                    type: true,
+                    title: true,
+                    isActive: true
+                }
+            },
+
+            userRoles: {
+                where: {
+                    role: {
+                        isSuperAdmin: true
+                    }
+                },
+                select: {
+                    role: {
+                        select: {
+                            type: true,
+                            title: true,
+                            isSuperAdmin: true,
+                            isActive: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    if (!user) return null;
+
+    const adminRole = user.userRoles[0]?.role
+
+    if (!adminRole) return null
+
+    return {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        passwordHash: user.password,
+        deletedAt: user.deletedAt,
+        status: user.status,
+        adminRole
+    }
+}
 }

@@ -1,13 +1,13 @@
 export interface AdminOtpData {
-    otpHash:string
-    attempts:number
-    expiresAt: Date
+    userId: string;
+    otpHash: string;
+    attempts: number;
+    expiresAt: Date;
 }
 
 export interface IAdminOtpStore {
-    create(userId:string,data:AdminOtpData,ttlSeconds:number):Promise<void>
-    findByUserId(userId:string):Promise<AdminOtpData | null>
-    deleteByUserId(userId:string):Promise<void>
-    incrementAttempts(userId:string):Promise<number>
-
+    create(challengeId: string, data: AdminOtpData, ttlSeconds: number): Promise<void>;
+    findByChallengeId(challengeId: string): Promise<AdminOtpData | null>;
+    deleteByChallengeId(challengeId: string): Promise<void>;
+    incrementAttempts(challengeId: string): Promise<number>;
 }

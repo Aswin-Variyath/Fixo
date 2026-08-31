@@ -21,7 +21,9 @@ export interface RefreshResult {
 }
 
 export interface AdminLoginResult {
+    challengeId: string
     otpExpiresIn:number
+    resendAfter: number
 }
 
 export interface AdminVerifyOtpResult {
