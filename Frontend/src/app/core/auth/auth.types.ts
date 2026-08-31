@@ -83,3 +83,32 @@ export interface ResetPasswordRequest {
     token: string;
     password: string;
 }
+
+
+// Admin side auth types
+
+export interface AdminLoginRequest {
+    email:string
+    password:string
+}
+
+export interface AdminLoginResponse {
+    challengeId:string
+    otpExpiresIn:number
+    resendAfter:number
+}
+
+export interface VerifyAdminOtpRequest {
+    challengeId:string
+    otp:string
+}
+
+export interface VerifyAdminOtpResponse {
+    accessTokenExpiresIn:number
+}
+
+export interface AdminOtpSession {
+  challengeId: string;
+  otpExpiresAt: number;
+  resendAvailableAt: number;
+}

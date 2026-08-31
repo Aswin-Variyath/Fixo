@@ -41,10 +41,5 @@ export const publicRoutes: Routes = [
         canActivate:[guestGuard],
         loadComponent:()=>import("../features/tasker/auth/pages/tasker-signup/tasker-signup").then((m)=>m.TaskerSignup)
     },
-       // Admin public routes
-    {
-        path:'admin/signin',
-        loadComponent:()=>import("../features/admin/auth/admin-signin/admin-signin").then((m)=>m.AdminSignin)
-    },
-    
+   
 ]

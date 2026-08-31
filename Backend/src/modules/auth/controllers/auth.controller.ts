@@ -171,6 +171,8 @@ export class AuthController {
     }
     verifyAdminOtp = async (req: Request,res: Response): Promise<void> => {
         const { challengeId, otp } = req.body;
+        console.log("this verfiyotp", challengeId,otp);
+        
         const result = await this.authCommandService.verifyAdminOtp(challengeId,otp)
         res.cookie("accessToken", result.accessToken, {
             httpOnly: true,
