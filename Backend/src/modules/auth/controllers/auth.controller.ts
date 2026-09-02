@@ -12,6 +12,7 @@ import { successResponse } from "../../../shared/utils/response.util";
 import { HttpResponse } from "../../../shared/constants";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { AdminLoginDto } from "../dto/admin-login.dto";
+import { ResendAdminOtpDto } from "../dto/resend-admin-otp.dto";
 
 @injectable()
 export class AuthController {
@@ -196,5 +197,10 @@ export class AuthController {
                 }
             )
         )
+    }
+
+    resendAdminOtp = async(req:Request<Record<string,never>,unknown, ResendAdminOtpDto>, res:Response):Promise<void> => {
+        const result = await this.authCommandService.resendAdminOtp(req.body.challengeId)
+        res.status(StatusCodes.OK).json(successResponse("OTP resend successfully",result))
     }
 }

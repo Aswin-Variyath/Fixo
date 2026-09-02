@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { AdminLoginResult, AdminVerifyOtpResult, IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
+import { AdminLoginResult, AdminOtpRecipient, AdminVerifyOtpResult, IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
 import { IUserAuthRespository } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
 import {  ForgotPasswordResult, SignupResult } from "../dto/auth-response.dto";
@@ -442,25 +442,19 @@ export class AuthCommandService implements IAuthCommandService {
     const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`
     const isCooldownActive = await this.rateLimitStore.exists(cooldownKey);
     if (isCooldownActive) throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Please wait before requesting another OTP")
-    const otp = this.opaqueTokenService.generateOtp()
-    const otpHash = this.opaqueTokenService.hash(otp)
-    const OTP_TTL_SECONDS = 5 * 60
-    const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000)
-    const challengeId = this.opaqueTokenService.generate().token
-    await this.adminOtpStore.create(challengeId,
-        {
-            userId: admin.id,
-            otpHash,
-            attempts: 0,
-            expiresAt
-        },OTP_TTL_SECONDS)
-    await this.mailService.sendAdminOtp(admin.email, admin.firstName, otp)
-    await this.rateLimitStore.set(cooldownKey, 60)
-    return {
-        challengeId,
-        otpExpiresIn: OTP_TTL_SECONDS,
-        resendAfter: 60
-        }
+    return this.createAndSendAdminOpt(admin)
+    }
+
+    async resendAdminOtp(challengeId:string):Promise<AdminLoginResult> {
+        const existingOtp = await this.adminOtpStore.findByChallengeId(challengeId)
+        if(!existingOtp) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired OTP session")
+        const cooldownKey = `auth:admin-otp-cooldown:${existingOtp.userId}`
+        const isCoolDownActive = await this.rateLimitStore.exists(cooldownKey)
+        if(isCoolDownActive) throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Please wait before requesting another OTP")
+        const admin = await this.userAuthRepository.findForAdminLoginById(existingOtp.userId)
+        if(!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Admin account not found")
+        await this.adminOtpStore.deleteByChallengeId(challengeId)
+        return this.createAndSendAdminOpt(admin)
     }
 
     async verifyAdminOtp(challengeId: string, otp: string): Promise<AdminVerifyOtpResult> {
@@ -486,6 +480,28 @@ export class AuthCommandService implements IAuthCommandService {
             accessToken,
             refreshToken,
             accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS
+        }
+    }
+
+    private async createAndSendAdminOpt(admin:AdminOtpRecipient):Promise<AdminLoginResult> {
+        const otp = this.opaqueTokenService.generateOtp()
+        const otpHash = this.opaqueTokenService.hash(otp)
+        const OTP_TTL_SECONDS = 5 * 60;
+        const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000)
+        const challengeId = this.opaqueTokenService.generate().token
+        await this.adminOtpStore.create(challengeId,{
+            userId:admin.id,
+            otpHash,
+            attempts:0,
+            expiresAt
+        },OTP_TTL_SECONDS)
+        await this.mailService.sendAdminOtp(admin.email,admin.firstName,otp)
+        const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`
+        await this.rateLimitStore.set(cooldownKey,60)
+        return {
+            challengeId,
+            otpExpiresIn:OTP_TTL_SECONDS,
+            resendAfter:60
         }
     }
 

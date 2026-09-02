@@ -33,6 +33,12 @@ export interface AdminVerifyOtpResult {
 }
 
 
+export interface AdminOtpRecipient {
+    id:string
+    email:string
+    firstName:string
+}
+
 export interface IAuthCommandService {
     signup(data:SignupDto):Promise<SignupResult>
     login(data:LoginDto):Promise<LoginResult>
@@ -47,4 +53,5 @@ export interface IAuthCommandService {
     switchRole(userId:string,sessionId:string,role:ActiveRole):Promise<SwitchRoleResult>
     adminLogin(data:AdminLoginDto):Promise<AdminLoginResult>
     verifyAdminOtp(userId:string,otp:string):Promise<AdminVerifyOtpResult>
+    resendAdminOtp(challengeId:string):Promise<AdminLoginResult>
 }

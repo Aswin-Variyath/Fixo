@@ -84,5 +84,14 @@ export const verifyAdminOtpSchema = z.object({
     })
 });
 
-export type VerifyAdminOtpInput =
-    z.infer<typeof verifyAdminOtpSchema>["body"];
+export type VerifyAdminOtpInput = z.infer<typeof verifyAdminOtpSchema>["body"];
+
+
+
+export const resendAdminOtpSchema = z.object({
+    body:z.object({
+        challengeId:z.string().trim().min(1,"Callenge ID is required")
+    })
+})
+
+export type resendAdminOtpInput = z.infer<typeof resetPasswordSchema>['body']
