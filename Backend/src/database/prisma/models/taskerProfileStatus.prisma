@@ -1,0 +1,4 @@
+enum TaskerProfileStatus {
+  INCOMPLETE
+  COMPLETE
+}

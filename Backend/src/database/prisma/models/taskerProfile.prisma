@@ -1,0 +1,14 @@
+model TaskerProfile {
+  id              String              @id @default(uuid())
+  userId          String              @unique
+  bio             String?
+  profileImageUrl String?
+  experienceYears Int?
+  averageRating   Float               @default(0)
+  totalReviews    Int                 @default(0)
+  profileStatus   TaskerProfileStatus  @default(INCOMPLETE)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  user            User                @relation(fields: [userId], references: [id])
+}
