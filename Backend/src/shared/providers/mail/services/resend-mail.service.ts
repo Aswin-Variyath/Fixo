@@ -4,6 +4,7 @@ import { ENV } from "../../../../config/env.config";
 import { passwordResetTemplate } from "../templates/password-reset.template";
 import { passwordChangedTemplate } from "../templates/password-changed.template";
 import { transporter } from "../../../../config/mail.config";
+import { adminOtpTemplate } from "../templates/admin-otp.template";
 
 @injectable()
 export class NodemailerMailService  implements IMailService {
@@ -32,5 +33,13 @@ export class NodemailerMailService  implements IMailService {
         })
     }
    
-
+    async sendAdminOtp(email: string, firstName: string, otp: string): Promise<void> {
+        const html = adminOtpTemplate(firstName,otp)
+        await transporter.sendMail({
+            from:ENV.MAIL.FROM,
+            to:email,
+            subject:"Admin login Verification code",
+            html
+        })
+    }
 }

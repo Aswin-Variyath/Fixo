@@ -12,6 +12,8 @@ export class OpaqueTokenService implements IOpaqueTokenService {
         return createHash("sha256").update(token).digest("hex")
     }
 
-    
+    generateOtp(): string {
+        return randomBytes(4).readUint32BE(0).toString().slice(0,6).padStart(6,"0")
+    }
     
 }

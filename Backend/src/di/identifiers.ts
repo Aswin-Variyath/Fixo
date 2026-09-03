@@ -1,5 +1,3 @@
-import { UserQueryService } from "../modules/users/services/user-query.service";
-
 export const TYPES = {
     PrismaClient: Symbol.for("PrismaClient"),
     // Auth
@@ -24,4 +22,6 @@ export const TYPES = {
     UserRepository:Symbol.for("UserRepository"),
     UserQueryService:Symbol.for("UserQueryService"),
     UserController:Symbol.for("UserController"),
+    // admin
+    AdminOtpStore:Symbol.for("AdminOtpStore")
 } as const

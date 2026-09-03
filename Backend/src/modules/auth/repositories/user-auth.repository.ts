@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import prisma from "../../../database/prisma/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
-import { AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord, userRoleRecord } from "../interfaces/user-auth-repository.interface";
+import { AdminLoginUserRecord, AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord, userRoleRecord } from "../interfaces/user-auth-repository.interface";
 import { TYPES } from "../../../di";
 import { PrismaClient, User } from "../../../database/generated/prisma/client";
 import { email } from "zod";
@@ -315,4 +315,116 @@ export class UserAuthRepository implements IUserAuthRespository {
         if(!userRole) return null
         return userRole.role
     }
+
+    async findForAdminLogin(email: string): Promise<AdminLoginUserRecord | null> {
+        const user = await this.prisma.user.findUnique({
+            where:{
+                email
+            },
+            select:{
+                id:true,
+                firstName:true,
+                lastName:true,
+                email:true,
+                password:true,
+                deletedAt:true,
+                status:{
+                    select:{
+                        type:true,
+                        title:true,
+                        isActive:true
+                    }
+                },
+                userRoles:{
+                    where:{
+                        role:{
+                            isSuperAdmin:true
+                        }
+                    },
+                    select: {
+                        role: {
+                            select: {
+                                type:true,
+                                title:true,
+                                isSuperAdmin:true,
+                                isActive:true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        if(!user) return null
+        const adminRole = user.userRoles[0]?.role
+        if(!adminRole) return null
+        return {
+            id: user.id,
+            firstName:user.firstName,
+            lastName:user.lastName,
+            email:user.email,
+            passwordHash:user.password,
+            deletedAt:user.deletedAt,
+            status:user.status,
+            adminRole
+        }
+    }
+
+    async findForAdminLoginById(userId: string): Promise<AdminLoginUserRecord | null> {
+    const user = await this.prisma.user.findUnique({
+        where: {
+            id: userId
+        },
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            password: true,
+            deletedAt: true,
+
+            status: {
+                select: {
+                    type: true,
+                    title: true,
+                    isActive: true
+                }
+            },
+
+            userRoles: {
+                where: {
+                    role: {
+                        isSuperAdmin: true
+                    }
+                },
+                select: {
+                    role: {
+                        select: {
+                            type: true,
+                            title: true,
+                            isSuperAdmin: true,
+                            isActive: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    if (!user) return null;
+
+    const adminRole = user.userRoles[0]?.role
+
+    if (!adminRole) return null
+
+    return {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        passwordHash: user.password,
+        deletedAt: user.deletedAt,
+        status: user.status,
+        adminRole
+    }
+}
 }

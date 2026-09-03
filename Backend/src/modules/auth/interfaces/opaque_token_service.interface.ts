@@ -6,4 +6,5 @@ export interface OpaqueTokenResult  {
 export interface IOpaqueTokenService {
     generate():OpaqueTokenResult ;
     hash(token:string):string
+    generateOtp():string
 }

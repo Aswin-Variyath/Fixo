@@ -11,6 +11,8 @@ import { StatusCodes } from "http-status-codes";
 import { successResponse } from "../../../shared/utils/response.util";
 import { HttpResponse } from "../../../shared/constants";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
+import { AdminLoginDto } from "../dto/admin-login.dto";
+import { ResendAdminOtpDto } from "../dto/resend-admin-otp.dto";
 
 @injectable()
 export class AuthController {
@@ -96,13 +98,19 @@ export class AuthController {
     }
 
     forgotPassword = async(req:Request<Record<string, never>, unknown, ForgotPasswordDto>, res:Response):Promise<void> =>{
-        await this.authCommandService.forgotPassword(req.body.email);
-        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_EMAIL_SENT))
+        const result = await this.authCommandService.forgotPassword(req.body.email);
+        console.log("THis is response for forgot password",res)
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_EMAIL_SENT, result))
     }
 
     resetPassword = async(req:Request, res: Response):Promise<void> =>{
         await this.authCommandService.resetPassword(req.body)
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_SUCCESS))
+    }
+
+    getPasswordResetExpiry = async(req:Request, res:Response):Promise<void> => {
+        const result = await this.authCommandService.getPasswordResetExpiry(req.query.token as string)
+        res.status(StatusCodes.OK).json(successResponse("Password reset token is valid", result))
     }
 
     taskerSignup = async(req:Request<Record<string, never>, unknown, TaskerSignupDto>, res:Response):Promise<void> => {
@@ -154,5 +162,45 @@ export class AuthController {
     )
 
     res.status(StatusCodes.OK).json(successResponse("Role switched successfully",{activeRole: result.activeRole}))
-};
+    }
+
+    adminLogin = async (
+        req: Request<Record<string, never>, unknown, AdminLoginDto>, res: Response): Promise<void> => {
+        const result = await this.authCommandService.adminLogin(req.body);
+        console.log("Admin login result",result)
+        res.status(StatusCodes.OK).json(successResponse("OTP sent successfully",result))
+    }
+    verifyAdminOtp = async (req: Request,res: Response): Promise<void> => {
+        const { challengeId, otp } = req.body;
+        console.log("this verfiyotp", challengeId,otp);
+        
+        const result = await this.authCommandService.verifyAdminOtp(challengeId,otp)
+        res.cookie("accessToken", result.accessToken, {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        })
+
+        res.cookie("refreshToken", result.refreshToken, {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
+
+        res.status(StatusCodes.OK).json(
+            successResponse(
+                "Admin login successful",
+                {
+                    accessTokenExpiresIn: result.accessTokenExpiresIn
+                }
+            )
+        )
+    }
+
+    resendAdminOtp = async(req:Request<Record<string,never>,unknown, ResendAdminOtpDto>, res:Response):Promise<void> => {
+        const result = await this.authCommandService.resendAdminOtp(req.body.challengeId)
+        res.status(StatusCodes.OK).json(successResponse("OTP resend successfully",result))
+    }
 }

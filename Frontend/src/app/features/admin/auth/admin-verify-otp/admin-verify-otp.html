@@ -1,0 +1,204 @@
+<main
+  class="min-h-screen flex items-center justify-center px-margin-mobile relative z-10 w-full bg-surface-dim"
+>
+  <!-- OTP Card -->
+  <div
+    class="w-full max-w-[480px] bg-deep-navy/70 backdrop-blur-[30px] rounded-[20px] border border-glass-stroke p-8 md:p-12 shadow-[0_0_40px_rgba(94,106,210,0.15)] relative overflow-hidden group"
+  >
+    <!-- Card Inner Border Highlight -->
+    <div class="absolute inset-0 rounded-[20px] border border-white/5 pointer-events-none"></div>
+
+    <div class="flex flex-col items-center text-center">
+      <!-- Icon -->
+      <div
+        class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-6 border border-glass-stroke shadow-inner"
+      >
+        <span
+          class="material-symbols-outlined text-[32px] text-primary"
+          style="font-variation-settings: 'FILL' 0"
+        >
+          lock_open
+        </span>
+      </div>
+
+      <!-- Headings -->
+      <h1
+        class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-on-surface mb-3 tracking-tight"
+      >
+        Verify your identity
+      </h1>
+
+      <p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+        We’ve sent a 6-digit verification code to your registered email address.<br />
+
+        <span class="font-medium text-primary mt-1 inline-block"> a****@example.com </span>
+      </p>
+
+      <!-- OTP Form -->
+      <form class="w-full flex flex-col items-center" id="otp-form" novalidate>
+        <!-- OTP Inputs -->
+        <div class="flex justify-center gap-2 md:gap-3 w-full mb-6" id="otp-inputs">
+          <!-- OTP 1 -->
+          <input
+            #otpInput
+            autofocus
+            maxlength="1"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            (input)="onOtpInput($event, 0)"
+            (keydown)="onOtpKeydown($event, 0)"
+            (paste)="onOtpPaste($event)"
+            [value]="otpValues[0]"
+            class="w-12 h-14 md:w-14 md:h-16 text-center font-display-lg text-[24px] md:text-[32px] font-bold bg-surface-container-lowest border border-glass-stroke rounded-xl text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-all shadow-inner"
+          />
+
+          <!-- OTP 2 -->
+          <input
+            #otpInput
+            maxlength="1"
+            inputmode="numeric"
+            (input)="onOtpInput($event, 1)"
+            (keydown)="onOtpKeydown($event, 1)"
+            (paste)="onOtpPaste($event)"
+            [value]="otpValues[1]"
+            class="w-12 h-14 md:w-14 md:h-16 text-center font-display-lg text-[24px] md:text-[32px] font-bold bg-surface-container-lowest border border-glass-stroke rounded-xl text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-all shadow-inner"
+          />
+
+          <!-- OTP 3 -->
+          <input
+            #otpInput
+            maxlength="1"
+            inputmode="numeric"
+            (input)="onOtpInput($event, 2)"
+            (keydown)="onOtpKeydown($event, 2)"
+            (paste)="onOtpPaste($event)"
+            [value]="otpValues[2]"
+            class="w-12 h-14 md:w-14 md:h-16 text-center font-display-lg text-[24px] md:text-[32px] font-bold bg-surface-container-lowest border border-glass-stroke rounded-xl text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-all shadow-inner"
+          />
+
+          <!-- OTP 4 -->
+          <input
+            #otpInput
+            maxlength="1"
+            inputmode="numeric"
+            (input)="onOtpInput($event, 3)"
+            (keydown)="onOtpKeydown($event, 3)"
+            (paste)="onOtpPaste($event)"
+            [value]="otpValues[3]"
+            class="w-12 h-14 md:w-14 md:h-16 text-center font-display-lg text-[24px] md:text-[32px] font-bold bg-surface-container-lowest border border-glass-stroke rounded-xl text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-all shadow-inner"
+          />
+
+          <!-- OTP 5 -->
+          <input
+            #otpInput
+            maxlength="1"
+            inputmode="numeric"
+            (input)="onOtpInput($event, 4)"
+            (keydown)="onOtpKeydown($event, 4)"
+            (paste)="onOtpPaste($event)"
+            [value]="otpValues[4]"
+            class="w-12 h-14 md:w-14 md:h-16 text-center font-display-lg text-[24px] md:text-[32px] font-bold bg-surface-container-lowest border border-glass-stroke rounded-xl text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-all shadow-inner"
+          />
+
+          <!-- OTP 6 -->
+          <input
+            #otpInput
+            maxlength="1"
+            inputmode="numeric"
+            (input)="onOtpInput($event, 5)"
+            (keydown)="onOtpKeydown($event, 5)"
+            (paste)="onOtpPaste($event)"
+            [value]="otpValues[5]"
+            class="w-12 h-14 md:w-14 md:h-16 text-center font-display-lg text-[24px] md:text-[32px] font-bold bg-surface-container-lowest border border-glass-stroke rounded-xl text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary focus:bg-surface-container-low transition-all shadow-inner"
+          />
+        </div>
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+          <div class="w-full text-center mb-4 flex items-center justify-center gap-1 text-error">
+            <span class="material-symbols-outlined text-[16px]"> error </span>
+
+            <span class="font-label-sm text-label-sm">
+              {{ errorMessage }}
+            </span>
+          </div>
+        }
+
+        <!-- OTP Expiration Timer -->
+        <div
+          class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mb-8"
+        >
+          <span class="material-symbols-outlined text-[14px]"> timer </span>
+
+          @if (otpExpired) {
+            <span class="text-error"> Code expired </span>
+          } @else {
+            <span> Code expires in </span>
+
+            <span class="text-on-surface font-bold ml-1">
+              {{ formatTime(otpRemainingSeconds()) }}
+            </span>
+          }
+        </div>
+
+        <!-- Verify Button -->
+        <div class="w-full relative group/btn">
+          <!-- Button Glow -->
+          <div
+            class="absolute inset-0 bg-primary/20 blur-md rounded-full group-hover/btn:bg-primary/30 transition-all opacity-0 group-hover/btn:opacity-100"
+          ></div>
+
+          <button
+            [disabled]="!isOtpComplete || isVerifying || otpExpired"
+            class="relative w-full h-12 bg-gradient-to-r from-royal-blue to-sky-blue rounded-full text-white font-body-md font-medium text-[16px] shadow-[0_4px_14px_0_rgba(46,74,209,0.39)] hover:shadow-[0_6px_20px_rgba(46,74,209,0.23)] hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
+            id="verify-btn"
+            type="button"
+            (click)="verifyOtp()"
+          >
+            @if (isVerifying) {
+              <span class="relative z-10 flex items-center">
+                <span class="material-symbols-outlined mr-2 animate-spin text-[20px]">
+                  progress_activity
+                </span>
+
+                Verifying...
+              </span>
+            } @else {
+              <span class="relative z-10 flex items-center">
+                Verify OTP
+
+                <span class="material-symbols-outlined ml-2 text-[20px]"> arrow_forward </span>
+              </span>
+            }
+          </button>
+        </div>
+
+        <!-- Resend OTP -->
+
+        <div class="mt-6 text-center">
+          <p class="font-body-md text-body-md text-on-surface-variant text-[14px]">
+            Didn’t receive the code?
+
+            <button
+              class="ml-1 transition-colors focus:outline-none"
+              [class.text-on-surface-variant/50]="!canResend || isResending"
+              [class.cursor-not-allowed]="!canResend || isResending"
+              [class.text-primary]="canResend && !isResending"
+              [disabled]="!canResend || isResending"
+              type="button"
+              (click)="resendOtp()"
+            >
+              @if (isResending) {
+                Sending...
+              } @else if (canResend) {
+                Resend OTP
+              } @else {
+                Resend OTP in {{ resendRemainingSeconds() }}s
+              }
+            </button>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

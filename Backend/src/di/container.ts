@@ -36,6 +36,8 @@ import { IsessionIndexStore } from "../modules/auth/interfaces/session-index-sto
 import { SessionIndexStore } from "../modules/auth/stores/session.-index.store";
 import { IMailService } from "../shared/providers/mail/interfaces/mail.service.interface";
 import { NodemailerMailService } from "../shared/providers/mail/services/resend-mail.service";
+import { IAdminOtpStore } from "../modules/auth/interfaces/admin-otp-store.interface";
+import { AdminOtpStore } from "../modules/auth/stores/admin-otp.store";
 
 export const container = new Container()
 
@@ -58,3 +60,4 @@ container.bind<IPasswordResetRepository>(TYPES.PasswordResetRepository).to(Passw
 container.bind<IMailService>(TYPES.MailService).to(NodemailerMailService).inSingletonScope()
 container.bind<IRateLimitStore>(TYPES.RateLimitStore).to(RateLimitStore).inSingletonScope()
 container.bind<IsessionIndexStore>(TYPES.SessionIndexStore).to(SessionIndexStore).inSingletonScope()
+container.bind<IAdminOtpStore>(TYPES.AdminOtpStore).to(AdminOtpStore).inSingletonScope()

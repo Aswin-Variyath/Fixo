@@ -3,12 +3,9 @@
 >
   <!-- Background Blobs -->
 
-
   <!-- Login Container -->
   <div class="relative z-10 w-full max-w-md">
-    <div
-      class="glass-card glow-shadow-primary relative overflow-hidden rounded-[24px] p-8 md:p-10"
-    >
+    <div class="glass-card glow-shadow-primary relative overflow-hidden rounded-[24px] p-8 md:p-10">
       <!-- Top Highlight -->
       <div
         class="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
@@ -21,12 +18,10 @@
         >
           Admin Portal
         </h1>
-
-       
       </div>
 
       <!-- Form -->
-      <form class="space-y-stack-md" novalidate>
+      <form class="space-y-stack-md" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <!-- Email Field -->
         <div class="space-y-stack-sm">
           <label
@@ -37,17 +32,25 @@
           </label>
 
           <div class="input-glass relative flex items-center rounded-xl px-4 py-3">
-            <span class="material-symbols-outlined mr-3 text-outline">
-              mail
-            </span>
+            <span class="material-symbols-outlined mr-3 text-outline"> mail </span>
 
             <input
               id="email"
               type="email"
               placeholder="admin@fixo.com"
               class="w-full border-none bg-transparent p-0 font-body-md text-on-surface placeholder:text-outline focus:ring-0"
+              formControlName="email"
             />
           </div>
+          @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
+            <p class="mt-2 text-sm text-error">
+              @if (loginForm.controls.email.hasError('required')) {
+                Email is required
+              } @else if (loginForm.controls.email.hasError('email')) {
+                Enter a valid email address
+              }
+            </p>
+          }
         </div>
 
         <!-- Password Field -->
@@ -69,63 +72,62 @@
           </div>
 
           <div class="input-glass relative flex items-center rounded-xl px-4 py-3">
-            <span class="material-symbols-outlined mr-3 text-outline">
-              lock
-            </span>
+            <span class="material-symbols-outlined mr-3 text-outline"> lock </span>
 
             <input
               id="password"
               type="password"
               placeholder="••••••••"
               class="w-full border-none bg-transparent p-0 font-body-md text-on-surface placeholder:text-outline focus:ring-0"
+              formControlName="password"
             />
           </div>
-        </div>
-
-        <!-- Remember Me -->
-        <div class="flex items-center pt-2">
-          <input
-            id="remember-me"
-            type="checkbox"
-            class="h-4 w-4 rounded border-outline bg-transparent text-primary-container focus:ring-primary-container focus:ring-offset-surface-dim"
-          />
-
-          <label
-            for="remember-me"
-            class="ml-2 block text-sm font-body-md text-on-surface-variant"
-          >
-            Remember me for 30 days
-          </label>
+          @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+            <p class="mt-2 text-sm text-error">
+              @if (loginForm.controls.password.hasError('required')) {
+                Password is required.
+              } @else if (loginForm.controls.password.hasError('minlength')) {
+                Password must be at least 8 characters.
+              }
+            </p>
+          }
         </div>
 
         <!-- Submit Button -->
         <div class="pt-stack-md">
           <button
+          [disabled]="isLoading"
             type="submit"
             class="group/btn relative flex w-full justify-center overflow-hidden rounded-full bg-gradient-to-r from-royal-blue to-sky-blue px-4 py-4 font-body-md font-medium text-white shadow-[0_0_20px_-5px_rgba(124,196,250,0.4)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_-5px_rgba(124,196,250,0.6)] active:scale-[0.98]"
           >
-            <span class="relative z-10 flex items-center">
-              Sign In
+            @if (isLoading) {
+              <span class="relative z-10 flex items-center">
+                <span class="material-symbols-outlined mr-2 animate-spin text-[20px]">
+                  progress_activity
+                </span>
 
-              <span
-                class="material-symbols-outlined ml-2 text-[20px] transition-transform group-hover/btn:translate-x-1"
-              >
-                arrow_forward
+                Signing in...
               </span>
-            </span>
+            } @else {
+              <span class="relative z-10 flex items-center">
+                Sign In
+
+                <span
+                  class="material-symbols-outlined ml-2 text-[20px] transition-transform group-hover/btn:translate-x-1"
+                >
+                  arrow_forward
+                </span>
+              </span>
+            }
           </button>
         </div>
       </form>
 
       <!-- Security Badge -->
       <div class="mt-8 flex items-center justify-center gap-2 opacity-60">
-        <span class="material-symbols-outlined text-[16px]">
-          verified_user
-        </span>
+        <span class="material-symbols-outlined text-[16px]"> verified_user </span>
 
-        <span
-          class="font-label-sm text-[10px] uppercase tracking-[0.25em] text-on-surface-variant"
-        >
+        <span class="font-label-sm text-[10px] uppercase tracking-[0.25em] text-on-surface-variant">
           Secure Enterprise Login
         </span>
       </div>

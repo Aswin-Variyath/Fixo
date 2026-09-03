@@ -50,3 +50,48 @@ export const switchRoleSchema = z.object({
     role:z.enum(['customer','tasker'])
 })
 export type switchRoleDto = z.infer<typeof switchRoleSchema>
+
+
+
+
+export const adminLoginSchema = z.object({
+    body: z.object({
+        email: z.email()
+            .trim()
+            .lowercase(),
+
+        password: z.string()
+            .min(1, "Password is required"),
+    })
+});
+
+export type AdminLoginInput = z.infer<typeof adminLoginSchema>["body"];
+
+
+
+
+
+export const verifyAdminOtpSchema = z.object({
+    body: z.object({
+        challengeId: z.string()
+            .trim()
+            .min(1, "Challenge ID is required"),
+
+        otp: z.string()
+            .trim()
+            .length(6, "OTP must contain exactly 6 digits")
+            .regex(/^\d{6}$/, "OTP must contain only digits")
+    })
+});
+
+export type VerifyAdminOtpInput = z.infer<typeof verifyAdminOtpSchema>["body"];
+
+
+
+export const resendAdminOtpSchema = z.object({
+    body:z.object({
+        challengeId:z.string().trim().min(1,"Callenge ID is required")
+    })
+})
+
+export type resendAdminOtpInput = z.infer<typeof resetPasswordSchema>['body']

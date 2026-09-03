@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
-import { IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
-import { IUserAuthRespository, LoginUserRecord } from "../interfaces/user-auth-repository.interface";
+import { AdminLoginResult, AdminOtpRecipient, AdminVerifyOtpResult, IAuthCommandService, LoginResult, RefreshResult } from "../interfaces/auth-command-service.interface";
+import { IUserAuthRespository } from "../interfaces/user-auth-repository.interface";
 import {TYPES } from "../../../di"
-import {  SignupResult } from "../dto/auth-response.dto";
+import {  ForgotPasswordResult, SignupResult } from "../dto/auth-response.dto";
 import { SignupDto } from "../dto/signup.dto";
 import { IPasswordService } from "../interfaces/password-service.interface";
 import { LoginDto } from "../dto/login.dto";
@@ -22,9 +22,9 @@ import { AppError } from "../../../shared/errors/app.error";
 import { StatusCodes } from "http-status-codes";
 import { ActiveRole } from "../types/auth-session.types";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
-import { ta } from "zod/v4/locales";
 import { SwitchRoleResult } from "../dto/switch-role.dto";
-import { title } from "node:process";
+import { IAdminOtpStore } from "../interfaces/admin-otp-store.interface";
+import { AdminLoginDto } from "../dto/admin-login.dto";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -40,6 +40,7 @@ export class AuthCommandService implements IAuthCommandService {
     @inject(TYPES.MailService) private readonly mailService: IMailService,
     @inject(TYPES.RateLimitStore) private readonly rateLimitStore: IRateLimitStore,
     @inject(TYPES.SessionIndexStore) private readonly sessionIndexStore: IsessionIndexStore,
+    @inject(TYPES.AdminOtpStore) private readonly adminOtpStore: IAdminOtpStore,
 ) {}
     
     
@@ -212,12 +213,12 @@ export class AuthCommandService implements IAuthCommandService {
             
     }
 
-    async forgotPassword(email: string): Promise<void> {
+    async forgotPassword(email: string): Promise<ForgotPasswordResult | null> {
 
         const user = await this.userAuthRepository.findByEmail(email)
         console.log("This is ",user)
 
-        if(!user) return
+        if(!user) return null 
 
         const rateLimitKey = `auth:rate-limit:forgot-password:${email}`
 
@@ -243,6 +244,9 @@ export class AuthCommandService implements IAuthCommandService {
         let maili = await this.mailService.sendPasswordResetEmail(user.email,user.firstName,token)
         console.log("this is a,il",maili)
         await this.rateLimitStore.set(rateLimitKey, 300)
+        return {
+            expiresAt
+        }
     }
 
     async resetPassword(data: ResetPasswordDto): Promise<void> {
@@ -287,6 +291,20 @@ export class AuthCommandService implements IAuthCommandService {
 
         }finally {
             await this.passwordResetRepository.deleteByTokenHash(tokenHash)
+        }
+    }
+
+    async getPasswordResetExpiry(token:string):Promise<{expiresAt:Date}> {
+        const tokenHash = this.opaqueTokenService.hash(token)
+        const resetToken = await this.passwordResetRepository.findByTokenHash(tokenHash)
+        if(!resetToken) throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid or expired reset token")
+
+        if(resetToken.expiresAt.getTime() < Date.now() ) {
+            await this.passwordResetRepository.deleteByTokenHash(tokenHash)
+            throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired reset token")
+        }
+        return {
+            expiresAt: resetToken.expiresAt
         }
     }
 
@@ -352,7 +370,7 @@ export class AuthCommandService implements IAuthCommandService {
     }
 
 
-    private async createAuthenticationSession(user:LoginUserRecord,activeRole:ActiveRole):Promise<{accessToken:string,refreshToken:string}> {
+    private async createAuthenticationSession(user:{id:string},activeRole:ActiveRole):Promise<{accessToken:string,refreshToken:string}> {
         const sessionId = randomUUID()
         const familyId = randomUUID()
         const {token:refreshToken,tokenHash} = this.opaqueTokenService.generate()
@@ -408,6 +426,84 @@ export class AuthCommandService implements IAuthCommandService {
                 type: role.type as ActiveRole,
                 title: role.title
             }
+        }
+    }
+
+
+    async adminLogin(data: AdminLoginDto): Promise<AdminLoginResult> {
+    const admin = await this.userAuthRepository.findForAdminLogin(data.email);
+    console.log("This is admin",admin)
+    if (!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")  
+    if (admin.deletedAt) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+    if (!admin.status.isActive) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
+    if (!admin.adminRole.isSuperAdmin)throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
+    if (!admin.adminRole.isActive) throw new AppError(StatusCodes.FORBIDDEN,"Admin role is inactive")
+        
+    const isPasswordValid = await this.passwordService.verify(admin.passwordHash, data.password)
+    if (!isPasswordValid) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+    const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`
+    const isCooldownActive = await this.rateLimitStore.exists(cooldownKey);
+    if (isCooldownActive) throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Please wait before requesting another OTP")
+    return this.createAndSendAdminOpt(admin)
+    }
+
+    async resendAdminOtp(challengeId:string):Promise<AdminLoginResult> {
+        const existingOtp = await this.adminOtpStore.findByChallengeId(challengeId)
+        if(!existingOtp) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired OTP session")
+        const cooldownKey = `auth:admin-otp-cooldown:${existingOtp.userId}`
+        const isCoolDownActive = await this.rateLimitStore.exists(cooldownKey)
+        if(isCoolDownActive) throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Please wait before requesting another OTP")
+        const admin = await this.userAuthRepository.findForAdminLoginById(existingOtp.userId)
+        if(!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Admin account not found")
+        await this.adminOtpStore.deleteByChallengeId(challengeId)
+        return this.createAndSendAdminOpt(admin)
+    }
+
+    async verifyAdminOtp(challengeId: string, otp: string): Promise<AdminVerifyOtpResult> {
+        const adminOtp = await this.adminOtpStore.findByChallengeId(challengeId);
+        if (!adminOtp) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid or expired OTP")
+        if (adminOtp.attempts >= 5) {
+            await this.adminOtpStore.deleteByChallengeId(challengeId);
+            throw new AppError(StatusCodes.TOO_MANY_REQUESTS,"Too many invalid OTP attempts")
+        }
+        const otpHash = this.opaqueTokenService.hash(otp);
+        if (otpHash !== adminOtp.otpHash) {
+            await this.adminOtpStore.incrementAttempts(challengeId)
+            throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid OTP")
+        }
+
+        const admin = await this.userAuthRepository.findForAdminLoginById(adminOtp.userId)
+        if (!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Admin account not found")        
+
+        const {accessToken, refreshToken} = await this.createAuthenticationSession(admin,"super_admin")
+
+        await this.adminOtpStore.deleteByChallengeId(challengeId)
+        return {
+            accessToken,
+            refreshToken,
+            accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS
+        }
+    }
+
+    private async createAndSendAdminOpt(admin:AdminOtpRecipient):Promise<AdminLoginResult> {
+        const otp = this.opaqueTokenService.generateOtp()
+        const otpHash = this.opaqueTokenService.hash(otp)
+        const OTP_TTL_SECONDS = 5 * 60;
+        const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000)
+        const challengeId = this.opaqueTokenService.generate().token
+        await this.adminOtpStore.create(challengeId,{
+            userId:admin.id,
+            otpHash,
+            attempts:0,
+            expiresAt
+        },OTP_TTL_SECONDS)
+        await this.mailService.sendAdminOtp(admin.email,admin.firstName,otp)
+        const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`
+        await this.rateLimitStore.set(cooldownKey,60)
+        return {
+            challengeId,
+            otpExpiresIn:OTP_TTL_SECONDS,
+            resendAfter:60
         }
     }
 
