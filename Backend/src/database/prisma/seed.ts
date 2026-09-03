@@ -1,6 +1,7 @@
 import prisma from "./prisma";
 
-import {seedRoles, seedLanguages, seedUserStatuses,} from "./seeds";
+import {seedRoles, seedLanguages, seedUserStatuses, seedCategories, seedServices,} from "./seeds";
+
 
 async function main() {
   console.log("Seeding database...");
@@ -8,6 +9,9 @@ async function main() {
   await seedRoles();
   await seedLanguages();
   await seedUserStatuses();
+  await seedCategories();
+  await seedServices();
+
 
   console.log("Database seeded successfully.");
 }
