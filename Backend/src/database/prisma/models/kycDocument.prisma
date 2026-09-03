@@ -6,7 +6,7 @@ model KycDocument {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
-  taskerKyc   TaskerKyc       @relation(fields: [taskerKycId], references: [id])
+  taskerKyc TaskerKyc @relation(fields: [taskerKycId], references: [id])
 
   @@unique([taskerKycId, type])
   @@index([taskerKycId])

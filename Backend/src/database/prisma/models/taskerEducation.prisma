@@ -1,15 +1,15 @@
 model TaskerEducation {
-  id           String              @id @default(uuid())
-  taskerKycId  String
-  type         TaskerEducationType
-  qualification String
-  institution  String?
-  yearOfPassing Int?
+  id             String              @id @default(uuid())
+  taskerKycId    String
+  type           TaskerEducationType
+  qualification  String
+  institution    String?
+  yearOfPassing  Int?
   certificateUrl String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 
-  taskerKyc    TaskerKyc           @relation(fields: [taskerKycId], references: [id])
+  taskerKyc TaskerKyc @relation(fields: [taskerKycId], references: [id])
 
   @@unique([taskerKycId, type])
   @@index([taskerKycId])

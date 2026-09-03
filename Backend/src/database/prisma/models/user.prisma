@@ -17,7 +17,7 @@ model User {
 
   taskerProfile TaskerProfile?
 
-  userRoles UserRole[]
+  userRoles         UserRole[]
   customerAddresses CustomerAddress[]
 
   language Language   @relation(fields: [languageId], references: [id])

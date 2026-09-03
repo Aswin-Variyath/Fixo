@@ -1,18 +1,18 @@
 model TaskerLocation {
-  id              String         @id @default(uuid())
-  taskerProfileId String         @unique
+  id              String   @id @default(uuid())
+  taskerProfileId String   @unique
   addressLine     String
   city            String
   state           String
   postalCode      String
   country         String
-  latitude        Decimal        @db.Decimal(10, 7)
-  longitude       Decimal        @db.Decimal(10, 7)
-  serviceRadiusKm Decimal        @db.Decimal(6, 2)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  latitude        Decimal  @db.Decimal(10, 7)
+  longitude       Decimal  @db.Decimal(10, 7)
+  serviceRadiusKm Decimal  @db.Decimal(6, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  taskerProfile   TaskerProfile  @relation(fields: [taskerProfileId], references: [id])
+  taskerProfile TaskerProfile @relation(fields: [taskerProfileId], references: [id])
 
   @@index([latitude, longitude])
 }
