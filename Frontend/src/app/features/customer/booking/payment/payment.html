@@ -1,0 +1,45 @@
+<!-- Ambient Background Lighting -->
+<div class="ambient-blob bg-primary w-[600px] h-[600px] top-[-200px] right-[-100px]"></div>
+<div class="ambient-blob bg-sky-blue w-[500px] h-[500px] bottom-[10%] left-[-200px]"></div>
+
+<!-- Top Navigation Bar -->
+<app-navbar></app-navbar>
+
+<!-- Main Content -->
+<main class="flex-grow pt-32 pb-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full">
+
+  <!-- Progress Indicator -->
+  <app-booking-progress [currentStep]="3"></app-booking-progress>
+
+  <!-- 2 Column Layout Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+
+    <!-- Left Column: Payment Methods -->
+    <div class="lg:col-span-7 flex flex-col gap-stack-md">
+      <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-sm">
+        Choose Payment Plan
+      </h1>
+      <app-payment-plan></app-payment-plan>
+
+      <h2 class="font-body-xl text-body-xl font-semibold text-on-surface mt-4 mb-2">
+        Choose Payment Method
+      </h2>
+      <app-payment-method></app-payment-method>
+    </div>
+
+    <!-- Right Column: Sticky Booking Summary -->
+    <div class="lg:col-span-5 relative">
+      <app-payment-summary (openPolicyModal)="openPolicyModal()"></app-payment-summary>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<app-footer></app-footer>
+
+<!-- Policy Modal (Overlay) -->
+<app-policy-modal
+  [isOpen]="isPolicyModalOpen()"
+  (closeModal)="closePolicyModal()"
+></app-policy-modal>

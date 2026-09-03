@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #bdc2ff, #7cc4fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.01);
+}
+
+.glow-shadow {
+  box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
+}

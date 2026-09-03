@@ -1,0 +1,70 @@
+@if (!isKycVerified()) {
+  <!-- Availability Card (Disabled / Pending State) -->
+  <div class="glass-panel rounded-[20px] p-6 relative overflow-hidden group">
+    <!-- Subtle glow effect behind card -->
+    <div
+      class="absolute -inset-1 bg-gradient-to-r from-error/20 to-transparent blur-xl opacity-50 pointer-events-none"
+    ></div>
+    <div
+      class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+    >
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-outline flex-shrink-0"
+        >
+          <span class="material-symbols-outlined text-2xl">wifi_off</span>
+        </div>
+        <div>
+          <h3 class="font-body-xl text-body-xl text-on-surface mb-1 font-medium">Currently Offline</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            You cannot go online to receive requests until your KYC is verified.
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex items-center gap-3 opacity-50 cursor-not-allowed flex-shrink-0"
+        title="Complete KYC to enable"
+      >
+        <span class="text-sm font-medium text-outline">Go Online</span>
+        <div class="w-12 h-6 bg-surface-variant rounded-full relative">
+          <div class="absolute left-1 top-1 w-4 h-4 bg-outline rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <!-- Availability Card (Active / Verified State) -->
+  <div class="glass-card p-6 flex flex-col justify-center items-center text-center space-y-6 h-full">
+    <div
+      class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20"
+    >
+      <span class="material-symbols-outlined text-primary">online_prediction</span>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-body-xl text-body-xl font-semibold text-on-surface">Job Availability</h3>
+      @if (isOnline()) {
+        <p class="font-label-sm text-label-sm text-success">Currently Available</p>
+      } @else {
+        <p class="font-label-sm text-label-sm text-on-surface-variant">Currently Offline</p>
+      }
+    </div>
+    <div class="relative inline-block w-16 align-middle select-none">
+      <button
+        type="button"
+        role="switch"
+        [attr.aria-checked]="isOnline()"
+        (click)="toggleOnline()"
+        class="relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none cursor-pointer"
+        [class.bg-success]="isOnline()"
+        [class.bg-surface-variant]="!isOnline()"
+        [title]="isOnline() ? 'Click to go offline' : 'Click to go online'"
+      >
+        <span
+          class="inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-300 shadow-md"
+          [class.translate-x-9]="isOnline()"
+          [class.translate-x-1]="!isOnline()"
+        ></span>
+      </button>
+    </div>
+  </div>
+}

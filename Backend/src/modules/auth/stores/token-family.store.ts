@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { ITokenFamilyStore } from "../interfaces/token-family-store.interface";
 import { TokenFamily } from "../types/auth-session.types";
-import { redisClient } from "../../../infrastructure/redis/redis.client";
+import { redisClient } from "../../../config/redis.config";
 
 @injectable()
 export class TokenFamilyStore implements ITokenFamilyStore {
@@ -16,5 +16,14 @@ export class TokenFamilyStore implements ITokenFamilyStore {
 
     async deleteById(familyId: string): Promise<void> {
         await redisClient.del(`auth:family:${familyId}`)
+    }
+
+    async revokeById(familyId: string): Promise<void> {
+        const key = `auth:family:${familyId}`
+        const value = await redisClient.get(key)
+        if(!value) return
+        const family = JSON.parse(value) as TokenFamily
+        family.status = "REVOKED"
+        await redisClient.set(key,JSON.stringify(family),{KEEPTTL:true})
     }
 }

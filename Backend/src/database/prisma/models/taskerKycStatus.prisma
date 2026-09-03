@@ -1,0 +1,6 @@
+enum TaskerKycStatus {
+  NOT_SUBMITTED
+  PENDING
+  VERIFIED
+  REJECTED
+}

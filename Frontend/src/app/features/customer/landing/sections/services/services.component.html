@@ -1,0 +1,271 @@
+<!-- Services Carousel -->
+<section
+  appScrollReveal
+  class="py-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto relative group/carousel"
+>
+  <div class="text-center mb-16">
+    <h2
+      class="font-headline-lg text-headline-lg mb-4 text-on-surface dark:text-on-surface"
+    >
+      Our Premium Services
+    </h2>
+    <p
+      class="font-body-md text-on-surface-variant dark:text-on-surface-variant max-w-2xl mx-auto"
+    >
+      Precision engineering for your home comfort. Select a category to find specialized
+      professionals ready to help.
+    </p>
+  </div>
+  <!-- Carousel Controls -->
+  <button
+    #carouselPrev
+    class="carousel-btn absolute left-0 top-[60%] -translate-y-1/2 -translate-x-1/2 z-20 w-14 h-14 rounded-full glass-card flex items-center justify-center hover:scale-110 active:scale-95 text-primary dark:text-primary opacity-0 group-hover/carousel:opacity-100 transition-all duration-500"
+    (click)="scrollCarousel('prev')"
+  >
+    <span class="material-symbols-outlined text-3xl">chevron_left</span>
+  </button>
+  <button
+    #carouselNext
+    class="carousel-btn absolute right-0 top-[60%] -translate-y-1/2 translate-x-1/2 z-20 w-14 h-14 rounded-full glass-card flex items-center justify-center hover:scale-110 active:scale-95 text-primary dark:text-primary opacity-0 group-hover/carousel:opacity-100 transition-all duration-500"
+    (click)="scrollCarousel('next')"
+  >
+    <span class="material-symbols-outlined text-3xl">chevron_right</span>
+  </button>
+  <div
+    #carousel
+    class="carousel-container flex gap-gutter overflow-x-auto snap-x snap-mandatory py-4 px-2"
+  >
+    <!-- Service: Electrician -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >electrical_services</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Electrician
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Expert wiring, lighting installation, and smart home setup.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: Cleaning -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >cleaning_services</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Cleaning
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Deep cleaning, sanitization, and regular maintenance for homes.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: Painting -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >format_paint</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Painting
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Premium wall coatings, textures, and professional finish.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: AC Repair -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >ac_unit</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        AC Repair
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Heating and cooling solutions with energy efficiency focus.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: Plumbing -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >plumbing</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Plumbing
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Leak repairs, pipe fitting, and water heater installation.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: Carpentry -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >handyman</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Carpentry
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Custom furniture, shelving, door repairs, and woodwork.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: Pest Control -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >pest_control</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Pest Control
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Safe and effective treatment for all types of pests.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+    <!-- Service: Gardening -->
+    <div
+      class="service-card glass-card p-8 rounded-3xl transition-all duration-300 group cursor-pointer flex-shrink-0 w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] snap-start"
+    >
+      <div
+        class="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 dark:group-hover:bg-primary/20 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-4xl text-primary dark:text-primary"
+          style="font-variation-settings: 'FILL' 1"
+          >yard</span
+        >
+      </div>
+      <h3
+        class="font-headline-lg text-[24px] mb-2 text-on-surface dark:text-on-surface text-slate-900"
+      >
+        Gardening
+      </h3>
+      <p
+        class="font-body-md text-on-surface-variant dark:text-on-surface-variant mb-6"
+      >
+        Lawn care, landscaping, and seasonal garden maintenance.
+      </p>
+      <div
+        class="flex items-center text-primary dark:text-primary font-bold group-hover:gap-2 transition-all"
+      >
+        View Details <span class="material-symbols-outlined">chevron_right</span>
+      </div>
+    </div>
+  </div>
+</section>

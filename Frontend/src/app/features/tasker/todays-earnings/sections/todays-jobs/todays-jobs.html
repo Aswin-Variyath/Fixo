@@ -1,0 +1,31 @@
+<section class="flex flex-col gap-6">
+  <div class="flex justify-between items-end mb-2">
+    <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Today’s Jobs</h2>
+    <button type="button" class="history-action">
+      View History
+      <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-4">
+    @for (job of jobs; track job.id) {
+      <article class="glass-panel job-row p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex items-center gap-4 min-w-0">
+          <div class="w-12 h-12 rounded-full bg-surface-container-high border border-glass-stroke overflow-hidden shrink-0">
+            <img [src]="job.avatar" [alt]="job.customerName" class="w-full h-full object-cover" />
+          </div>
+          <div class="flex flex-col min-w-0">
+            <h3 class="font-body-xl text-body-xl font-medium text-on-surface truncate">{{ job.customerName }}</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2 flex-wrap">
+              <span>{{ job.service }}</span><span class="w-1 h-1 rounded-full bg-outline" aria-hidden="true"></span><span>{{ job.time }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2 shrink-0">
+          <span class="font-headline-lg-mobile text-headline-lg-mobile md:text-2xl font-semibold text-on-surface">{{ job.amount }}</span>
+          <span class="paid-badge">Paid</span>
+        </div>
+      </article>
+    }
+  </div>
+</section>

@@ -1,5 +1,5 @@
-import { UserListItemResponseDto } from "../dtos/user-response.dto";
+import { CurrentUser } from "../types/user.types";
 
 export interface IUserQueryService {
-    listUsers():Promise<UserListItemResponseDto[]>
+    getCurrentUser(userId:string,sessionId:string):Promise<CurrentUser>
 }

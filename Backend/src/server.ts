@@ -3,7 +3,7 @@ import app from "./app";
 import { bootstrap } from "./bootstrap";
 import { ENV } from "./config/env.config";
 
-const PORT = ENV.PORT;
+const PORT = ENV.APP.PORT;
 
 async function startServer(): Promise<void> {
   try {

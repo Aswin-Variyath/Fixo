@@ -1,7 +1,10 @@
 import { injectable } from "inversify";
 import { IsessionStore } from "../interfaces/session-store.interface";
 import { AuthSession } from "../types/auth-session.types";
-import { redisClient } from "../../../infrastructure/redis/redis.client";
+import { redisClient } from "../../../config/redis.config";
+import { AppError } from "../../../shared/errors/app.error";
+import { StatusCodes } from "http-status-codes";
+import { json } from "zod";
 
 @injectable()
 export class SessionStore implements IsessionStore {
@@ -20,11 +23,29 @@ export class SessionStore implements IsessionStore {
         console.log("THisis sessionid", sessionId)
         const key = `auth:session:${sessionId}`;
 
-const value = await redisClient.get(key);
+        const value = await redisClient.get(key);
 
-console.log("Session Key:", key);
-console.log("Session Value:", value);
-    const deleted = await redisClient.del(`auth:session:${sessionId}`)
-    console.log("Deleted Count:", deleted);
-  }
+        console.log("Session Key:", key);
+        console.log("Session Value:", value);
+        const deleted = await redisClient.del(`auth:session:${sessionId}`)
+        console.log("Deleted Count:", deleted);
+    }
+
+    async revokeById(sessionId: string): Promise<void> {
+        const key = `auth:session:${sessionId}`
+        const value = await redisClient.get(key)
+        if(!value) return
+        const session = JSON.parse(value) as AuthSession
+        session.status  = "REVOKED"
+        await redisClient.set(key,JSON.stringify(session),{KEEPTTL:true})
+    }
+    
+    async updateActiveRole(sessionId: string, activeRole: AuthSession["activeRole"]): Promise<void> {
+        const key = `auth:session:${sessionId}`
+        const value = await redisClient.get(key)
+        if(!value) return
+        const session = JSON.parse(value) as AuthSession
+        session.activeRole = activeRole
+        await redisClient.set(key,JSON.stringify(session),{KEEPTTL:true})
+    }   
 }

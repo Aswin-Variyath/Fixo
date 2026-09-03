@@ -1,0 +1,4 @@
+:host { display: flex; flex-direction: column; min-height: 100vh; }
+.ambient-shape { position: absolute; border-radius: 50%; pointer-events: none; }
+.ambient-shape-one { top: -20%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, transparent 70%); }
+.ambient-shape-two { right: -5%; bottom: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(124, 196, 250, 0.1) 0%, transparent 70%); }

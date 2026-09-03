@@ -1,0 +1,105 @@
+<div class="sticky top-28 flex flex-col gap-stack-md">
+  <div class="glass-panel glass-inner-border p-6 flex flex-col gap-6 relative overflow-hidden glow-shadow-primary">
+    <!-- Abstract bg shape -->
+    <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+    <h2 class="font-body-xl text-body-xl font-semibold text-on-surface border-b border-glass-stroke pb-4">Booking Summary</h2>
+    <!-- Tasker Info -->
+    <div class="flex items-center gap-4">
+      <img alt="Ramesh Kumar" class="w-14 h-14 rounded-xl object-cover border border-glass-stroke" data-alt="Professional portrait of an electrician named Ramesh Kumar, wearing a clean uniform, friendly smile, studio lighting, dark background, premium quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK4NO3sCeh2q_O9ecDLXYlQRHLKSCPEcdzbBAUnkAOGcy3WvamHes3YiAe9jPg_gVBCfQwcLcz90dl9U-Z541mmzLxJ4qHhBb6xjovD1qq7MvMXfw8lDHMe34QpunLKu1T9gFP2oznVW7QEiBwwm-rfHKIb-e5v_sZtI2dURPLvruuq-EQDop5xFWyrqqiteVVjzk-pc6hUpG9ZRhOK_FFaraYfX1ZCE_CnpA4nQhVs5oOEycZXXF4"/>
+      <div>
+        <h3 class="font-body-md text-body-md font-semibold text-on-surface">Ramesh Kumar</h3>
+        <div class="flex items-center gap-1 mt-1">
+          <span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">4.9 (120 reviews) • <span class="text-secondary-fixed">Verified</span></span>
+        </div>
+      </div>
+    </div>
+    <!-- Details List -->
+    <div class="flex flex-col gap-4 text-on-surface-variant font-body-md text-body-md">
+      <div class="flex items-start gap-3">
+        <span class="material-symbols-outlined text-primary-container">electrical_services</span>
+        <div>
+          <span class="block text-sm text-outline">Service</span>
+          <span class="text-on-surface">Electrical Wiring</span>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="material-symbols-outlined text-primary-container">calendar_month</span>
+        <div>
+          <span class="block text-sm text-outline">Schedule</span>
+          <span class="text-on-surface">Aug 25, 2026 at 10:00 AM</span>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="material-symbols-outlined text-primary-container">location_on</span>
+        <div>
+          <span class="block text-sm text-outline">Address</span>
+          <span class="text-on-surface">123 Beach Road, Kozhikode</span>
+        </div>
+      </div>
+    </div>
+    <hr class="border-glass-stroke"/>
+    <!-- Price Breakdown -->
+    <div class="flex flex-col gap-2 font-body-md text-body-md">
+      <div class="flex justify-between text-on-surface-variant">
+        <span>Tasker Rate</span>
+        <span>₹400/hour</span>
+      </div>
+      <div class="flex justify-between text-on-surface-variant">
+        <span>Estimated Duration</span>
+        <span>3 hours</span>
+      </div>
+      <div class="flex justify-between text-on-surface-variant">
+        <span>Estimated Service Amount</span>
+        <span>₹1,200</span>
+      </div>
+      <div class="flex justify-between text-on-surface-variant">
+        <span>Platform Fee</span>
+        <span>₹49</span>
+      </div>
+      <div class="flex justify-between items-center mt-2 pt-2 border-t border-glass-stroke/50">
+        <span class="font-semibold text-on-surface">Total Estimated Amount</span>
+        <span class="font-body-md text-on-surface">₹1,249</span>
+      </div>
+      <div class="flex justify-between items-center mt-2 pt-2 border-t border-glass-stroke/50">
+        <span class="font-semibold text-on-surface">Amount Paid Now</span>
+        <span class="font-headline-lg-mobile text-headline-lg-mobile text-primary" id="amount-paid-now">₹649</span>
+      </div>
+      <div class="flex justify-between text-on-surface-variant mt-1" id="estimated-remaining-row">
+        <span>Estimated Remaining</span>
+        <span id="estimated-remaining">₹600</span>
+      </div>
+    </div>
+    <p class="text-xs text-outline italic mt-2">Your final service amount is calculated from the actual time worked. If the actual duration is different from the estimate, your final amount will be adjusted accordingly.</p>
+  </div>
+  <!-- Trust Message -->
+  <div class="flex flex-col gap-2">
+    <div class="flex items-center gap-3 text-on-surface-variant px-4 py-3 rounded-lg bg-surface-container-low border border-glass-stroke">
+      <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">security</span>
+      <p class="font-label-sm text-label-sm">Your payment is made to Fixo, not directly to the Tasker. Secure payment powered by Fixo.</p>
+    </div>
+    <div class="px-4 py-3 rounded-lg bg-surface-container-lowest border border-glass-stroke">
+      <h4 class="font-label-sm text-on-surface mb-1">Cancellation &amp; Refund Policy</h4>
+      <p class="text-xs text-outline" id="policy-text">Advance payment is non-refundable under the customer cancellation policy.</p>
+    </div>
+  </div>
+  <!-- Action Buttons -->
+  <div class="flex items-center gap-4 mt-2">
+    <button class="px-6 py-4 rounded-full border border-glass-stroke font-body-md text-body-md font-semibold text-on-surface transition-all hover:bg-white/5 active:scale-[0.98] cursor-pointer" type="button">
+      Back
+    </button>
+    <button
+      class="flex-grow px-6 py-4 rounded-full bg-gradient-to-r from-royal-blue to-sky-blue font-body-md text-body-md font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(124,196,250,0.4)] hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group cursor-pointer"
+      type="button"
+      (click)="openPolicyModal.emit()"
+    >
+      <span class="relative z-10 flex items-center justify-center gap-2">
+        <span id="cta-text">Pay ₹649 &amp; Confirm Booking</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </span>
+      <!-- Button Hover Effect -->
+      <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
+    </button>
+  </div>
+  <p class="text-[10px] text-outline text-center mt-2 w-full">By continuing, you agree to Fixo's Cancellation, Refund, and Payment Policy.</p>
+</div>

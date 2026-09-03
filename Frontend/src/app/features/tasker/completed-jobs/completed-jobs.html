@@ -1,0 +1,20 @@
+<app-navbar />
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+  <div class="ambient-glow ambient-glow-top"></div>
+  <div class="ambient-glow ambient-glow-bottom"></div>
+</div>
+
+<main
+  class="flex-grow z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-32 pb-section-gap relative"
+>
+  <app-completed-jobs-header />
+
+  <section class="flex flex-col gap-6" aria-label="Completed jobs">
+    @for (job of jobs; track job.id) {
+      <app-completed-job-card [job]="job" />
+    }
+  </section>
+</main>
+
+<app-footer />

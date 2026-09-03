@@ -1,27 +1,42 @@
 import dotenv from "dotenv";
-
+import { getNumberEnv, getOptionalEnv, getRequiredEnv } from "./helpers/env.helper";
 dotenv.config();
 
-function getRequiredEnv(name:string):string {
-  const value = process.env[name]
-  if(!value) {
-    throw new Error("Missing required environment variable" + name)
-  }
-  return value 
-}
+
 
 export const ENV = {
-  PORT: Number(process.env.PORT ?? 3000),
-  DATABASE_URL:getRequiredEnv("DATABASE_URL"),
-  REDIS_URL:getRequiredEnv("REDIS_URL"),
-  JWT:{
-    accessSecret:getRequiredEnv("JWT_ACCESS_SECRET"),
-    issuer:process.env.JWT_ISSUER ?? "fixo_app",
-    audience:process.env.JWT_AUDIENCE ?? "fixo_web_app",
-    accessTokenTtlSeconds:Number(process.env.ACCESS_TOKEN_TTL_SECONDS ?? 900)
+  APP: {
+    PORT: getNumberEnv("PORT",3000),
+    NODE_ENV: getRequiredEnv("NODE_ENV"),
+    FRONTEND_URL: getRequiredEnv("FRONTEND_URL")
+  },
+  DATABASE: {
+    URL: getRequiredEnv("DATABASE_URL")
+  },
+  REDIS: {
+    URL: getRequiredEnv("REDIS_URL")
   },
   AUTH: {
-    refreshTokenTtlSeconds:Number(process.env.REFRESH_TOKEN_TTL_SECONDS ?? 60*60*24*30)
+    JWT: {
+      ACCESS_SECRET: getRequiredEnv("JWT_ACCESS_SECRET"),
+      ISSUER: getOptionalEnv("JWT_ISSUER", "fixo_app"),
+      AUDIENCE: getOptionalEnv("JWT_AUDIENCE", "fixo_web_app")
+    },
+    TOKEN: {
+      ACCESS_TTL_SECONDS:getNumberEnv("ACCESS_TOKEN_TTL_SECONDS", 900),
+      REFRESH_TTL_SECONDS:getNumberEnv("REFRESH_TOKEN_TTL_SECONDS",60 * 60 * 24 * 15),
+      SESSION_TTL_SECONDS: getNumberEnv("SESSION_TTL_SECONDS",60 * 60 * 24 * 15),
+      FAMILY_TTL_SECONDS: getNumberEnv("FAMILY_TTL_SECONDS",60 * 60 * 24 * 15),
+      USER_SESSION_TTL_SECONDS: getNumberEnv("USER_SESSION_TTL_SECONDS",60 * 60 * 24 * 15)
+    }
   },
-  NODE_ENV:getRequiredEnv("NODE_ENV")
+  MAIL: {
+    SMTP: {
+      HOST:getRequiredEnv("SMTP_HOST"),
+      PORT:getNumberEnv("SMTP_PORT", 587),
+      USER:getRequiredEnv("SMTP_USER"),
+      PASS:getRequiredEnv("SMTP_PASS"),
+    },
+    FROM:getRequiredEnv("MAIL_FROM")
+  }
 } as const

@@ -12,20 +12,20 @@ export class AccessTokenService implements IAccessTokenService {
         role: payload.role,
         sessionId: payload.sessionId,
       },
-      ENV.JWT.accessSecret,
+      ENV.AUTH.JWT.ACCESS_SECRET,
       {
         subject: payload.userId,
-        issuer: ENV.JWT.issuer,
-        audience: ENV.JWT.audience,
-        expiresIn: ENV.JWT.accessTokenTtlSeconds,
+        issuer: ENV.AUTH.JWT.ISSUER,
+        audience: ENV.AUTH.JWT.AUDIENCE,
+        expiresIn: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS,
       },
     );
   }
   
   verify(token: string): AccessTokenPayload {
-    const payload = jwt.verify(token, ENV.JWT.accessSecret,{
-      issuer:ENV.JWT.issuer,
-      audience:ENV.JWT.audience
+    const payload = jwt.verify(token, ENV.AUTH.JWT.ACCESS_SECRET,{
+      issuer:ENV.AUTH.JWT.ISSUER,
+      audience:ENV.AUTH.JWT.AUDIENCE
     }) as JwtPayload
 
     return {

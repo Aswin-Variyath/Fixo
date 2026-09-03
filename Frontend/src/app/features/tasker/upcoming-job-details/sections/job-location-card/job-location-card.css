@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.map-glow {
+  box-shadow: 0 0 40px rgba(94, 106, 210, 0.15);
+}

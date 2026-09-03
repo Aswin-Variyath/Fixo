@@ -1,0 +1,22 @@
+/*
+ * _utilities.css
+ * ---------------
+ * PURPOSE : Single-property or small helper utilities that are not
+ *           covered by Tailwind's default utility scale and do not
+ *           qualify as full component classes.
+ *
+ * BELONGS : Custom shadow helpers, one-off Tailwind @utility declarations
+ *           that extend the utility layer with non-component helpers.
+ *
+ * NEVER   : Multi-property component styles (those belong in _components.css),
+ *           design tokens (belong in _tokens.css), keyframes (belong in _animations.css).
+ */
+
+/* ============================================================
+   shadow-glow-sm
+   Used on the Navbar header element.
+   A subtle downward glow to separate the nav from page content.
+============================================================ */
+@utility shadow-glow-sm {
+  box-shadow: 0 2px 20px rgba(94, 106, 210, 0.08);
+}

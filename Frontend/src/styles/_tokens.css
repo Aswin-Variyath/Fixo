@@ -1,0 +1,199 @@
+/*
+ * _tokens.css
+ * -----------
+ * PURPOSE : Single source of truth for ALL design tokens in Tailwind v4 CSS-first format.
+ *
+ * BELONGS : @theme block containing colors, spacing, font families, font sizes,
+ *           and border radius values — exactly as defined in the Google Stitch tailwind.config.
+ *
+ * NEVER   : Component styles, keyframes, utility classes, base element resets.
+ *           Nothing that isn't a design token lives here.
+ */
+
+@theme {
+  /* ============================================================
+     COLORS — from Stitch tailwind.config.theme.extend.colors
+     Every token preserved verbatim. No renaming, no merging.
+  ============================================================ */
+
+  /* Material Design 3 surface roles */
+  --color-surface-container-highest: #343439;
+  --color-surface-variant: #343439;
+  --color-surface: #121317;
+  --color-surface-bright: #38393e;
+  --color-surface-dim: #121317;
+  --color-surface-container: #1e1f24;
+  --color-surface-container-lowest: #0d0e12;
+  --color-surface-container-high: #292a2e;
+  --color-surface-container-low: #1a1b20;
+
+  /* Material Design 3 background */
+  --color-background: #121317;
+  --color-on-background: #e3e2e8;
+
+  /* Material Design 3 primary */
+  --color-primary: #bdc2ff;
+  --color-primary-container: #5e6ad2;
+  --color-primary-fixed: #dfe0ff;
+  --color-primary-fixed-dim: #bdc2ff;
+  --color-on-primary: #121f8b;
+  --color-on-primary-container: #fdfaff;
+  --color-on-primary-fixed: #000965;
+  --color-on-primary-fixed-variant: #2e3aa2;
+  --color-inverse-primary: #4854bb;
+
+  /* Material Design 3 secondary */
+  --color-secondary: #a7caf3;
+  --color-secondary-container: #274b6e;
+  --color-secondary-fixed: #d0e4ff;
+  --color-secondary-fixed-dim: #a7caf3;
+  --color-on-secondary: #063254;
+  --color-on-secondary-container: #99bbe4;
+  --color-on-secondary-fixed: #001d35;
+  --color-on-secondary-fixed-variant: #25496c;
+
+  /* Material Design 3 tertiary */
+  --color-tertiary: #ffb867;
+  --color-tertiary-container: #a56500;
+  --color-tertiary-fixed: #ffddbb;
+  --color-tertiary-fixed-dim: #ffb867;
+  --color-on-tertiary: #482900;
+  --color-on-tertiary-container: #fffaf8;
+  --color-on-tertiary-fixed: #2b1700;
+  --color-on-tertiary-fixed-variant: #673d00;
+
+  /* Material Design 3 error */
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
+
+  /* Material Design 3 outline */
+  --color-outline: #908f9e;
+  --color-outline-variant: #454652;
+
+  /* Material Design 3 surface text roles */
+  --color-on-surface: #e3e2e8;
+  --color-on-surface-variant: #c6c5d5;
+  --color-surface-tint: #bdc2ff;
+  --color-inverse-surface: #e3e2e8;
+  --color-inverse-on-surface: #2f3035;
+
+  /* Brand-specific semantic colors */
+  --color-royal-blue: #2E4AD1;
+  --color-sky-blue: #7CC4FA;
+  --color-deep-navy: #0B111B;
+
+  /* Glass / glow effect tokens — rgba values preserved exactly */
+  --color-accent-glow: rgba(94, 106, 210, 0.4);
+  --color-glass-stroke: rgba(255, 255, 255, 0.15);
+
+  /* ============================================================
+     SPACING — from Stitch tailwind.config.theme.extend.spacing
+     Named tokens (not numeric scale). Preserved verbatim.
+  ============================================================ */
+  --spacing-section-gap: 80px;
+  --spacing-gutter: 24px;
+  --spacing-margin-mobile: 16px;
+  --spacing-stack-sm: 8px;
+  --spacing-stack-md: 16px;
+  --spacing-container-max: 1200px;
+
+  /* ============================================================
+     FONT FAMILIES — from Stitch tailwind.config.theme.extend.fontFamily
+     Keys are typographic role names, not generic family names.
+     class="font-headline-lg" → font-family: var(--font-headline-lg)
+  ============================================================ */
+  --font-headline-lg-mobile: "Hanken Grotesk", sans-serif;
+  --font-label-sm: "JetBrains Mono", monospace;
+  --font-headline-lg: "Hanken Grotesk", sans-serif;
+  --font-display-lg: "Hanken Grotesk", sans-serif;
+  --font-body-xl: "Inter", sans-serif;
+  --font-body-md: "Inter", sans-serif;
+
+  /* ============================================================
+     FONT SIZES — from Stitch tailwind.config.theme.extend.fontSize
+     Each entry includes size, line-height, letter-spacing, font-weight.
+     Tailwind v4 uses companion custom properties for the metadata.
+  ============================================================ */
+
+  /* headline-lg-mobile: 32px / 40px / weight 600 */
+  --text-headline-lg-mobile: 32px;
+  --text-headline-lg-mobile--line-height: 40px;
+  --text-headline-lg-mobile--font-weight: 600;
+
+  /* label-sm: 12px / 16px / tracking 0.05em / weight 500 */
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--letter-spacing: 0.05em;
+  --text-label-sm--font-weight: 500;
+
+  /* headline-lg: 40px / 48px / tracking -0.01em / weight 600 */
+  --text-headline-lg: 40px;
+  --text-headline-lg--line-height: 48px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 600;
+
+  /* display-lg: 64px / 72px / tracking -0.02em / weight 700 */
+  --text-display-lg: 64px;
+  --text-display-lg--line-height: 72px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
+
+  /* body-xl: 20px / 32px / weight 400 */
+  --text-body-xl: 20px;
+  --text-body-xl--line-height: 32px;
+  --text-body-xl--font-weight: 400;
+
+  /* body-md: 16px / 24px / weight 400 */
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-md--font-weight: 400;
+
+  /* ============================================================
+     BORDER RADIUS — from Stitch tailwind.config.theme.extend.borderRadius
+     All four entries preserved.
+  ============================================================ */
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+/* ============================================================
+   LIGHT MODE TOKEN OVERRIDES
+   Override dark-first MD3 surface tokens for light mode.
+   Applied when the .dark class is NOT present on <html>.
+   Mirrors the same pattern used in _base.css and _components.css.
+============================================================ */
+
+html:not(.dark) {
+  /* Surface container hierarchy — light mode values */
+  --color-surface-container-highest: #e6e7ec;
+  --color-surface-variant:           #e6e7ec;
+  --color-surface:                   #f8f9fc;
+  --color-surface-bright:            #ffffff;
+  --color-surface-dim:               #f0f1f6;
+  --color-surface-container:         #f0f1f6;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-high:    #e8e9ee;
+  --color-surface-container-low:     #f4f5fa;
+
+  /* Background */
+  --color-background:    #f8f9fc;
+  --color-on-background: #1a1b20;
+
+  /* Primary container text */
+  --color-on-primary-container: #1a1b20;
+
+  /* Surface text roles */
+  --color-on-surface:         #1a1b20;
+  --color-on-surface-variant: #44475a;
+
+  /* Outline */
+  --color-outline:         #74768a;
+  --color-outline-variant: #c8cad8;
+
+  /* Glass stroke — slightly more opaque in light mode */
+  --color-glass-stroke: rgba(0, 0, 0, 0.10);
+}

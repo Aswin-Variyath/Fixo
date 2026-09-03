@@ -1,45 +1,60 @@
-import prisma from "../../../database/prisma";
-import { UserListItemResponseDto } from "../dtos/user-response.dto";
+import prisma from "../../../database/prisma/prisma";
 import { IUserRepository } from "../interfaces/user-repository.interface";
+import { CurrentUser, UserFromDatabase } from "../types/user.types";
 export class UserRepository implements IUserRepository {
-  async findAll(): Promise<UserListItemResponseDto[]> {
-    return prisma.user.findMany({
-      where: {
-        deletedAt: null
+  async findById(userId: string): Promise<UserFromDatabase | null> {
+    const user = await prisma.user.findUnique({
+      where:{
+        id:userId
       },
-      select: {
+      select:{
         id:true,
         firstName:true,
         lastName:true,
         email:true,
         phone:true,
         profileImage:true,
-        status:{
-          select: {
-            type:true,
-            title:true,
-            colorCode:true
-          }
-        },
-        role:{
+        userRoles:{
           select:{
-            type:true,
-            title:true
+            role:{
+              select:{
+                type:true,
+                title:true
+              }
+            }
           }
         },
-        language: {
+        language:{
           select:{
             type:true,
             name:true
           }
         },
-        lastLogin:true,
-        createdAt:true,
-        updatedAt:true
-      },
-      orderBy:{
-        createdAt:"desc"
+        status:{
+          select:{
+            type:true,
+            title:true
+          }
+        }
       }
-    })
+    }) 
+    if(!user) return null
+
+return {
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phone: user.phone,
+    profileImage: user.profileImage,
+
+    roles: user.userRoles.map((userRole) => ({
+        type: userRole.role.type,
+        title: userRole.role.title
+    })),
+
+    language: user.language,
+    status: user.status
+}
   }
 }

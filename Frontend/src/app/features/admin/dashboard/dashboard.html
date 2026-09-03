@@ -1,0 +1,334 @@
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full h-16 bg-deep-navy/70 backdrop-blur-3xl z-50 border-b border-glass-stroke shadow-[0_0_20px_rgba(94,106,210,0.1)] flex justify-between items-center px-gutter md:pl-[280px]">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface hover:text-primary transition-colors" id="mobile-menu-btn">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight md:hidden">ServiceFlow</div>
+<!-- Search -->
+<div class="hidden md:flex items-center relative w-64 lg:w-96">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant z-10 pointer-events-none" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full bg-surface-container/50 border border-glass-stroke rounded-full py-2 pl-10 pr-4 text-on-surface focus:outline-none focus:border-primary/50 focus:bg-surface-container transition-all text-sm" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-white/10 p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-white/10 p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-container border border-glass-stroke overflow-hidden cursor-pointer hover:border-primary/50 transition-colors ml-2">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A detailed headshot portrait of a professional system administrator. The individual has a confident, approachable expression, illuminated by soft, cool-toned studio lighting that highlights their features against a dark, minimalist tech-oriented background. The color palette emphasizes deep navy blues, crisp whites, and subtle skin tones, perfectly aligned with a premium, sleek corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtCX7oJc97rIRBoq_29IdhwWdvZBGSxcTIm-6N7JxpJJ9IfzIF2isgBH2UxmuJB9kLVJpYzS-4z1xwrCBz1YmGfJucjCpaYpRHq0QfIMQfslszPDDvPVaJXw_srU9LCy9AgyDRK7v5R7MaY1-DoffWRjfPdiEA4DP0NnQixH2uu5OK-8sMJaK3j2VZoGXSwCay1pSSQTfDc9NHIzZEZxnZ-K3eG8NFuNkDJ0Q8zvwKDl9_ZC0CSrTV"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-deep-navy/80 backdrop-blur-3xl border-r border-glass-stroke shadow-2xl shadow-primary/10 flex-col py-8 gap-stack-md z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out hidden md:flex" id="sidebar">
+<!-- Sidebar Header -->
+<div class="px-6 pb-6 border-b border-glass-stroke/50 mb-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-royal-blue to-sky-blue flex items-center justify-center shadow-[0_0_15px_rgba(94,106,210,0.3)]">
+<span class="material-symbols-outlined text-white font-bold" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+</div>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight text-xl leading-tight">ServiceFlow</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">Admin Console</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border-r-2 border-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest font-bold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">group</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Customers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">engineering</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Taskers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">calendar_today</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Schedule</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">payments</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Payments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">monitoring</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Analytics</span>
+</a>
+</nav>
+<!-- CTA Button -->
+<div class="px-4 mt-auto">
+<button class="w-full bg-gradient-to-r from-royal-blue to-sky-blue text-white rounded-full py-3 px-4 font-label-sm text-label-sm uppercase tracking-widest hover:scale-[1.02] transition-transform duration-200 shadow-[0_4px_14px_0_rgba(94,106,210,0.39)] flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Request
+            </button>
+</div>
+<!-- Footer Links -->
+<div class="px-4 mt-4 pt-4 border-t border-glass-stroke/50 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">help_outline</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-[10px]">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-error hover:bg-error/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">logout</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-[10px]">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 pt-24 px-gutter md:pl-[288px] pb-section-gap transition-all duration-300">
+<!-- Header Section -->
+<div class="mb-stack-md">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Dashboard Overview</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Welcome back, Admin.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column (Main Content) -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Stat Card 1 -->
+<div class="glass-panel rounded-2xl p-6 glow-shadow relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Total Customers</p>
+<h3 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">1,284</h3>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">group</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm relative z-10">
+<span class="text-[#4ade80] flex items-center"><span class="material-symbols-outlined text-[16px]">trending_up</span> +12%</span>
+<span class="text-on-surface-variant">vs last month</span>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="glass-panel rounded-2xl p-6 glow-shadow relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-xl group-hover:bg-tertiary/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Total Taskers</p>
+<h3 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">546</h3>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">engineering</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm relative z-10">
+<span class="text-[#4ade80] flex items-center"><span class="material-symbols-outlined text-[16px]">trending_up</span> +5%</span>
+<span class="text-on-surface-variant">vs last month</span>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="glass-panel rounded-2xl p-6 glow-shadow relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-xl group-hover:bg-secondary/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Active Bookings</p>
+<h3 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">182</h3>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">assignment_ind</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm relative z-10">
+<span class="text-on-surface-variant">Current ongoing tasks</span>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="glass-panel rounded-2xl p-6 glow-shadow relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-royal-blue/5 rounded-full blur-xl group-hover:bg-royal-blue/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">Monthly Revenue</p>
+<h3 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">₹2,45k</h3>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center">
+<span class="material-symbols-outlined text-royal-blue">account_balance_wallet</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm relative z-10">
+<span class="text-[#4ade80] flex items-center"><span class="material-symbols-outlined text-[16px]">trending_up</span> +8%</span>
+<span class="text-on-surface-variant">vs last month</span>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="glass-panel rounded-2xl p-6">
+<h3 class="font-body-xl text-body-xl text-on-surface mb-4">Quick Actions</h3>
+<div class="flex flex-wrap gap-4">
+<button class="bg-surface-container hover:bg-surface-container-high border border-glass-stroke hover:border-primary/50 text-on-surface rounded-full py-2 px-6 font-label-sm text-label-sm uppercase tracking-widest transition-all duration-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">category</span>
+                            Add Category
+                        </button>
+<button class="bg-surface-container hover:bg-surface-container-high border border-glass-stroke hover:border-primary/50 text-on-surface rounded-full py-2 px-6 font-label-sm text-label-sm uppercase tracking-widest transition-all duration-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">build</span>
+                            Add Service
+                        </button>
+<button class="bg-surface-container hover:bg-surface-container-high border border-glass-stroke hover:border-primary/50 text-on-surface rounded-full py-2 px-6 font-label-sm text-label-sm uppercase tracking-widest transition-all duration-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">summarize</span>
+                            View Reports
+                        </button>
+<button class="bg-gradient-to-r from-royal-blue to-sky-blue text-white rounded-full py-2 px-6 font-label-sm text-label-sm uppercase tracking-widest hover:scale-[1.02] transition-transform duration-200 shadow-[0_4px_14px_0_rgba(94,106,210,0.39)] flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+                            Manage Taskers
+                        </button>
+</div>
+</div>
+<!-- Recent Activity Table -->
+<div class="glass-panel rounded-2xl p-6 overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-body-xl text-body-xl text-on-surface">Recent Activity</h3>
+<button class="text-primary font-label-sm text-label-sm uppercase tracking-widest hover:text-sky-blue transition-colors">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-glass-stroke">
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-normal">User</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-normal">Action</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-normal">Status</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-normal">Time</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-glass-stroke/50">
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-glass-stroke overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A small circular avatar portrait of a customer. The image features a clear, brightly lit face with a neutral, pleasant expression. The background is a soft, blurred light gray. The styling is highly professional, matching the premium, minimalist aesthetic of a modern web application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwBUXJq1dRhmh4XLbM7OW1m017zhHQN-lgl2oJ6R5ga9DXsm7KiELb3PvL9CUHo8FI8UNc1MGIOEyxNudRuyR7TRnb1aqBhaNVc2ch6KIQv_mkXGYUbMZ0YjXWSeRzvtvHniKxQoZhtKK70wE-Qms4-rMfGK1wt93UJ7FDz0qkOscjvGuCpsXhcjxj08BYPJbaF_XFDcf2DO_wVKdP2sT4qw4wt45Yv8LAGk_gP3pF0RdyKvsOV-fr"/>
+</div>
+<span class="font-medium">Sarah Jenkins</span>
+</td>
+<td class="py-4 px-4 text-on-surface-variant">Booked Plumbing Service</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20">
+                                            Confirmed
+                                        </span>
+</td>
+<td class="py-4 px-4 text-sm text-on-surface-variant">10 mins ago</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-glass-stroke overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A small circular avatar portrait of a tasker. The image shows a focused individual, slightly angled, with subtle studio lighting emphasizing professionalism. The background is a dark, muted navy tone to complement the dark-mode UI. High-quality corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt4ZrhqlO10b8O2NhrDtukuAg8u0ys8ySdavEtSK5iMI9aJJ0H7q5g0E1qsztHkf62wev8lmX3uP-2UZe-mWNqMo_obUN5Cw-Bx-5SAqs_IV-f3AdM-0kRT2bMiiVEiBiXZj9yaxjb3QeioIjiaU3xVznZxmIVUwdV5ROVy7i3-yVJd_kPmHBTfs4rWOMybqr2WYLNGW_ntLpyR_yZHvyvvvtQTytwUJwBbtJbYJK-Q-Sa3fGwjPXK"/>
+</div>
+<span class="font-medium">Mike Chen (Tasker)</span>
+</td>
+<td class="py-4 px-4 text-on-surface-variant">Completed Electrical Repair</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                                            Completed
+                                        </span>
+</td>
+<td class="py-4 px-4 text-sm text-on-surface-variant">1 hour ago</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container border border-glass-stroke overflow-hidden flex items-center justify-center text-on-surface-variant font-bold">
+                                            JD
+                                        </div>
+<span class="font-medium">John Doe</span>
+</td>
+<td class="py-4 px-4 text-on-surface-variant">Payment Failed</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error/10 text-error border border-error/20">
+                                            Failed
+                                        </span>
+</td>
+<td class="py-4 px-4 text-sm text-on-surface-variant">3 hours ago</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Column (Side Panels) -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- System Status -->
+<div class="glass-panel rounded-2xl p-6">
+<h3 class="font-body-xl text-body-xl text-on-surface mb-6">System Status</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container/50 border border-glass-stroke">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">api</span>
+<span class="font-medium text-sm">API Gateway</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_rgba(74,222,128,0.6)]"></span>
+<span class="text-xs text-on-surface-variant font-label-sm uppercase">Online</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container/50 border border-glass-stroke">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">database</span>
+<span class="font-medium text-sm">Database Cluster</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_rgba(74,222,128,0.6)]"></span>
+<span class="text-xs text-on-surface-variant font-label-sm uppercase">Connected</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container/50 border border-glass-stroke">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">dns</span>
+<span class="font-medium text-sm">Main Server</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_rgba(74,222,128,0.6)]"></span>
+<span class="text-xs text-on-surface-variant font-label-sm uppercase">Healthy</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Notifications -->
+<div class="glass-panel rounded-2xl p-6 flex-1">
+<h3 class="font-body-xl text-body-xl text-on-surface mb-6">Recent Alerts</h3>
+<div class="space-y-4 relative before:absolute before:inset-y-0 before:left-[19px] before:w-[2px] before:bg-glass-stroke">
+<!-- Alert 1 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center z-10 shadow-lg">
+<span class="material-symbols-outlined text-tertiary text-[18px]">person_add</span>
+</div>
+<div>
+<h4 class="font-medium text-sm text-on-surface">New Tasker Registered</h4>
+<p class="text-xs text-on-surface-variant mt-1">David Lee completed verification.</p>
+<span class="text-[10px] text-on-surface-variant/70 font-label-sm uppercase tracking-wider mt-2 block">10 mins ago</span>
+</div>
+</div>
+<!-- Alert 2 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center z-10 shadow-lg">
+<span class="material-symbols-outlined text-secondary text-[18px]">book_online</span>
+</div>
+<div>
+<h4 class="font-medium text-sm text-on-surface">New Booking Created</h4>
+<p class="text-xs text-on-surface-variant mt-1">Deep cleaning service requested in Area 51.</p>
+<span class="text-[10px] text-on-surface-variant/70 font-label-sm uppercase tracking-wider mt-2 block">45 mins ago</span>
+</div>
+</div>
+<!-- Alert 3 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-surface-container border border-glass-stroke flex items-center justify-center z-10 shadow-lg">
+<span class="material-symbols-outlined text-royal-blue text-[18px]">payments</span>
+</div>
+<div>
+<h4 class="font-medium text-sm text-on-surface">Payment Received</h4>
+<p class="text-xs text-on-surface-variant mt-1">Invoice #INV-2023-890 paid.</p>
+<span class="text-[10px] text-on-surface-variant/70 font-label-sm uppercase tracking-wider mt-2 block">2 hours ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>

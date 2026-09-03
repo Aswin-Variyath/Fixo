@@ -1,1 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * styles.css — Global Stylesheet Orchestrator
+ * --------------------------------------------
+ * This is the ONLY file referenced in angular.json under "styles".
+ * It does NOT contain styles directly. Its sole purpose is to compose
+ * the design system in the correct dependency order.
+ *
+ * Import order:
+ *  1. tailwindcss       — Tailwind v4 engine (must be first)
+ *  2. _tokens.css       — @theme design tokens (colors, spacing, fonts, radii)
+ *  3. _base.css         — body, scrollbar, material-symbols base
+ *  4. _animations.css   — @keyframes + @utility animation helpers
+ *  5. _components.css   — glass-card, btn-*, service-card, carousel-*, etc.
+ *  6. _utilities.css    — shadow-glow-sm and misc single-property helpers
+ */
+
+/* 1. Tailwind CSS v4 engine */
+@import "tailwindcss";
+
+/* Dark mode: class-based strategy — matches Stitch's darkMode: "class"
+   The .dark class on <html> (managed by ThemeService) activates all dark: utilities.
+   Without this line, dark: utilities use the OS media query instead of the .dark class. */
+@variant dark (&:where(.dark, .dark *));
+
+/* 2. Design tokens — must come before components that reference them */
+@import "./styles/_tokens.css";
+
+/* 3. Base HTML element defaults */
+@import "./styles/_base.css";
+
+/* 4. Keyframes and animation utilities */
+@import "./styles/_animations.css";
+
+/* 5. Reusable multi-property component classes */
+@import "./styles/_components.css";
+
+/* 6. One-off utility helpers */
+@import "./styles/_utilities.css";
+
+
+/* Page tranisistion implemention */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 1500ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(root) {
+  animation-name: page-out;
+}
+
+::view-transition-new(root) {
+  animation-name: page-in;
+}
+
+@keyframes page-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.995);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: scale(1.005);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

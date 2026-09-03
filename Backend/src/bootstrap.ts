@@ -1,5 +1,5 @@
-import prisma from "./database/prisma";
-import { redisClient } from "./infrastructure/redis/redis.client";
+import { redisClient } from "./config/redis.config";
+import prisma from "./database/prisma/prisma";
 
 export async function bootstrap(): Promise<void> {
   try {

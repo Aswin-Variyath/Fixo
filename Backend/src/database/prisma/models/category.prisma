@@ -1,0 +1,15 @@
+model Category {
+  id           String         @id @default(uuid())
+  name         String         @unique
+  slug         String         @unique
+  description  String?
+  imageUrl     String?
+  displayOrder Int            @default(0)
+  status       CategoryStatus @default(ACTIVE)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  services Service[]
+
+  @@index([status, displayOrder])
+}

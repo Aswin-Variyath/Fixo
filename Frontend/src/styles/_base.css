@@ -1,0 +1,105 @@
+/*
+ * _base.css
+ * ---------
+ * PURPOSE : Global HTML element defaults and resets.
+ */
+
+/* ============================================================
+   BODY
+============================================================ */
+
+body {
+  background-color: #121317;
+
+  color: #e3e2e8;
+
+  overflow-x: hidden;
+
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
+}
+
+
+/* ============================================================
+   DARK MODE
+============================================================ */
+
+.dark body {
+  background-color: #121317;
+
+  color: #e3e2e8;
+}
+
+
+/* ============================================================
+   LIGHT MODE
+============================================================ */
+
+html:not(.dark) body {
+  background-color: #f8f9fc;
+
+  color: #1a1b20;
+}
+
+
+/* ============================================================
+   MATERIAL SYMBOLS
+============================================================ */
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+
+/* ============================================================
+   GLOBAL SCROLLBAR
+============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+
+  height: 6px;
+}
+
+
+/* Scrollbar track */
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+/* Scrollbar thumb */
+
+::-webkit-scrollbar-thumb {
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border-radius: 3px;
+}
+
+
+/* Scrollbar thumb hover */
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    rgba(255, 255, 255, 0.2);
+}
+
+
+/* ============================================================
+   FIREFOX SCROLLBAR
+============================================================ */
+
+* {
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    rgba(255, 255, 255, 0.1)
+    transparent;
+}

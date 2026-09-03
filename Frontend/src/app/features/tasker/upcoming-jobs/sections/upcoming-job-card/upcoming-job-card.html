@@ -1,0 +1,74 @@
+<article
+  class="glass-panel rounded-2xl p-6 glow-shadow hover-scale flex flex-col md:flex-row gap-6 relative overflow-hidden group"
+>
+  <!-- Status Accent Line -->
+  <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-primary"></div>
+
+  <!-- Left: Time & Icon -->
+  <div
+    class="flex md:flex-col items-center md:items-start gap-4 md:w-32 shrink-0 border-b border-glass-stroke md:border-b-0 md:border-r pb-4 md:pb-0 md:pr-4"
+  >
+    <div
+      class="w-12 h-12 rounded-xl bg-surface-container-high border border-glass-stroke flex items-center justify-center shrink-0 group-hover:border-primary/50 transition-colors"
+    >
+      <span class="material-symbols-outlined text-primary text-[24px]">{{ job().serviceIcon }}</span>
+    </div>
+    <div>
+      <div class="font-label-sm text-label-sm text-on-surface-variant">{{ job().date }}</div>
+      <div class="font-body-md text-body-md font-semibold text-on-background">{{ job().time }}</div>
+      <div class="font-label-sm text-label-sm text-on-surface-variant opacity-70">
+        {{ job().duration }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Middle: Details -->
+  <div class="flex-grow flex flex-col justify-center gap-2">
+    <div class="flex items-center gap-3">
+      <span
+        class="bg-surface-container-highest border border-glass-stroke text-primary px-2 py-1 rounded-full font-label-sm text-[10px] tracking-wider uppercase"
+        >{{ job().status }}</span
+      >
+      <h3 class="font-body-xl text-body-xl font-semibold text-on-background m-0">
+        {{ job().serviceTitle }}
+      </h3>
+    </div>
+    <div class="flex items-center gap-2 mt-2 flex-wrap">
+      <div
+        class="w-6 h-6 rounded-full overflow-hidden bg-surface-variant border border-glass-stroke shrink-0"
+      >
+        <img
+          [alt]="job().customerName"
+          class="w-full h-full object-cover"
+          [src]="job().customerAvatar"
+        />
+      </div>
+      <span class="font-body-md text-body-md text-on-surface-variant">{{ job().customerName }}</span>
+      <span class="text-on-surface-variant/30 mx-1">•</span>
+      <span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+      <span
+        class="font-body-md text-body-md text-on-surface-variant truncate max-w-[150px] md:max-w-none"
+        >{{ job().location }}</span
+      >
+    </div>
+  </div>
+
+  <!-- Right: Action & Earnings -->
+  <div
+    class="flex flex-row md:flex-col justify-between items-center md:items-end md:w-48 shrink-0 pt-4 md:pt-0 border-t border-glass-stroke md:border-t-0 md:pl-4"
+  >
+    <div class="text-left md:text-right">
+      <div class="font-label-sm text-label-sm text-on-surface-variant mb-1">
+        Est. Earnings
+      </div>
+      <div class="font-headline-lg-mobile text-[24px] font-bold text-gradient">{{ job().estimatedEarnings }}</div>
+    </div>
+    <button
+      type="button"
+      class="bg-gradient-primary text-white font-label-sm text-label-sm px-6 py-2 rounded-full hover:shadow-[0_0_20px_rgba(94,106,210,0.4)] transition-all flex items-center gap-2 mt-auto cursor-pointer"
+    >
+      View Job
+      <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+    </button>
+  </div>
+</article>

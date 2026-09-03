@@ -1,19 +1,35 @@
-import { NextFunction, Response, Request } from "express";
-import { ConflictError } from "../errors/conflict.error";
-import { UnauthorizedError } from "../errors/unauthorized.error";
-import { ForbiddenError } from "../errors/forbidden.error";
+import { ErrorRequestHandler } from "express";
+import { AppError } from "../errors/app.error";
+import { StatusCodes } from "http-status-codes";
 
-export const errorMiddleware = (error:Error, req:Request, res:Response, next: NextFunction):void => {
-  if(error instanceof ConflictError || error instanceof UnauthorizedError || error instanceof ForbiddenError) {
-    res.status(error.statusCode).json({
-      success:false,
-      message: error.message
-    })
-    return
+export const errorMiddleware: ErrorRequestHandler = (
+  error,
+  _req,
+  res,
+  _next
+) => {
+  if (error instanceof AppError) {
+    const response: {
+      success: boolean;
+      message: string;
+      details?: unknown;
+    } = {
+      success: false,
+      message: error.message,
+    };
+
+    if (error.details !== undefined) {
+      response.details = error.details;
+    }
+
+    res.status(error.statusCode).json(response);
+    return;
   }
-  console.log(error)
-  res.status(500).json({
-    success:false,
-    message: "Internal server error"
-  })
-}
+
+  console.error(error);
+
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    success: false,
+    message: "Internal server error",
+  });
+};

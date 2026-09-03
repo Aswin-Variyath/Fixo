@@ -6,7 +6,6 @@ model User {
   phone        String    @unique @db.VarChar(20)
   password     String
   profileImage String?
-  roleId       String
   languageId   String
   statusId     String
   lastLogin    DateTime?
@@ -14,11 +13,16 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  role     Role       @relation(fields: [roleId], references: [id])
+  passwordResetTokens PasswordResetToken[]
+
+  taskerProfile TaskerProfile?
+
+  userRoles         UserRole[]
+  customerAddresses CustomerAddress[]
+
   language Language   @relation(fields: [languageId], references: [id])
   status   UserStatus @relation(fields: [statusId], references: [id])
 
-  @@index([roleId])
   @@index([languageId])
   @@index([statusId])
   @@index([deletedAt])

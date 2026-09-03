@@ -1,0 +1,79 @@
+<!-- Booking Progress Indicator
+     ─────────────────────────────────────────────────────────────────
+     Renders a horizontal step-tracker for the booking flow.
+
+     Step states (driven by [currentStep] and optional [failedStep] inputs):
+       failed    → stepNumber === failedStep : close icon, error ring & colour
+       completed → stepNumber < currentStep (and not failed) : check icon, primary ring
+       active    → stepNumber === currentStep (and not failed) : number, primary ring, bold label
+       upcoming  → stepNumber > currentStep  : number, glass-stroke ring, muted text
+
+     Connector states:
+       connector after step N  → primary/50 if N < currentStep, else glass-stroke
+     ─────────────────────────────────────────────────────────────────  -->
+<div class="flex items-center justify-center space-x-4 md:space-x-8 mb-12">
+
+  @for (step of steps; track step.number) {
+
+    <!-- Step bubble + label -->
+    <div
+      class="flex items-center"
+      [ngClass]="{
+        'text-error':            step.number === failedStep(),
+        'text-primary':          step.number !== failedStep() && step.number <= currentStep(),
+        'text-on-surface-variant': step.number !== failedStep() && step.number > currentStep()
+      }"
+    >
+      <!-- Circle bubble -->
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center border mr-0 md:mr-2 font-label-sm text-label-sm shrink-0"
+        [ngClass]="{
+          'bg-error/20 border-error':       step.number === failedStep(),
+          'bg-primary/20 border-primary':   step.number !== failedStep() && step.number <= currentStep(),
+          'bg-surface-variant border-glass-stroke': step.number !== failedStep() && step.number > currentStep()
+        }"
+      >
+        @if (step.number === failedStep()) {
+          <!-- Failed: show close icon -->
+          <span class="material-symbols-outlined text-[16px]">close</span>
+        } @else if (step.number < currentStep()) {
+          <!-- Completed: show checkmark icon -->
+          <span class="material-symbols-outlined text-[16px]">check</span>
+        } @else {
+          <!-- Active or upcoming: show step number -->
+          @if (step.number > currentStep()) {
+            <span class="opacity-50">{{ step.number }}</span>
+          } @else {
+            {{ step.number }}
+          }
+        }
+      </div>
+
+      <!-- Step label -->
+      <span
+        class="font-body-md text-body-md hidden md:block"
+        [ngClass]="{
+          'font-semibold': step.number === currentStep() && step.number !== failedStep(),
+          'font-semibold text-error': step.number === failedStep(),
+          'opacity-50': step.number > currentStep() && step.number !== failedStep()
+        }"
+      >
+        {{ step.label }}
+      </span>
+    </div>
+
+    <!-- Connector line (rendered between steps, not after the last) -->
+    @if (step.number < steps.length) {
+      <div
+        class="w-8 md:w-16 h-px"
+        [ngClass]="{
+          'bg-primary/50':             step.number < currentStep() && step.number !== failedStep(),
+          'bg-on-surface-variant/30':  step.number === failedStep(),
+          'bg-glass-stroke':           step.number >= currentStep() && step.number !== failedStep()
+        }"
+      ></div>
+    }
+
+  }
+
+</div>

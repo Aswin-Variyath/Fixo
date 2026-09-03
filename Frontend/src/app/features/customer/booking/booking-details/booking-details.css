@@ -1,0 +1,11 @@
+/*
+ * booking-details.css
+ * -------------------
+ * Page-level styles for the Booking Details page.
+ */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}

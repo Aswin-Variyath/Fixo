@@ -5,101 +5,202 @@ import { Response, Request, NextFunction } from "express";
 import { SignupDto } from "../dto/signup.dto";
 import { LoginDto } from "../dto/login.dto";
 import { ENV } from "../../../config/env.config";
-import { InvalidRefreshTokenError } from "../../../shared/errors/invalid-refresh-token.error";
-import { UnauthorizedError } from "../../../shared/errors/unauthorized.error";
+import { ForgotPasswordDto } from "../dto/forgot-password.dto";
+import { AppError } from "../../../shared/errors/app.error";
+import { StatusCodes } from "http-status-codes";
+import { successResponse } from "../../../shared/utils/response.util";
+import { HttpResponse } from "../../../shared/constants";
+import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
+import { AdminLoginDto } from "../dto/admin-login.dto";
+import { ResendAdminOtpDto } from "../dto/resend-admin-otp.dto";
 
 @injectable()
 export class AuthController {
     constructor(@inject(TYPES.AuthCommandService) private readonly authCommandService: IAuthCommandService) {}
     
     signup = async(req: Request<Record<string,never>,unknown, SignupDto>, res: Response):Promise<void> => {
-        console.log("COntroller hits")
-        const user = await this.authCommandService.signup(req.body);
-        res.status(201).json({
-            success:true,
-            message:"User registered successfully",
-            data:user
+        const result = await this.authCommandService.signup(req.body)
+        res.cookie("accessToken",result.accessToken,{
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === "production",
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
         })
+        res.cookie("refreshToken",result.refreshToken,{
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === "production",
+            sameSite:"lax",
+            maxAge:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
+        res.status(StatusCodes.CREATED).json(successResponse(HttpResponse.AUTH.SIGNUP_SUCCESS,result.user))
     }
     login = async(req:Request<Record<string,never>, unknown, LoginDto>, res:Response):Promise<void> =>{
-        console.log("Hit login controller");
         
         const result = await this.authCommandService.login(req.body)
-        console.log("after authcommand service")
         res.cookie(
             "accessToken", 
             result.accessToken,
             {
                 httpOnly:true,
-                secure:ENV.NODE_ENV === "production",
+                secure:ENV.APP.NODE_ENV === "production",
                 sameSite:"lax",
-                maxAge:ENV.JWT.accessTokenTtlSeconds * 1000
+                maxAge:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
             }
         )
-        console.log("After access token creation")
         res.cookie(
             "refreshToken",
             result.refreshToken,
             {
                 httpOnly:true,
-                secure:ENV.NODE_ENV === "production",
+                secure:ENV.APP.NODE_ENV === "production",
                 sameSite:"lax",
-                maxAge:ENV.AUTH.refreshTokenTtlSeconds * 1000
+                maxAge:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
             }
         )
-        res.status(200).json({
-            success:true,
-            message:"Login successfull",
-            data:result.response
-        })
-        console.log("After refresh token creation")
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.LOGIN_SUCCESS,result.response))
     }
 
     refresh = async(req:Request, res: Response):Promise<void> => {
         const refreshToken = req.cookies?.refreshToken
 
-        if(!refreshToken || typeof refreshToken !== "string") throw new InvalidRefreshTokenError()
+        if(!refreshToken || typeof refreshToken !== "string") throw new AppError(401, "Invalid or expired authentication session")
         
         const result = await this.authCommandService.refresh(refreshToken)
 
         res.cookie("accessToken",result.accessToken, {
             httpOnly:true,
-            secure:ENV.NODE_ENV === "production",
+            secure:ENV.APP.NODE_ENV === "production",
             sameSite:"lax",
-            maxAge:ENV.JWT.accessTokenTtlSeconds * 1000
+            maxAge:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
         })
 
         res.cookie("refreshToken",result.refreshToken,{
             httpOnly:true,
-            secure:ENV.NODE_ENV === "production",
+            secure:ENV.APP.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: ENV.AUTH.refreshTokenTtlSeconds * 1000
+            maxAge: ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
         })
 
-        res.status(200).json({
-            success:true,
-            message: "Token refreshed Succesfully",
-            data: {
-                accessTokenExpiresIn: result.accessTokenExpiresIn
-            }
-        })
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.TOKEN_REFRESH_SUCCESS, {accessTokenExpiresIn: result.accessTokenExpiresIn}))
     }
 
     logout = async(req:Request, res:Response, next: NextFunction):Promise<void> => {
-        console.log("This req.cookies",req?.cookies)
         const refreshToken = req.cookies?.refreshToken
 
-        if(!refreshToken || typeof refreshToken !== "string") throw new UnauthorizedError("Refresh token is missing")
+        if(!refreshToken || typeof refreshToken !== "string") throw new AppError(401, "Refresh token is missing")
         
         await this.authCommandService.logout(refreshToken)
 
         res.clearCookie("accessToken")
         res.clearCookie("refreshToken")
 
-        res.status(200).json({
-            success:true,
-            message:"Logged out successfully"
-        })
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.LOGOUT_SUCCESS))
     }
 
+    forgotPassword = async(req:Request<Record<string, never>, unknown, ForgotPasswordDto>, res:Response):Promise<void> =>{
+        const result = await this.authCommandService.forgotPassword(req.body.email);
+        console.log("THis is response for forgot password",res)
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_EMAIL_SENT, result))
+    }
+
+    resetPassword = async(req:Request, res: Response):Promise<void> =>{
+        await this.authCommandService.resetPassword(req.body)
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.AUTH.PASSWORD_RESET_SUCCESS))
+    }
+
+    getPasswordResetExpiry = async(req:Request, res:Response):Promise<void> => {
+        const result = await this.authCommandService.getPasswordResetExpiry(req.query.token as string)
+        res.status(StatusCodes.OK).json(successResponse("Password reset token is valid", result))
+    }
+
+    taskerSignup = async(req:Request<Record<string, never>, unknown, TaskerSignupDto>, res:Response):Promise<void> => {
+        const result = await this.authCommandService.taskerSignup(req.body)
+        res.cookie("accessToken",result.accessToken,{
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === "production",
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        })
+        res.cookie("refreshToken",result.refreshToken, {
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === "production",
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
+        res.status(StatusCodes.CREATED).json(successResponse(HttpResponse.AUTH.SIGNUP_SUCCESS,result.user))
+    }
+
+    becomeCustomer = async(req:Request,res:Response):Promise<void> => {
+        if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        await this.authCommandService.becomeCustomer(req.user.userId)
+        res.status(StatusCodes.OK).json(successResponse("Customer role addedd successfully"))
+    }
+
+    becomeTasker = async(req:Request, res:Response):Promise<void> => {
+        if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        await this.authCommandService.becomeTasker(req.user.userId)
+        res.status(StatusCodes.OK).json(successResponse("Tasker Role added successfully"))
+    }
+
+    switchRole = async (req: Request,res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    const sessionId = req.user?.sessionId;
+
+    if (!userId || !sessionId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication information is missing")
+    
+    const result = await this.authCommandService.switchRole(userId,sessionId,req.body.role)
+
+    res.cookie(
+        "accessToken",
+        result.accessToken,
+        {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        }
+    )
+
+    res.status(StatusCodes.OK).json(successResponse("Role switched successfully",{activeRole: result.activeRole}))
+    }
+
+    adminLogin = async (
+        req: Request<Record<string, never>, unknown, AdminLoginDto>, res: Response): Promise<void> => {
+        const result = await this.authCommandService.adminLogin(req.body);
+        console.log("Admin login result",result)
+        res.status(StatusCodes.OK).json(successResponse("OTP sent successfully",result))
+    }
+    verifyAdminOtp = async (req: Request,res: Response): Promise<void> => {
+        const { challengeId, otp } = req.body;
+        console.log("this verfiyotp", challengeId,otp);
+        
+        const result = await this.authCommandService.verifyAdminOtp(challengeId,otp)
+        res.cookie("accessToken", result.accessToken, {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        })
+
+        res.cookie("refreshToken", result.refreshToken, {
+            httpOnly: true,
+            secure: ENV.APP.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
+
+        res.status(StatusCodes.OK).json(
+            successResponse(
+                "Admin login successful",
+                {
+                    accessTokenExpiresIn: result.accessTokenExpiresIn
+                }
+            )
+        )
+    }
+
+    resendAdminOtp = async(req:Request<Record<string,never>,unknown, ResendAdminOtpDto>, res:Response):Promise<void> => {
+        const result = await this.authCommandService.resendAdminOtp(req.body.challengeId)
+        res.status(StatusCodes.OK).json(successResponse("OTP resend successfully",result))
+    }
 }

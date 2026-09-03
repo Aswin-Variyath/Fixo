@@ -1,0 +1,532 @@
+<header
+  class="fixed top-0 w-full z-50 bg-white/70 dark:bg-deep-navy/70 backdrop-blur-xl border-b border-black/5 dark:border-glass-stroke shadow-glow-sm transition-colors duration-500"
+>
+
+  <div
+    class="flex justify-between items-center h-20 px-margin-mobile md:px-gutter max-w-container-max mx-auto"
+  >
+
+    <!-- =====================================================
+         LOGO
+    ====================================================== -->
+
+    <a
+      href="/"
+      class="font-display-lg text-4xl font-bold text-royal-blue dark:text-primary tracking-tight"
+    >
+      Fixo
+    </a>
+
+
+    <!-- =====================================================
+         NOT LOGGED IN
+    ====================================================== -->
+
+    @if (!isAuthenticated()) {
+
+      <div class="flex items-center gap-3">
+
+        <!-- Login / Sign Up -->
+
+        <button
+          type="button"
+          (click)="goToLogin()"
+          class="btn-secondary px-6 py-2.5 rounded-full text-on-surface dark:text-on-surface text-slate-900 font-semibold text-body-md hover:scale-105 active:scale-95 transition-all"
+        >
+          Login / Sign Up
+        </button>
+
+
+        <!-- Become a Tasker -->
+
+        <button
+          type="button"
+          (click)="goToTaskerSignup()"
+          class="px-6 py-2.5 rounded-full text-white font-semibold text-body-md hover:scale-105 active:scale-95 transition-all bg-royal-blue inline-flex items-center justify-center"
+        >
+          Become a Tasker
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         LOGGED IN
+    ====================================================== -->
+
+    @if (isAuthenticated()) {
+
+      <!-- ===================================================
+           CUSTOMER NAVIGATION
+      ==================================================== -->
+
+      @if (user()?.activeRole?.type === 'customer') {
+
+        <nav class="hidden md:flex gap-gutter items-center">
+
+          <a
+            href="/customer/home"
+            class="text-primary border-b-2 border-primary pb-1 active:scale-95 transition-transform"
+          >
+            Home
+          </a>
+
+          <a
+            href="/services"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
+          >
+            Services
+          </a>
+
+          <a
+            href="/bookings"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
+          >
+            Bookings
+          </a>
+
+          <a
+            href="/messages"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
+          >
+            Messages
+          </a>
+
+        </nav>
+
+      }
+
+
+      <!-- ===================================================
+           TASKER NAVIGATION
+      ==================================================== -->
+
+      @if (user()?.activeRole?.type === 'tasker') {
+
+        <nav class="hidden md:flex gap-gutter items-center">
+
+          <a
+            href="/tasker/dashboard"
+            class="text-primary border-b-2 border-primary pb-1 active:scale-95 transition-transform"
+          >
+            Home
+          </a>
+
+          <a
+            href="/tasker/jobs"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
+          >
+            Jobs
+          </a>
+
+          <a
+            href="/tasker/bookings"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
+          >
+            Bookings
+          </a>
+
+          <a
+            href="/messages"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
+          >
+            Messages
+          </a>
+
+        </nav>
+
+      }
+
+
+      <!-- ===================================================
+           LOGGED-IN ACTIONS
+      ==================================================== -->
+
+      <div class="flex items-center gap-stack-md relative">
+
+
+        <!-- =================================================
+             LANGUAGE
+        ================================================== -->
+
+        <div class="hidden lg:flex items-center space-x-2">
+
+          <button
+            type="button"
+            class="glass-card flex items-center gap-2 px-3 py-2 rounded-full hover:bg-white/10 dark:hover:bg-white/10 hover:bg-black/5 transition-all duration-300 group"
+          >
+
+            <span
+              class="material-symbols-outlined text-on-surface-variant dark:text-on-surface-variant text-slate-600 group-hover:text-royal-blue dark:group-hover:text-primary transition-colors"
+            >
+              language
+            </span>
+
+            <span
+              class="font-label-sm text-on-surface-variant dark:text-on-surface-variant text-slate-600 group-hover:text-on-surface dark:group-hover:text-on-surface group-hover:text-black"
+            >
+              {{ user()?.language?.type || 'EN' }}
+            </span>
+
+          </button>
+
+
+          <!-- ===============================================
+               DARK / LIGHT MODE
+          ================================================ -->
+
+          <button
+            type="button"
+            (click)="themeService.toggle()"
+            aria-label="Toggle dark mode"
+            class="glass-card flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 dark:hover:bg-white/10 hover:bg-black/5 transition-all duration-300 group"
+          >
+
+            <span
+              class="material-symbols-outlined text-on-surface-variant dark:text-on-surface-variant text-slate-600 group-hover:text-royal-blue dark:group-hover:text-primary transition-colors"
+            >
+              {{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- =================================================
+             NOTIFICATIONS
+        ================================================== -->
+
+        <div class="relative group cursor-pointer">
+
+          <button
+            type="button"
+            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-full p-2 active:scale-95 relative"
+          >
+
+            <span class="material-symbols-outlined">
+              notifications
+            </span>
+
+            <span
+              class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-error rounded-full border border-surface"
+            ></span>
+
+          </button>
+
+
+          <!-- Notification Dropdown -->
+
+          <div
+            class="absolute right-0 mt-2 w-80 glass-card invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all z-50 overflow-hidden flex flex-col"
+          >
+
+            <div
+              class="p-4 border-b border-glass-stroke flex justify-between items-center"
+            >
+
+              <h3 class="font-medium text-on-surface">
+                Notifications
+              </h3>
+
+              <button
+                type="button"
+                class="text-primary text-sm hover:text-sky-blue"
+              >
+                Mark all read
+              </button>
+
+            </div>
+
+
+            <div class="max-h-80 overflow-y-auto flex flex-col">
+
+              <!-- Notification -->
+
+              <a
+                href="#"
+                class="p-4 border-b border-glass-stroke/50 hover:bg-white/5 flex gap-3 items-start transition-colors bg-white/5"
+              >
+
+                <div
+                  class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary shrink-0"
+                >
+
+                  <span class="material-symbols-outlined text-sm">
+                    event_available
+                  </span>
+
+                </div>
+
+                <div>
+
+                  <p class="text-sm text-on-surface">
+
+                    <span class="font-medium">
+                      Booking Confirmed:
+                    </span>
+
+                    Your upcoming service has been confirmed.
+
+                  </p>
+
+                  <p class="text-xs text-on-surface-variant mt-1">
+                    2 hours ago
+                  </p>
+
+                </div>
+
+                <div
+                  class="w-2 h-2 rounded-full bg-error shrink-0 mt-1"
+                ></div>
+
+              </a>
+
+
+              <!-- Notification -->
+
+              <a
+                href="#"
+                class="p-4 border-b border-glass-stroke/50 hover:bg-white/5 flex gap-3 items-start transition-colors"
+              >
+
+                <div
+                  class="w-8 h-8 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary shrink-0"
+                >
+
+                  <span class="material-symbols-outlined text-sm">
+                    star_rate
+                  </span>
+
+                </div>
+
+                <div>
+
+                  <p class="text-sm text-on-surface">
+                    Please rate your recent service.
+                  </p>
+
+                  <p class="text-xs text-on-surface-variant mt-1">
+                    1 day ago
+                  </p>
+
+                </div>
+
+              </a>
+
+            </div>
+
+
+            <a
+              href="#"
+              class="p-3 text-center text-primary text-sm hover:bg-white/5 transition-colors border-t border-glass-stroke"
+            >
+              View all notifications
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PROFILE
+        ================================================== -->
+
+        <div class="relative group cursor-pointer">
+
+          <!-- Profile Image -->
+
+          <div
+            class="w-10 h-10 rounded-full overflow-hidden border border-glass-stroke hover:border-primary transition-colors"
+          >
+
+            @if (user()?.profileImage) {
+
+              <img
+                [src]="user()?.profileImage"
+                [alt]="user()?.firstName + ' profile image'"
+                class="w-full h-full object-cover"
+              >
+
+            } @else {
+
+              <div
+                class="w-full h-full bg-primary-container flex items-center justify-center text-on-primary-container font-semibold"
+              >
+                {{ user()?.firstName?.charAt(0) }}
+              </div>
+
+            }
+
+          </div>
+
+
+          <!-- Profile Dropdown -->
+
+          <div
+            class="absolute right-0 mt-2 w-56 glass-card invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all z-50 py-2 flex flex-col"
+          >
+
+            <!-- User Information -->
+
+            <div
+              class="px-4 py-3 border-b border-glass-stroke mb-2"
+            >
+
+              <p class="text-on-surface font-medium">
+                {{ user()?.firstName }}
+                {{ user()?.lastName }}
+              </p>
+
+              <p
+                class="text-on-surface-variant text-sm truncate"
+              >
+                {{ user()?.email }}
+              </p>
+
+            </div>
+
+
+            <!-- Profile -->
+
+            <a
+              href="/profile"
+              class="px-4 py-2 text-on-surface hover:bg-white/10 hover:text-primary transition-colors flex items-center gap-3"
+            >
+
+              <span class="material-symbols-outlined text-sm">
+                person
+              </span>
+
+              My Profile
+
+            </a>
+
+
+            <!-- Bookings -->
+
+            <a
+              href="/bookings"
+              class="px-4 py-2 text-on-surface hover:bg-white/10 hover:text-primary transition-colors flex items-center gap-3"
+            >
+
+              <span class="material-symbols-outlined text-sm">
+                receipt_long
+              </span>
+
+              Bookings
+
+            </a>
+
+
+            <!-- Favorites -->
+
+            <a
+              href="/favorites"
+              class="px-4 py-2 text-on-surface hover:bg-white/10 hover:text-primary transition-colors flex items-center gap-3"
+            >
+
+              <span class="material-symbols-outlined text-sm">
+                favorite
+              </span>
+
+              Favorites
+
+            </a>
+
+
+            <!-- Messages -->
+
+            <a
+              href="/messages"
+              class="px-4 py-2 text-on-surface hover:bg-white/10 hover:text-primary transition-colors flex items-center justify-between w-full"
+            >
+
+              <div class="flex items-center gap-3">
+
+                <span class="material-symbols-outlined text-sm">
+                  chat
+                </span>
+
+                Messages
+
+              </div>
+
+              <span
+                class="bg-primary text-on-primary text-xs font-bold px-1.5 py-0.5 rounded-full"
+              >
+                3
+              </span>
+
+            </a>
+
+
+            <!-- Divider -->
+
+            <div
+              class="border-t border-glass-stroke my-2"
+            ></div>
+
+
+            <!-- Settings -->
+
+            <a
+              href="/settings"
+              class="px-4 py-2 text-on-surface hover:bg-white/10 hover:text-primary transition-colors flex items-center gap-3"
+            >
+
+              <span class="material-symbols-outlined text-sm">
+                settings
+              </span>
+
+              Settings
+
+            </a>
+
+
+            <!-- Help -->
+
+            <a
+              href="/help"
+              class="px-4 py-2 text-on-surface hover:bg-white/10 hover:text-primary transition-colors flex items-center gap-3"
+            >
+
+              <span class="material-symbols-outlined text-sm">
+                help
+              </span>
+
+              Help Center
+
+            </a>
+
+
+            <!-- Logout -->
+
+            <button
+              type="button"
+              (click)="logout()"
+              class="px-4 py-2 text-error hover:bg-error/10 transition-colors flex items-center gap-3 mt-1 text-left w-full"
+            >
+
+              <span class="material-symbols-outlined text-sm">
+                logout
+              </span>
+
+              Logout
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+</header>

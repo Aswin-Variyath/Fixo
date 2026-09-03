@@ -1,0 +1,46 @@
+<nav
+  class="sticky top-0 z-[100] w-full border-b border-glass-stroke bg-deep-navy/70 shadow-xl shadow-accent-glow/10 backdrop-blur-3xl"
+>
+  <div
+    class="mx-auto flex h-20 max-w-container-max items-center justify-between px-margin-mobile md:px-gutter"
+  >
+    <!-- Logo -->
+    <a
+      routerLink="/become-tasker"
+      class="font-display-lg text-4xl font-bold tracking-tight text-primary"
+    >
+      Fixo
+    </a>
+
+    <!-- Actions -->
+    <div class="flex items-center space-x-3">
+      <!-- Language -->
+      <div class="hidden lg:flex items-center space-x-2">
+        <button
+          type="button"
+          class="glass-card group flex items-center gap-2 rounded-full px-3 py-2 transition-all duration-300 hover:bg-white/10"
+        >
+          <span
+            class="material-symbols-outlined text-on-surface-variant transition-colors group-hover:text-primary"
+          >
+            language
+          </span>
+
+          <span
+            class="font-label-sm text-on-surface-variant transition-colors group-hover:text-on-surface"
+          >
+            EN
+          </span>
+        </button>
+      </div>
+
+      <!-- Login -->
+      <a
+        routerLink="/tasker/login"
+        class="btn-secondary rounded-full px-6 py-2.5 font-semibold text-body-md text-on-surface transition-all hover:scale-105 active:scale-95"
+      >
+        Login / Sign Up
+      </a>
+    </div>
+  </div>
+</nav>
