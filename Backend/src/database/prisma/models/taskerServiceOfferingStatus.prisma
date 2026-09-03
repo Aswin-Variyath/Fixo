@@ -1,0 +1,4 @@
+enum TaskerServiceOfferingStatus {
+  ACTIVE
+  INACTIVE
+}

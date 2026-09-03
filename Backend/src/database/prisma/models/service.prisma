@@ -11,6 +11,7 @@ model Service {
   updatedAt    DateTime      @updatedAt
 
   category     Category      @relation(fields: [categoryId], references: [id])
+  taskerOfferings TaskerServiceOffering[]
 
   @@unique([categoryId, name])
   @@index([categoryId, status, displayOrder])
