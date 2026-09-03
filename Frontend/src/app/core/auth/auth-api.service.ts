@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { ENV } from '../../../environments/environments';
-import { AdminLoginRequest, AdminLoginResponse, ApiResponse,  AuthUser, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, RefreshResponse, ResetPasswordRequest,  ResetPasswordTokenResponse,  SignupRequest, VerifyAdminOtpRequest, VerifyAdminOtpResponse } from './auth.types';
+import { AdminLoginRequest, AdminLoginResponse, ApiResponse,  AuthUser, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, RefreshResponse, ResendAdminOtpRequest, ResetPasswordRequest,  ResetPasswordTokenResponse,  SignupRequest, VerifyAdminOtpRequest, VerifyAdminOtpResponse } from './auth.types';
 
 @Service()
 export class AuthApiService {
@@ -53,5 +53,9 @@ export class AuthApiService {
 
    verifyAdminOtp(request:VerifyAdminOtpRequest) {
     return this.http.post<ApiResponse<VerifyAdminOtpResponse>>(`${this.authUrl}/verify-otp`,request)
+   }
+
+   resendAdminOtp(request:ResendAdminOtpRequest) {
+    return this.http.post<ApiResponse<AdminLoginResponse>>(`${this.authUrl}/admin-resend-otp`,request)
    }
 }

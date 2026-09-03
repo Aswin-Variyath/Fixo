@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { AuthApiService } from './auth-api.service';
 import { AuthStore } from './auth.store';
-import { AdminLoginRequest, ForgotPasswordRequest, LoginRequest, ResetPasswordRequest, SignupRequest, VerifyAdminOtpRequest } from './auth.types';
+import { AdminLoginRequest, ForgotPasswordRequest, LoginRequest, ResendAdminOtpRequest, ResetPasswordRequest, SignupRequest, VerifyAdminOtpRequest } from './auth.types';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { AdminOtpStateService } from './admin-otp-state.service';
 
@@ -94,6 +94,18 @@ export class AuthService {
 
     verifyAdminOtp(request:VerifyAdminOtpRequest) {
         return this.authApiService.verifyAdminOtp(request)
+    }
+
+    resendAdminOtp(request:ResendAdminOtpRequest){
+        return this.authApiService.resendAdminOtp(request).pipe(
+            tap((response)=>{
+                this.adminOtpState.updateSession(
+                    response.data.challengeId,
+                    response.data.otpExpiresIn,
+                    response.data.resendAfter
+                )
+            })
+        )
     }
 
 }   

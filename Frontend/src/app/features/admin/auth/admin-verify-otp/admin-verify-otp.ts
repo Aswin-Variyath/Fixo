@@ -49,6 +49,7 @@ export class AdminVerifyOtp implements OnInit, OnDestroy {
   // -----------------------------
 
   isVerifying = false;
+  isResending = false;
   errorMessage = '';
 
   private timerId?: ReturnType<typeof setInterval>;
@@ -82,15 +83,25 @@ export class AdminVerifyOtp implements OnInit, OnDestroy {
     // Set initial timer values immediately.
     this.updateTimers();
 
-    // Update timers every second.
-    this.timerId = setInterval(() => {
-      this.updateTimers();
-    }, 1000);
+    // Start timer.
+    this.startTimer();
   }
 
   // -----------------------------
   // TIMER
   // -----------------------------
+
+  private startTimer(): void {
+
+    // Prevent multiple intervals.
+    if (this.timerId) {
+      return;
+    }
+
+    this.timerId = setInterval(() => {
+      this.updateTimers();
+    }, 1000);
+  }
 
   private updateTimers(): void {
 
@@ -101,8 +112,6 @@ export class AdminVerifyOtp implements OnInit, OnDestroy {
     this.resendRemainingSeconds.set(
       this.otpState.getResendRemainingSeconds()
     );
-
-
 
     // Stop interval once both timers are finished.
     if (
@@ -281,87 +290,215 @@ export class AdminVerifyOtp implements OnInit, OnDestroy {
   // VERIFY OTP
   // -----------------------------
 
-verifyOtp(): void {
+  verifyOtp(): void {
 
-  console.log('VERIFY BUTTON CLICKED');
+    console.log('VERIFY BUTTON CLICKED');
 
-  console.log('OTP complete:', this.isOtpComplete);
-  console.log('OTP:', this.otp);
+    console.log(
+      'OTP complete:',
+      this.isOtpComplete
+    );
 
-  if (!this.isOtpComplete || this.isVerifying) {
-    console.log('Verify blocked');
-    return;
-  }
+    console.log(
+      'OTP:',
+      this.otp
+    );
 
-  const challengeId = this.otpState.getChallengeId();
-
-  console.log('Challenge ID:', challengeId);
-
-  if (!challengeId) {
-    console.log('No challenge ID');
-
-    this.errorMessage =
-      'Your OTP session has expired. Please sign in again.';
-
-    return;
-  }
-
-  this.isVerifying = true;
-  this.errorMessage = '';
-
-  console.log('Calling verifyAdminOtp API...');
-
-  this.authService.verifyAdminOtp({
-    challengeId,
-    otp: this.otp
-  }).subscribe({
-
-    next: (response) => {
-
-      console.log('Admin OTP verified:', response);
-
-      this.isVerifying = false;
-
-      this.otpState.clearSession();
-
-      console.log('Navigating to dashboard...');
-
-      this.router.navigate(['/admin/dashboard'])
-        .then(success => {
-          console.log(
-            'Dashboard navigation result:',
-            success
-          );
-        })
-        .catch(error => {
-          console.error(
-            'Dashboard navigation error:',
-            error
-          );
-        });
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Admin OTP verification API error:',
-        error
-      );
-
-      console.error(
-        'Backend error:',
-        error?.error
-      );
-
-      this.isVerifying = false;
-
-      this.errorMessage =
-        error?.error?.message ??
-        'Invalid OTP. Please try again.';
+    // Prevent verification if:
+    // - OTP is incomplete
+    // - verification is already running
+    // - resend request is running
+    if (
+      !this.isOtpComplete ||
+      this.isVerifying ||
+      this.isResending
+    ) {
+      console.log('Verify blocked');
+      return;
     }
 
-  });
-}
+    const challengeId =
+      this.otpState.getChallengeId();
+
+    console.log(
+      'Challenge ID:',
+      challengeId
+    );
+
+    if (!challengeId) {
+
+      console.log('No challenge ID');
+
+      this.errorMessage =
+        'Your OTP session has expired. Please sign in again.';
+
+      this.router.navigate(['/admin/signin']);
+
+      return;
+    }
+
+    this.isVerifying = true;
+    this.errorMessage = '';
+
+    console.log(
+      'Calling verifyAdminOtp API...'
+    );
+
+    this.authService.verifyAdminOtp({
+      challengeId,
+      otp: this.otp
+    }).subscribe({
+
+      next: (response) => {
+
+        console.log(
+          'Admin OTP verified:',
+          response
+        );
+
+        this.isVerifying = false;
+
+        // OTP session is no longer required
+        // after successful authentication.
+        this.otpState.clearSession();
+
+        console.log(
+          'Navigating to dashboard...'
+        );
+
+        this.router
+          .navigate(['/admin/dashboard'])
+          .then(success => {
+
+            console.log(
+              'Dashboard navigation result:',
+              success
+            );
+
+          })
+          .catch(error => {
+
+            console.error(
+              'Dashboard navigation error:',
+              error
+            );
+
+          });
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Admin OTP verification API error:',
+          error
+        );
+
+        console.error(
+          'Backend error:',
+          error?.error
+        );
+
+        this.isVerifying = false;
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Invalid OTP. Please try again.';
+      }
+
+    });
+  }
+
+  // -----------------------------
+  // RESEND OTP
+  // -----------------------------
+
+  resendOtp(): void {
+
+    // Don't resend while:
+    // - cooldown is active
+    // - another resend request is running
+    if (
+      !this.canResend ||
+      this.isResending
+    ) {
+      return;
+    }
+
+    const challengeId =
+      this.otpState.getChallengeId();
+
+    if (!challengeId) {
+
+      this.errorMessage =
+        'Your OTP session has expired. Please sign in again.';
+
+      this.router.navigate(['/admin/signin']);
+
+      return;
+    }
+
+    this.isResending = true;
+    this.errorMessage = '';
+
+    console.log(
+      'Resending admin OTP...'
+    );
+
+    this.authService.resendAdminOtp({
+      challengeId
+    }).subscribe({
+
+      next: (response) => {
+
+        console.log(
+          'Admin OTP resent successfully:',
+          response
+        );
+
+        this.isResending = false;
+
+        // Clear the previous OTP.
+        this.clearOtp();
+
+        // Save the NEW challengeId and
+        // restart the OTP/resend timers.
+        this.otpState.updateSession(
+          response.data.challengeId,
+          response.data.otpExpiresIn,
+          response.data.resendAfter
+        );
+
+        // Immediately update timer values.
+        this.updateTimers();
+
+        // Make sure timer is running.
+        this.startTimer();
+
+        // Focus first OTP input.
+        this.focusInput(0);
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Admin OTP resend API error:',
+          error
+        );
+
+        console.error(
+          'Backend error:',
+          error?.error
+        );
+
+        this.isResending = false;
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Unable to resend OTP. Please try again.';
+      }
+
+    });
+  }
 
   // -----------------------------
   // STOP TIMER

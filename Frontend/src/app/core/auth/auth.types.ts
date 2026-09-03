@@ -112,3 +112,7 @@ export interface AdminOtpSession {
   otpExpiresAt: number;
   resendAvailableAt: number;
 }
+
+export interface ResendAdminOtpRequest {
+    challengeId:string
+}

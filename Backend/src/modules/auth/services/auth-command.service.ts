@@ -432,11 +432,13 @@ export class AuthCommandService implements IAuthCommandService {
 
     async adminLogin(data: AdminLoginDto): Promise<AdminLoginResult> {
     const admin = await this.userAuthRepository.findForAdminLogin(data.email);
+    console.log("This is admin",admin)
     if (!admin) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")  
     if (admin.deletedAt) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
     if (!admin.status.isActive) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
     if (!admin.adminRole.isSuperAdmin)throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
     if (!admin.adminRole.isActive) throw new AppError(StatusCodes.FORBIDDEN,"Admin role is inactive")
+        
     const isPasswordValid = await this.passwordService.verify(admin.passwordHash, data.password)
     if (!isPasswordValid) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
     const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`

@@ -73,4 +73,7 @@ export class AdminOtpStateService {
   hasActiveSession(): boolean {
     return this.getOtpRemainingSeconds() > 0;
   }
+  updateSession(challengeId:string, otpExpiresIn:number,resendAfter:number) {
+    this.setSession(challengeId,otpExpiresIn,resendAfter)
+  }
 }

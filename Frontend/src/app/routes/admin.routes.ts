@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { roleGuard } from '../core/guards/role-guard';
 
 export const adminRoutes: Routes = [
   {
@@ -11,6 +12,7 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'admin/dashboard',
+    canActivate: [roleGuard('super_admin')],
     loadComponent: () => import('../features/admin/dashboard/dashboard').then((m) => m.Dashboard),
   },
 ];
