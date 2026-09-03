@@ -15,7 +15,10 @@ model User {
 
   passwordResetTokens PasswordResetToken[]
 
-  userRoles UserRole[]
+  taskerProfile TaskerProfile?
+
+  userRoles         UserRole[]
+  customerAddresses CustomerAddress[]
 
   language Language   @relation(fields: [languageId], references: [id])
   status   UserStatus @relation(fields: [statusId], references: [id])
