@@ -1,0 +1,6 @@
+enum TaskerEducationType {
+  SSLC
+  PLUS_TWO
+  DEGREE
+  MASTERS
+}

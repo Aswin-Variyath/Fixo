@@ -1,0 +1,13 @@
+model KycDocument {
+  id          String          @id @default(uuid())
+  taskerKycId String
+  type        KycDocumentType
+  fileUrl     String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  taskerKyc   TaskerKyc       @relation(fields: [taskerKycId], references: [id])
+
+  @@unique([taskerKycId, type])
+  @@index([taskerKycId])
+}
