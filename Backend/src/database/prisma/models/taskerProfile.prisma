@@ -13,4 +13,5 @@ model TaskerProfile {
     user             User                    @relation(fields: [userId], references: [id])
     location         TaskerLocation?
     serviceOfferings TaskerServiceOffering[]
+    availability     TaskerAvailability[]
 }
