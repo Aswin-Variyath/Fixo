@@ -1,179 +1,245 @@
-<!-- ==================== SERVICES ==================== -->
-<section class="flex flex-col gap-8" id="services">
+<!-- Explore Services Section -->
+<section class="flex flex-col gap-8" id="services-section">
   <div class="text-center flex flex-col items-center">
     <h2 class="font-headline-lg-mobile md:font-headline-lg text-on-surface mb-2">
       Search Services
     </h2>
-
-    <p class="text-on-surface-variant text-lg">Find the right professional for your next task.</p>
+    <p class="text-on-surface-variant text-lg">
+      Find the right service for your home repair and maintenance needs.
+    </p>
   </div>
 
-  <!-- Search -->
   <div class="w-full max-w-2xl mx-auto relative mb-4">
     <span
       class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-on-surface-variant"
     >
       search
     </span>
-
     <input
-      class="glass-input w-full rounded-xl py-3 pl-12 pr-6 text-md placeholder:text-on-surface-variant/50 transition-all focus:border-primary/50"
-      placeholder="Search services..."
+      class="glass-input w-full rounded-xl py-3 pl-12 pr-6 text-base text-on-surface outline-none placeholder:text-on-surface-variant/50 transition-all focus:border-primary/50"
+      placeholder="Search services (e.g. Fan Installation, Tap Repair, Sofa Cleaning, AC Repair)..."
       type="text"
     />
   </div>
 
-  <!-- Services Grid -->
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-    <!-- Electrician -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Electrical -->
     <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=electrician"
+      class="glass-card p-6 flex flex-col justify-between gap-4 hover:-translate-y-1 transition-transform hover:border-primary/50 group cursor-pointer"
+      href="/services?category=electrical"
     >
-      <div
-        class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> electrical_services </span>
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-on-primary transition-colors"
+        >
+          <span class="material-symbols-outlined text-2xl">bolt</span>
+        </div>
+        <div>
+          <h3
+            class="text-on-surface font-semibold text-lg group-hover:text-primary transition-colors"
+          >
+            Electrical
+          </h3>
+          <p class="text-on-surface-variant text-sm mt-1">
+            Electrical installation, repair and maintenance services.
+          </p>
+        </div>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Electrician </span>
+      <div class="pt-3 border-t border-glass-stroke/50 flex flex-col gap-2">
+        <p class="text-xs text-on-surface-variant">
+          <span class="text-sky-blue font-medium">Popular:</span> Fan Installation · Light Installation · Switch Repair · Wiring
+        </p>
+        <span
+          class="text-primary text-xs font-medium flex items-center gap-1 group-hover:underline"
+        >
+          View Services
+          <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </span>
+      </div>
     </a>
 
-    <!-- Plumber -->
+    <!-- Plumbing -->
     <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=plumber"
+      class="glass-card p-6 flex flex-col justify-between gap-4 hover:-translate-y-1 transition-transform hover:border-primary/50 group cursor-pointer"
+      href="/services?category=plumbing"
     >
-      <div
-        class="w-12 h-12 rounded-full bg-sky-blue/10 text-sky-blue flex items-center justify-center group-hover:bg-sky-blue group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> plumbing </span>
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-sky-blue/10 text-sky-blue flex items-center justify-center shrink-0 group-hover:bg-sky-blue group-hover:text-on-primary transition-colors"
+        >
+          <span class="material-symbols-outlined text-2xl">plumbing</span>
+        </div>
+        <div>
+          <h3
+            class="text-on-surface font-semibold text-lg group-hover:text-sky-blue transition-colors"
+          >
+            Plumbing
+          </h3>
+          <p class="text-on-surface-variant text-sm mt-1">
+            Plumbing installation, repair and maintenance services.
+          </p>
+        </div>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Plumber </span>
+      <div class="pt-3 border-t border-glass-stroke/50 flex flex-col gap-2">
+        <p class="text-xs text-on-surface-variant">
+          <span class="text-sky-blue font-medium">Popular:</span> Tap Repair · Pipe Leakage · Bathroom Plumbing · Tank Install
+        </p>
+        <span
+          class="text-sky-blue text-xs font-medium flex items-center gap-1 group-hover:underline"
+        >
+          View Services
+          <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </span>
+      </div>
     </a>
 
     <!-- Cleaning -->
     <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=cleaning"
+      class="glass-card p-6 flex flex-col justify-between gap-4 hover:-translate-y-1 transition-transform hover:border-primary/50 group cursor-pointer"
+      href="/services?category=cleaning"
     >
-      <div
-        class="w-12 h-12 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> cleaning_services </span>
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0 group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors"
+        >
+          <span class="material-symbols-outlined text-2xl">cleaning_services</span>
+        </div>
+        <div>
+          <h3
+            class="text-on-surface font-semibold text-lg group-hover:text-tertiary transition-colors"
+          >
+            Cleaning
+          </h3>
+          <p class="text-on-surface-variant text-sm mt-1">
+            Home and property cleaning services.
+          </p>
+        </div>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Cleaning </span>
-    </a>
-
-    <!-- AC Repair -->
-    <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=ac_repair"
-    >
-      <div
-        class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> ac_unit </span>
+      <div class="pt-3 border-t border-glass-stroke/50 flex flex-col gap-2">
+        <p class="text-xs text-on-surface-variant">
+          <span class="text-tertiary font-medium">Popular:</span> Sofa Cleaning · Bathroom Cleaning · Kitchen · Deep Cleaning
+        </p>
+        <span
+          class="text-tertiary text-xs font-medium flex items-center gap-1 group-hover:underline"
+        >
+          View Services
+          <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </span>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> AC Repair </span>
     </a>
 
     <!-- Painting -->
     <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=painting"
+      class="glass-card p-6 flex flex-col justify-between gap-4 hover:-translate-y-1 transition-transform hover:border-primary/50 group cursor-pointer"
+      href="/services?category=painting"
     >
-      <div
-        class="w-12 h-12 rounded-full bg-sky-blue/10 text-sky-blue flex items-center justify-center group-hover:bg-sky-blue group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> format_paint </span>
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-sky-blue/10 text-sky-blue flex items-center justify-center shrink-0 group-hover:bg-sky-blue group-hover:text-on-primary transition-colors"
+        >
+          <span class="material-symbols-outlined text-2xl">format_paint</span>
+        </div>
+        <div>
+          <h3
+            class="text-on-surface font-semibold text-lg group-hover:text-sky-blue transition-colors"
+          >
+            Painting
+          </h3>
+          <p class="text-on-surface-variant text-sm mt-1">
+            Interior and exterior painting services.
+          </p>
+        </div>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Painting </span>
+      <div class="pt-3 border-t border-glass-stroke/50 flex flex-col gap-2">
+        <p class="text-xs text-on-surface-variant">
+          <span class="text-sky-blue font-medium">Popular:</span> Interior Painting · Exterior Painting · Waterproofing · Texture
+        </p>
+        <span
+          class="text-sky-blue text-xs font-medium flex items-center gap-1 group-hover:underline"
+        >
+          View Services
+          <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </span>
+      </div>
     </a>
 
-    <!-- Carpenter -->
+    <!-- Carpentry -->
     <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=carpenter"
+      class="glass-card p-6 flex flex-col justify-between gap-4 hover:-translate-y-1 transition-transform hover:border-primary/50 group cursor-pointer"
+      href="/services?category=carpentry"
     >
-      <div
-        class="w-12 h-12 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> carpenter </span>
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0 group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors"
+        >
+          <span class="material-symbols-outlined text-2xl">construction</span>
+        </div>
+        <div>
+          <h3
+            class="text-on-surface font-semibold text-lg group-hover:text-tertiary transition-colors"
+          >
+            Carpentry
+          </h3>
+          <p class="text-on-surface-variant text-sm mt-1">
+            Carpentry, furniture and woodwork services.
+          </p>
+        </div>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Carpenter </span>
+      <div class="pt-3 border-t border-glass-stroke/50 flex flex-col gap-2">
+        <p class="text-xs text-on-surface-variant">
+          <span class="text-tertiary font-medium">Popular:</span> Furniture Repair · Door Repair · Lock Fitting · Custom Woodwork
+        </p>
+        <span
+          class="text-tertiary text-xs font-medium flex items-center gap-1 group-hover:underline"
+        >
+          View Services
+          <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </span>
+      </div>
     </a>
 
-    <!-- Handyman -->
+    <!-- AC & Appliance -->
     <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=handyman"
+      class="glass-card p-6 flex flex-col justify-between gap-4 hover:-translate-y-1 transition-transform hover:border-primary/50 group cursor-pointer"
+      href="/services?category=ac_appliance"
     >
-      <div
-        class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> handyman </span>
+      <div class="flex items-start gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-on-primary transition-colors"
+        >
+          <span class="material-symbols-outlined text-2xl">kitchen</span>
+        </div>
+        <div>
+          <h3
+            class="text-on-surface font-semibold text-lg group-hover:text-primary transition-colors"
+          >
+            AC &amp; Appliance
+          </h3>
+          <p class="text-on-surface-variant text-sm mt-1">
+            AC and home appliance installation and repair services.
+          </p>
+        </div>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Handyman </span>
-    </a>
-
-    <!-- Appliance -->
-    <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=appliance"
-    >
-      <div
-        class="w-12 h-12 rounded-full bg-sky-blue/10 text-sky-blue flex items-center justify-center group-hover:bg-sky-blue group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> kitchen </span>
+      <div class="pt-3 border-t border-glass-stroke/50 flex flex-col gap-2">
+        <p class="text-xs text-on-surface-variant">
+          <span class="text-primary font-medium">Popular:</span> AC Installation · AC Repair · Washing Machine · Refrigerator
+        </p>
+        <span
+          class="text-primary text-xs font-medium flex items-center gap-1 group-hover:underline"
+        >
+          View Services
+          <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </span>
       </div>
-
-      <span class="text-on-surface font-medium text-sm"> Appliance Repair </span>
-    </a>
-
-    <!-- Moving -->
-    <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=moving"
-    >
-      <div
-        class="w-12 h-12 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> local_shipping </span>
-      </div>
-
-      <span class="text-on-surface font-medium text-sm"> Moving </span>
-    </a>
-
-    <!-- Gardening -->
-    <a
-      class="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition-transform hover:border-primary/50 text-center group cursor-pointer"
-      href="/discovery?category=gardening"
-    >
-      <div
-        class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors"
-      >
-        <span class="material-symbols-outlined text-2xl"> yard </span>
-      </div>
-
-      <span class="text-on-surface font-medium text-sm"> Gardening </span>
     </a>
   </div>
 
-  <!-- Load More -->
   <div class="flex justify-center mt-4">
     <button
-      class="px-6 py-3 border border-glass-stroke rounded-xl text-on-surface font-medium hover:bg-white/5 transition-colors flex items-center gap-2"
+      class="px-6 py-3 border border-glass-stroke rounded-xl text-on-surface font-medium hover:bg-white/5 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
     >
       Load More Services
-
-      <span class="material-symbols-outlined text-sm"> expand_more </span>
+      <span class="material-symbols-outlined text-sm">expand_more</span>
     </button>
   </div>
 </section>

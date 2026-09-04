@@ -38,6 +38,11 @@ import { IMailService } from "../shared/providers/mail/interfaces/mail.service.i
 import { NodemailerMailService } from "../shared/providers/mail/services/resend-mail.service";
 import { IAdminOtpStore } from "../modules/auth/interfaces/admin-otp-store.interface";
 import { AdminOtpStore } from "../modules/auth/stores/admin-otp.store";
+import { ICategoryQueryService } from "../modules/categories/interfaces/category-query-service.interface";
+import { CategoryQueryService } from "../modules/categories/services/category-query.service";
+import { ICategoryRepository } from "../modules/categories/interfaces/category-repository.interface";
+import { CategoryRespository } from "../modules/categories/repositories/category.repository";
+import { CategoryController } from "../modules/categories/controllers/category.controller";
 
 export const container = new Container()
 
@@ -61,3 +66,6 @@ container.bind<IMailService>(TYPES.MailService).to(NodemailerMailService).inSing
 container.bind<IRateLimitStore>(TYPES.RateLimitStore).to(RateLimitStore).inSingletonScope()
 container.bind<IsessionIndexStore>(TYPES.SessionIndexStore).to(SessionIndexStore).inSingletonScope()
 container.bind<IAdminOtpStore>(TYPES.AdminOtpStore).to(AdminOtpStore).inSingletonScope()
+container.bind<ICategoryQueryService>(TYPES.CategoryQueryService).to(CategoryQueryService).inSingletonScope()
+container.bind<ICategoryRepository>(TYPES.CategoryRespository).to(CategoryRespository).inSingletonScope()
+container.bind<CategoryController>(TYPES.CategoryController).to(CategoryController).inSingletonScope()

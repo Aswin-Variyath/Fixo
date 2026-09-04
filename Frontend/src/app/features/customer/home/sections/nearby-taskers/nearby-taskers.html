@@ -1,595 +1,378 @@
-  <!-- ==================== NEARBY TASKERS ==================== -->
-  <section
-    class="flex flex-col gap-6"
-    id="discovery"
+<!-- Nearby Taskers Section -->
+<section class="flex flex-col gap-6" id="nearby-taskers">
+  <div
+    class="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full bg-surface-container/50 p-6 md:p-8 rounded-2xl border border-glass-stroke backdrop-blur-sm"
   >
-
-    <!-- Section Header -->
-    <div
-      class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-surface-container/50 p-6 rounded-2xl border border-glass-stroke backdrop-blur-sm"
-    >
-
-      <div>
-        <h2 class="font-headline-lg-mobile text-2xl text-on-surface">
-          Nearby Taskers
-        </h2>
-
-        <p class="text-on-surface-variant text-md mt-1">
-          Trusted professionals near your location.
-        </p>
-      </div>
-
-      <div class="flex items-center gap-3 text-sm">
-
-        <span class="text-on-surface-variant">
-          Distance:
-        </span>
-
+    <div class="text-left">
+      <h2
+        class="font-headline-lg-mobile md:font-headline-lg text-2xl md:text-4xl text-on-surface font-semibold"
+      >
+        Nearby Taskers
+      </h2>
+      <p class="text-on-surface-variant text-base md:text-lg mt-1">
+        Trusted professionals near your location.
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-4 text-sm">
+      <div class="flex items-center gap-2">
+        <span class="text-on-surface-variant text-xs">Distance:</span>
         <div class="relative">
-
           <select
-            class="appearance-none bg-surface-container-high border border-glass-stroke rounded-lg py-2 pl-4 pr-10 text-on-surface focus:outline-none focus:border-primary cursor-pointer"
+            class="appearance-none bg-surface-container-high border border-glass-stroke rounded-lg py-2 pl-3 pr-8 text-on-surface text-xs focus:outline-none focus:border-primary cursor-pointer"
           >
             <option>Within 5 km</option>
             <option>Within 10 km</option>
             <option>Within 20 km</option>
-            <option>Nearest First</option>
           </select>
-
           <span
-            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm"
+            class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm"
           >
             expand_more
           </span>
-
         </div>
       </div>
+      <div class="flex items-center gap-2">
+        <span class="text-on-surface-variant text-xs">Sort by:</span>
+        <div class="relative">
+          <select
+            class="appearance-none bg-surface-container-high border border-glass-stroke rounded-lg py-2 pl-3 pr-8 text-on-surface text-xs focus:outline-none focus:border-primary cursor-pointer"
+          >
+            <option>Recommended</option>
+            <option>Nearest</option>
+            <option>Highest Rated</option>
+            <option>Lowest Price</option>
+          </select>
+          <span
+            class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-sm"
+          >
+            expand_more
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Grid of Taskers -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Tasker 1: Ramesh Kumar -->
+    <div
+      class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group"
+    >
+      <div class="p-6 flex flex-col gap-4">
+        <div class="flex justify-between items-start">
+          <div class="flex gap-4">
+            <div class="relative">
+              <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary">
+                <img
+                  alt="Ramesh Kumar"
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPg7GgQx5KzxChRK4xttXxFYLeYVS3-B9ViCvnCGENn2HidzdDGGhxiK66dCgQ3n8mXoD3LhgoMz3JeV_JMXwulh3gC3o_0P7usobIVxa3TzmSqE9c1Q4NqK_IUYdyCcfNDiaJj1-XUaKSC-BGU6foH-8TwwQMPXygeClPY-V0O_K2KveiH2wxG3ifbkX9bNEYSOAo3dZUvoZw79REFNE5dhVNJEe-GRb16acvlPhpYjfHbbNDCKTM"
+                />
+              </div>
+              <div
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg border border-surface"
+              >
+                <span class="material-symbols-outlined text-[10px]">verified</span>
+                Verified
+              </div>
+            </div>
+            <div class="pt-1">
+              <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
+                Ramesh Kumar
+              </h3>
+              <p class="text-primary text-sm font-medium">Electrician</p>
+              <p class="text-xs text-on-surface-variant mt-0.5">127 jobs completed</p>
+              <div class="flex items-center gap-1 mt-1 text-sm">
+                <span class="material-symbols-outlined text-tertiary text-sm">star</span>
+                <span class="text-on-surface font-bold">4.9</span>
+                <span class="text-on-surface-variant text-xs">(128 reviews)</span>
+              </div>
+            </div>
+          </div>
+          <button
+            class="text-on-surface-variant hover:text-error transition-colors p-1 cursor-pointer"
+          >
+            <span class="material-symbols-outlined">favorite_border</span>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span
+            class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1"
+          >
+            <span class="material-symbols-outlined text-[14px]">location_on</span>
+            2.4 km away
+          </span>
+          <span
+            class="bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20 flex items-center gap-1"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            Available today
+          </span>
+        </div>
+        <div
+          class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center"
+        >
+          <div>
+            <p class="text-xs text-on-surface-variant">Rates</p>
+            <p class="text-on-surface font-semibold">
+              ₹350<span class="text-xs font-normal text-on-surface-variant">/hour</span> · ₹1,200<span
+                class="text-xs font-normal text-on-surface-variant"
+                >/day</span
+              >
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium cursor-pointer"
+            >
+              View Profile
+            </button>
+            <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-
-    <!-- Tasker Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- ================= TASKER 1 ================= -->
-      <div class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group">
-
-        <div class="p-6 flex flex-col gap-4">
-
-          <div class="flex justify-between items-start">
-
-            <div class="flex gap-4">
-
-              <div class="relative">
-
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary">
-
-                  <img
-                    alt="Tasker profile"
-                    class="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPg7GgQx5KzxChRK4xttXxFYLeYVS3-B9ViCvnCGENn2HidzdDGGhxiK66dCgQ3n8mXoD3LhgoMz3JeV_JMXwulh3gC3o_0P7usobIVxa3TzmSqE9c1Q4NqK_IUYdyCcfNDiaJj1-XUaKSC-BGU6foH-8TwwQMPXygeClPY-V0O_K2KveiH2wxG3ifbkX9bNEYSOAo3dZUvoZw79REFNE5dhVNJEe-GRb16acvlPhpYjfHbbNDCKTM"
-                  >
-
-                </div>
-
-                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg border border-surface">
-
-                  <span class="material-symbols-outlined text-[10px]">
-                    verified
-                  </span>
-
-                  Verified
-
-                </div>
-
+    <!-- Tasker 2: Mohammed Ali -->
+    <div
+      class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group"
+    >
+      <div class="p-6 flex flex-col gap-4">
+        <div class="flex justify-between items-start">
+          <div class="flex gap-4">
+            <div class="relative">
+              <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary">
+                <img
+                  alt="Mohammed Ali"
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzb64r92O2TeeIzNdhXnQF2LddKNUfelnRuwQDQXucA6D7MiR2LmFz05--9jjBEugQow1TDu2Nngx8aDmiX0XzZYPDEUSjyZCzqQJIMiMgemzY5YUIE_IssBg-xaEIt2rS-U7EVPLh72GuHOtJGH3-Vj94VYwlc7TfRyuePqtNN9k6jJR4CCptitJiGf2xnGxpeVcw5o3m6-Tf5FQaLYojQebhrfYwzzJdMnQVVsvNco3cjL7GbH2U"
+                />
               </div>
-
-              <div class="pt-1">
-
-                <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
-                  Ramesh Kumar
-                </h3>
-
-                <p class="text-primary text-sm font-medium">
-                  Master Electrician
-                </p>
-
-                <p class="text-xs text-on-surface-variant mt-0.5">
-                  127 jobs completed
-                </p>
-
-                <div class="flex items-center gap-1 mt-1 text-sm">
-
-                  <span class="material-symbols-outlined text-tertiary text-sm">
-                    star
-                  </span>
-
-                  <span class="text-on-surface font-bold">
-                    4.9
-                  </span>
-
-                  <span class="text-on-surface-variant text-xs">
-                    (128 reviews)
-                  </span>
-
-                </div>
-
+              <div
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg border border-surface"
+              >
+                <span class="material-symbols-outlined text-[10px]">verified</span>
+                Verified
               </div>
-
             </div>
-
-            <button class="text-on-surface-variant hover:text-error transition-colors p-1">
-
-              <span class="material-symbols-outlined">
-                favorite_border
-              </span>
-
-            </button>
-
-          </div>
-
-
-          <div class="flex flex-wrap gap-2 text-xs">
-
-            <span class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1">
-
-              <span class="material-symbols-outlined text-[14px]">
-                location_on
-              </span>
-
-              2.4 km away
-
-            </span>
-
-            <span class="bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20 flex items-center gap-1">
-
-              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-
-              Available today
-
-            </span>
-
-          </div>
-
-
-          <div class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center">
-
-            <div>
-
-              <p class="text-xs text-on-surface-variant">
-                Starting from
-              </p>
-
-              <p class="text-on-surface font-semibold">
-                ₹250
-
-                <span class="text-xs font-normal text-on-surface-variant">
-                  / visit
-                </span>
-              </p>
-
+            <div class="pt-1">
+              <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
+                Mohammed Ali
+              </h3>
+              <p class="text-primary text-sm font-medium">Plumber</p>
+              <div class="flex items-center gap-1 mt-1 text-sm">
+                <span class="material-symbols-outlined text-tertiary text-sm">star</span>
+                <span class="text-on-surface font-bold">5.0</span>
+                <span class="text-on-surface-variant text-xs">(210 reviews)</span>
+              </div>
             </div>
-
-            <div class="flex gap-2">
-
-              <button class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium">
-                View Profile
-              </button>
-
-              <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">
-                Book Now
-              </button>
-
-            </div>
-
           </div>
-
+          <button class="text-error transition-colors p-1 cursor-pointer">
+            <span class="material-symbols-outlined">favorite</span>
+          </button>
         </div>
-
-      </div>
-
-
-      <!-- ================= TASKER 2 ================= -->
-      <div class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group">
-
-        <div class="p-6 flex flex-col gap-4">
-
-          <div class="flex justify-between items-start">
-
-            <div class="flex gap-4">
-
-              <div class="relative">
-
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary">
-
-                  <img
-                    alt="Tasker profile"
-                    class="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzb64r92O2TeeIzNdhXnQF2LddKNUfelnRuwQDQXucA6D7MiR2LmFz05--9jjBEugQow1TDu2Nngx8aDmiX0XzZYPDEUSjyZCzqQJIMiMgemzY5YUIE_IssBg-xaEIt2rS-U7EVPLh72GuHOtJGH3-Vj94VYwlc7TfRyuePqtNN9k6jJR4CCptitJiGf2xnGxpeVcw5o3m6-Tf5FQaLYojQebhrfYwzzJdMnQVVsvNco3cjL7GbH2U"
-                  >
-
-                </div>
-
-                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg border border-surface">
-
-                  <span class="material-symbols-outlined text-[10px]">
-                    verified
-                  </span>
-
-                  Verified
-
-                </div>
-
-              </div>
-
-              <div class="pt-1">
-
-                <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
-                  Mohammed Ali
-                </h3>
-
-                <p class="text-primary text-sm font-medium">
-                  Expert Plumber
-                </p>
-
-                <div class="flex items-center gap-1 mt-1 text-sm">
-
-                  <span class="material-symbols-outlined text-tertiary text-sm">
-                    star
-                  </span>
-
-                  <span class="text-on-surface font-bold">
-                    5.0
-                  </span>
-
-                  <span class="text-on-surface-variant text-xs">
-                    (210 reviews)
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <button class="text-error transition-colors p-1">
-
-              <span class="material-symbols-outlined">
-                favorite
-              </span>
-
-            </button>
-
-          </div>
-
-
-          <div class="flex flex-wrap gap-2 text-xs">
-
-            <span class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1">
-
-              <span class="material-symbols-outlined text-[14px]">
-                location_on
-              </span>
-
-              3.1 km away
-
-            </span>
-
-            <span class="bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20 flex items-center gap-1">
-
-              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-
-              Available today
-
-            </span>
-
-          </div>
-
-
-          <div class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center">
-
-            <div>
-
-              <p class="text-xs text-on-surface-variant">
-                Starting from
-              </p>
-
-              <p class="text-on-surface font-semibold">
-                ₹200
-
-                <span class="text-xs font-normal text-on-surface-variant">
-                  / visit
-                </span>
-              </p>
-
-            </div>
-
-            <div class="flex gap-2">
-
-              <button class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium">
-                Profile
-              </button>
-
-              <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">
-                Book Now
-              </button>
-
-            </div>
-
-          </div>
-
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span
+            class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1"
+          >
+            <span class="material-symbols-outlined text-[14px]">location_on</span>
+            3.1 km away
+          </span>
+          <span
+            class="bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20 flex items-center gap-1"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            Available today
+          </span>
         </div>
-
-      </div>
-
-
-      <!-- ================= TASKER 3 ================= -->
-      <div class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group">
-
-        <div class="p-6 flex flex-col gap-4">
-
-          <div class="flex justify-between items-start">
-
-            <div class="flex gap-4">
-
-              <div class="relative">
-
-                <div class="w-16 h-16 rounded-full overflow-hidden border border-glass-stroke">
-
-                  <img
-                    alt="Tasker profile"
-                    class="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNGt7qua8qv60mAcOAFCLj98yYJk-LMa_cyl6VBzMSk77jrutcNm1mgZHWwqbpWSv1jRIUgdy_9MJS2AiCxuEE8Xy4OsSx4aONiDYAT0P1JmLlBFZCvLHo836DbOFNfOazlkSZ5WHovxnOqWU0Zepq2qRhYR8RTpvMUbWhPcacsLhErOtzvnGMz7i4u74NoCy-Ik-VtDLvZR9JOCWJ8IXNc0x0bnPH0GzZkY_ddPvTptQx390F3Mk8"
-                  >
-
-                </div>
-
-              </div>
-
-              <div class="pt-1">
-
-                <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
-                  Priya Sharma
-                </h3>
-
-                <p class="text-primary text-sm font-medium">
-                  Deep Cleaning Expert
-                </p>
-
-                <div class="flex items-center gap-1 mt-1 text-sm">
-
-                  <span class="material-symbols-outlined text-tertiary text-sm">
-                    star
-                  </span>
-
-                  <span class="text-on-surface font-bold">
-                    4.8
-                  </span>
-
-                  <span class="text-on-surface-variant text-xs">
-                    (95 reviews)
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <button class="text-on-surface-variant hover:text-error transition-colors p-1">
-
-              <span class="material-symbols-outlined">
-                favorite_border
-              </span>
-
+        <div
+          class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center"
+        >
+          <div>
+            <p class="text-xs text-on-surface-variant">Rates</p>
+            <p class="text-on-surface font-semibold">
+              ₹300<span class="text-xs font-normal text-on-surface-variant">/hour</span> · ₹1,000<span
+                class="text-xs font-normal text-on-surface-variant"
+                >/day</span
+              >
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium cursor-pointer"
+            >
+              View Profile
             </button>
-
-          </div>
-
-
-          <div class="flex flex-wrap gap-2 text-xs">
-
-            <span class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1">
-
-              <span class="material-symbols-outlined text-[14px]">
-                location_on
-              </span>
-
-              5.8 km away
-
-            </span>
-
-            <span class="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded border border-glass-stroke flex items-center gap-1">
-
-              <span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span>
-
-              Available tomorrow
-
-            </span>
-
-          </div>
-
-
-          <div class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center">
-
-            <div>
-
-              <p class="text-xs text-on-surface-variant">
-                Starting from
-              </p>
-
-              <p class="text-on-surface font-semibold">
-                ₹500
-
-                <span class="text-xs font-normal text-on-surface-variant">
-                  / room
-                </span>
-              </p>
-
-            </div>
-
-            <div class="flex gap-2">
-
-              <button class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium">
-                Profile
-              </button>
-
-              <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">
-                Book Now
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- ================= TASKER 4 ================= -->
-      <div class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group">
-
-        <div class="p-6 flex flex-col gap-4">
-
-          <div class="flex justify-between items-start">
-
-            <div class="flex gap-4">
-
-              <div class="relative">
-
-                <div class="w-16 h-16 rounded-full border border-glass-stroke bg-surface-container-high flex items-center justify-center text-on-surface-variant font-headline-lg-mobile">
-                  DK
-                </div>
-
-                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg border border-surface">
-
-                  <span class="material-symbols-outlined text-[10px]">
-                    verified
-                  </span>
-
-                  Verified
-
-                </div>
-
-              </div>
-
-              <div class="pt-1">
-
-                <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
-                  Dinesh Kumar
-                </h3>
-
-                <p class="text-primary text-sm font-medium">
-                  AC Service & Repair
-                </p>
-
-                <div class="flex items-center gap-1 mt-1 text-sm">
-
-                  <span class="material-symbols-outlined text-tertiary text-sm">
-                    star
-                  </span>
-
-                  <span class="text-on-surface font-bold">
-                    4.7
-                  </span>
-
-                  <span class="text-on-surface-variant text-xs">
-                    (82 reviews)
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <button class="text-on-surface-variant hover:text-error transition-colors p-1">
-
-              <span class="material-symbols-outlined">
-                favorite_border
-              </span>
-
+            <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
+              Book Now
             </button>
-
           </div>
-
-
-          <div class="flex flex-wrap gap-2 text-xs">
-
-            <span class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1">
-
-              <span class="material-symbols-outlined text-[14px]">
-                location_on
-              </span>
-
-              6.2 km away
-
-            </span>
-
-            <span class="bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20 flex items-center gap-1">
-
-              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-
-              Available today
-
-            </span>
-
-          </div>
-
-
-          <div class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center">
-
-            <div>
-
-              <p class="text-xs text-on-surface-variant">
-                Starting from
-              </p>
-
-              <p class="text-on-surface font-semibold">
-                ₹350
-
-                <span class="text-xs font-normal text-on-surface-variant">
-                  / unit
-                </span>
-              </p>
-
-            </div>
-
-            <div class="flex gap-2">
-
-              <button class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium">
-                Profile
-              </button>
-
-              <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">
-                Book Now
-              </button>
-
-            </div>
-
-          </div>
-
         </div>
-
       </div>
-
     </div>
 
-
-    <!-- Load More Professionals -->
-    <div class="flex justify-center mt-4">
-
-      <button
-        class="px-6 py-3 border border-glass-stroke rounded-xl text-on-surface font-medium hover:bg-white/5 transition-colors flex items-center gap-2"
-      >
-        Load more professionals
-
-        <span class="material-symbols-outlined text-sm">
-          expand_more
-        </span>
-      </button>
-
+    <!-- Tasker 3: Priya Sharma -->
+    <div
+      class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group"
+    >
+      <div class="p-6 flex flex-col gap-4">
+        <div class="flex justify-between items-start">
+          <div class="flex gap-4">
+            <div class="relative">
+              <div class="w-16 h-16 rounded-full overflow-hidden border border-glass-stroke">
+                <img
+                  alt="Priya Sharma"
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNGt7qua8qv60mAcOAFCLj98yYJk-LMa_cyl6VBzMSk77jrutcNm1mgZHWwqbpWSv1jRIUgdy_9MJS2AiCxuEE8Xy4OsSx4aONiDYAT0P1JmLlBFZCvLHo836DbOFNfOazlkSZ5WHovxnOqWU0Zepq2qRhYR8RTpvMUbWhPcacsLhErOtzvnGMz7i4u74NoCy-Ik-VtDLvZR9JOCWJ8IXNc0x0bnPH0GzZkY_ddPvTptQx390F3Mk8"
+                />
+              </div>
+            </div>
+            <div class="pt-1">
+              <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
+                Priya Sharma
+              </h3>
+              <p class="text-primary text-sm font-medium">Deep Cleaning Specialist</p>
+              <div class="flex items-center gap-1 mt-1 text-sm">
+                <span class="material-symbols-outlined text-tertiary text-sm">star</span>
+                <span class="text-on-surface font-bold">4.8</span>
+                <span class="text-on-surface-variant text-xs">(95 reviews)</span>
+              </div>
+            </div>
+          </div>
+          <button
+            class="text-on-surface-variant hover:text-error transition-colors p-1 cursor-pointer"
+          >
+            <span class="material-symbols-outlined">favorite_border</span>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span
+            class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1"
+          >
+            <span class="material-symbols-outlined text-[14px]">location_on</span>
+            4.8 km away
+          </span>
+          <span
+            class="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded border border-glass-stroke flex items-center gap-1"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span>
+            Available tomorrow
+          </span>
+        </div>
+        <div
+          class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center"
+        >
+          <div>
+            <p class="text-xs text-on-surface-variant">Rates</p>
+            <p class="text-on-surface font-semibold">
+              ₹400<span class="text-xs font-normal text-on-surface-variant">/hour</span> · ₹1,500<span
+                class="text-xs font-normal text-on-surface-variant"
+                >/day</span
+              >
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium cursor-pointer"
+            >
+              View Profile
+            </button>
+            <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-  </section>
+    <!-- Tasker 4: Dinesh Kumar -->
+    <div
+      class="glass-card overflow-hidden flex flex-col hover:border-primary/50 transition-colors group"
+    >
+      <div class="p-6 flex flex-col gap-4">
+        <div class="flex justify-between items-start">
+          <div class="flex gap-4">
+            <div class="relative">
+              <div
+                class="w-16 h-16 rounded-full overflow-hidden border border-glass-stroke bg-surface-container-high flex items-center justify-center text-on-surface-variant font-headline-lg-mobile"
+              >
+                DK
+              </div>
+              <div
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-lg border border-surface"
+              >
+                <span class="material-symbols-outlined text-[10px]">verified</span>
+                Verified
+              </div>
+            </div>
+            <div class="pt-1">
+              <h3 class="font-headline-lg-mobile text-lg text-on-surface leading-tight">
+                Dinesh Kumar
+              </h3>
+              <p class="text-primary text-sm font-medium">AC &amp; Appliance Technician</p>
+              <div class="flex items-center gap-1 mt-1 text-sm">
+                <span class="material-symbols-outlined text-tertiary text-sm">star</span>
+                <span class="text-on-surface font-bold">4.7</span>
+                <span class="text-on-surface-variant text-xs">(82 reviews)</span>
+              </div>
+            </div>
+          </div>
+          <button
+            class="text-on-surface-variant hover:text-error transition-colors p-1 cursor-pointer"
+          >
+            <span class="material-symbols-outlined">favorite_border</span>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span
+            class="bg-surface-container-high px-2 py-1 rounded border border-glass-stroke text-on-surface-variant flex items-center gap-1"
+          >
+            <span class="material-symbols-outlined text-[14px]">location_on</span>
+            6.2 km away
+          </span>
+          <span
+            class="bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20 flex items-center gap-1"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            Available today
+          </span>
+        </div>
+        <div
+          class="border-t border-glass-stroke/50 pt-4 mt-2 flex justify-between items-center"
+        >
+          <div>
+            <p class="text-xs text-on-surface-variant">Rates</p>
+            <p class="text-on-surface font-semibold">
+              ₹350<span class="text-xs font-normal text-on-surface-variant">/hour</span> · ₹1,100<span
+                class="text-xs font-normal text-on-surface-variant"
+                >/day</span
+              >
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="px-4 py-2 rounded-lg border border-glass-stroke text-on-surface text-sm hover:bg-white/5 transition-colors font-medium cursor-pointer"
+            >
+              View Profile
+            </button>
+            <button class="btn-primary px-4 py-2 rounded-lg text-sm font-medium cursor-pointer">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load More Button -->
+  <div class="flex justify-center mt-4">
+    <button
+      class="px-6 py-3 border border-glass-stroke rounded-xl text-on-surface font-medium hover:bg-white/5 transition-colors flex items-center gap-2 cursor-pointer active:scale-95"
+    >
+      Load more professionals
+      <span class="material-symbols-outlined text-sm">expand_more</span>
+    </button>
+  </div>
+</section>

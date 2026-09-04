@@ -44,4 +44,9 @@ export const HttpResponse = {
     VERIFICATION_EMAIL_SENT: "Verification email sent successfully",
     EMAIL_SEND_FAILED: "Failed to send email",
   },
+
+  CATEGORY: {
+    LIST: "Categories retrieved successfully"
+  }
+
 } as const;

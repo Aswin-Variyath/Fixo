@@ -5,6 +5,7 @@ import { authRoutes } from "./modules/auth";
 import cookieParser from "cookie-parser";
 import cors from 'cors'
 import { ENV } from "./config/env.config";
+import { categoryRoutes } from "./modules/categories";
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.use(express.json());
 
 app.use("/auth", authRoutes)
 app.use("/users",userRouter);
-
+app.use("/categories",categoryRoutes)
 
 app.use(errorMiddleware);
 

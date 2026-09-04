@@ -23,5 +23,9 @@ export const TYPES = {
     UserQueryService:Symbol.for("UserQueryService"),
     UserController:Symbol.for("UserController"),
     // admin
-    AdminOtpStore:Symbol.for("AdminOtpStore")
+    AdminOtpStore:Symbol.for("AdminOtpStore"),
+    // Category
+    CategoryRespository:Symbol.for("CategoryRepository"),
+    CategoryQueryService: Symbol.for("CategoryQueryService"),
+    CategoryController:Symbol.for("CategoryController")
 } as const
