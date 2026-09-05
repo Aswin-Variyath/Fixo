@@ -8,8 +8,8 @@ model Category {
   status       CategoryStatus @default(ACTIVE)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-
-  services Service[]
+  icon         String
+  services     Service[]
 
   @@index([status, displayOrder])
 }

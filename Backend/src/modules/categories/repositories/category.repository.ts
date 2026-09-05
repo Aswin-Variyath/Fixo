@@ -14,7 +14,8 @@ export class CategoryRespository implements ICategoryRepository {
                 slug:true,
                 description:true,
                 imageUrl:true,
-                displayOrder:true
+                displayOrder:true,
+                icon:true
             },
             orderBy:{
                 displayOrder:"asc"
