@@ -27,5 +27,9 @@ export const TYPES = {
     // Category
     CategoryRespository:Symbol.for("CategoryRepository"),
     CategoryQueryService: Symbol.for("CategoryQueryService"),
-    CategoryController:Symbol.for("CategoryController")
+    CategoryController:Symbol.for("CategoryController"),
+    // Service
+    ServiceRepository: Symbol.for("ServiceRepository"),
+    ServiceQueryService: Symbol.for("ServiceQueryService"),
+    ServiceController: Symbol.for("ServiceController")
 } as const

@@ -43,6 +43,11 @@ import { CategoryQueryService } from "../modules/categories/services/category-qu
 import { ICategoryRepository } from "../modules/categories/interfaces/category-repository.interface";
 import { CategoryRespository } from "../modules/categories/repositories/category.repository";
 import { CategoryController } from "../modules/categories/controllers/category.controller";
+import { IserviceRepository } from "../modules/services/interfaces/service-repository.interface";
+import { ServiceRespository } from "../modules/services/repositories/service.repository";
+import { IserviceQueryService } from "../modules/services/interfaces/service-query-service.interface";
+import { ServiceQueryService } from "../modules/services/services/service-query.service";
+import { ServiceController } from "../modules/services/controllers/service.controller";
 
 export const container = new Container()
 
@@ -69,3 +74,6 @@ container.bind<IAdminOtpStore>(TYPES.AdminOtpStore).to(AdminOtpStore).inSingleto
 container.bind<ICategoryQueryService>(TYPES.CategoryQueryService).to(CategoryQueryService).inSingletonScope()
 container.bind<ICategoryRepository>(TYPES.CategoryRespository).to(CategoryRespository).inSingletonScope()
 container.bind<CategoryController>(TYPES.CategoryController).to(CategoryController).inSingletonScope()
+container.bind<IserviceRepository>(TYPES.ServiceRepository).to(ServiceRespository).inSingletonScope()
+container.bind<IserviceQueryService>(TYPES.ServiceQueryService).to(ServiceQueryService).inSingletonScope()
+container.bind<ServiceController>(TYPES.ServiceController).to(ServiceController).inSingletonScope()

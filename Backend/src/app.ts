@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import cors from 'cors'
 import { ENV } from "./config/env.config";
 import { categoryRoutes } from "./modules/categories";
+import { serviceRoutes } from "./modules/services";
+
 
 const app = express();
 
@@ -31,7 +33,7 @@ app.use(express.json());
 app.use("/auth", authRoutes)
 app.use("/users",userRouter);
 app.use("/categories",categoryRoutes)
-
+app.use("/services", serviceRoutes)
 app.use(errorMiddleware);
 
 export default app;

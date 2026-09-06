@@ -1,0 +1,1 @@
+export { default as serviceRoutes } from "./routes/service.routes";

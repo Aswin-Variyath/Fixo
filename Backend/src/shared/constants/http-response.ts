@@ -47,6 +47,10 @@ export const HttpResponse = {
 
   CATEGORY: {
     LIST: "Categories retrieved successfully"
-  }
+  },
+
+  SERVICE: {
+    LIST: "Services retrieved successfully"
+  },
 
 } as const;
