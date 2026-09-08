@@ -4,6 +4,5 @@ export interface CategoryResponseDto {
     slug:string
     icon: string
     description:string | null
-    imageUrl:string | null
     displayOrder:number
 }

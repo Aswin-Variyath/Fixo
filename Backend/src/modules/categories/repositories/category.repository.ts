@@ -13,7 +13,6 @@ export class CategoryRespository implements ICategoryRepository {
                 name:true,
                 slug:true,
                 description:true,
-                imageUrl:true,
                 displayOrder:true,
                 icon:true
             },

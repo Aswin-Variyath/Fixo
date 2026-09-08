@@ -1,5 +1,6 @@
 import {
     Component,
+    computed,
     DestroyRef,
     inject,
     OnInit,
@@ -52,6 +53,20 @@ export class Services implements OnInit {
 
     readonly searchText = signal('');
 
+
+    readonly serviceCategoryIcons = computed(() => {
+
+        const categoryMap = new Map<string, string>();
+
+        for (const category of this.searchCategories()) {
+            categoryMap.set(category.id, category.icon);
+        }
+
+        return categoryMap;
+    });
+
+
+
     ngOnInit(): void {
         this.categoryService.loadCategories().subscribe();
 
@@ -72,7 +87,22 @@ export class Services implements OnInit {
         const trimmedSearchText = searchText.trim();
 
         this.searchText.set(searchText);
+
+        if (trimmedSearchText.length === 0) {
+
+            this.serviceService.reset();
+
+            return;
+        }
+
         this.searchSubject.next(trimmedSearchText);
+
+    }
+
+    getServiceCategoryIcon(categoryId: string): string {
+
+        return this.serviceCategoryIcons().get(categoryId) ?? 'handyman';
+
     }
 
     retryLoadingCategories(): void {
