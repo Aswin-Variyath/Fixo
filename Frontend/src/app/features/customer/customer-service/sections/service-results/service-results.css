@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+
+.service-card {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(189, 194, 255, 0.35);
+  background: rgba(15, 23, 38, 0.85);
+  box-shadow: 0 16px 40px -10px rgba(46, 74, 209, 0.22);
+}
+
+.service-card:hover .service-icon-wrap {
+  background: rgba(94, 106, 210, 0.22);
+  border-color: rgba(189, 194, 255, 0.4);
+  color: #bdc2ff;
+  transform: scale(1.04);
+}
+
+.service-card:hover .service-arrow {
+  transform: translateX(4px);
+  color: #bdc2ff;
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
