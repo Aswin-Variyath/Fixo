@@ -1,0 +1,43 @@
+<section class="w-full">
+  <div class="max-w-[640px] mx-auto">
+
+    <div class="search-wrapper glass-input rounded-xl">
+
+      <span
+        class="material-symbols-outlined search-icon text-outline text-[22px] pointer-events-none"
+      >
+        search
+      </span>
+
+
+      <input
+        #serviceSearchInput
+        id="serviceSearchInput"
+        type="text"
+        [placeholder]="placeholder()"
+        class="search-input text-on-surface placeholder:text-outline text-sm md:text-base"
+        autocomplete="off"
+        (input)="onSearch($event)"
+      />
+
+
+      @if (searchText()) {
+
+        <button
+          type="button"
+          class="search-clear-btn text-outline hover:text-on-surface transition-colors"
+          title="Clear search"
+          aria-label="Clear search"
+          (click)="clearSearch(serviceSearchInput)"
+        >
+          <span class="material-symbols-outlined text-[20px]">
+            close
+          </span>
+        </button>
+
+      }
+
+    </div>
+
+  </div>
+</section>

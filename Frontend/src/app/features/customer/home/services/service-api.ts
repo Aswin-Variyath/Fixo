@@ -1,16 +1,61 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
-import { ENV } from '../../../../../environments/environments';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { ENV } from '../../../../../environments/environments';
 import { ServiceApiResponse } from './service.types';
 
-@Service()
+@Injectable()
 export class ServiceApi {
-    private readonly http = inject(HttpClient)
-    private readonly serviceUrl = `${ENV.API_URL}/services`
+    private readonly http = inject(HttpClient);
 
-    searchServices(search:string):Observable<ServiceApiResponse> {
-        const params = new HttpParams().set('search',search)
-        return this.http.get<ServiceApiResponse>(this.serviceUrl,{params})
+    private readonly serviceUrl = `${ENV.API_URL}/services`;
+
+    /**
+     * Search the complete service catalogue.
+     * Used by Customer Home.
+     */
+    searchServices(
+        search: string,
+        limit = 6,
+        offset = 0
+    ): Observable<ServiceApiResponse> {
+        const params = new HttpParams()
+            .set('search', search)
+            .set('limit', limit)
+            .set('offset', offset);
+
+        return this.http.get<ServiceApiResponse>(
+            this.serviceUrl,
+            { params }
+        );
+    }
+
+    /**
+     * Get services for a selected category.
+     *
+     * When search is provided, the search is restricted
+     * to that category.
+     */
+    getServices(
+        categoryId: string,
+        search?: string,
+        limit = 6,
+        offset = 0
+    ): Observable<ServiceApiResponse> {
+
+        let params = new HttpParams()
+            .set('categoryId', categoryId)
+            .set('limit', limit)
+            .set('offset', offset);
+
+        if (search?.trim()) {
+            params = params.set('search', search.trim());
+        }
+
+        return this.http.get<ServiceApiResponse>(
+            this.serviceUrl,
+            { params }
+        );
     }
 }

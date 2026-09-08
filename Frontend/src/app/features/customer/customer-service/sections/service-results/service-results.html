@@ -1,0 +1,194 @@
+<!-- ============================================================
+     AVAILABLE SERVICES HEADER
+============================================================ -->
+<section class="mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-glass-stroke/50">
+
+    <div>
+      <h2 class="font-headline-lg font-semibold text-2xl md:text-3xl text-white tracking-tight">
+        Available Services
+      </h2>
+
+      <p class="text-on-surface-variant text-sm mt-1">
+        Choose a service to view details and continue.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2 text-xs font-mono text-outline">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+
+      <span>
+        Instant booking available
+      </span>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     LOADING STATE
+============================================================ -->
+@if (isLoading()) {
+
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+
+    @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+
+      <div class="service-card skeleton-card">
+
+        <div class="skeleton-icon"></div>
+
+        <div class="skeleton-content">
+
+          <div class="skeleton-title"></div>
+
+          <div class="skeleton-description"></div>
+
+          <div class="skeleton-description short"></div>
+
+        </div>
+
+        <div class="skeleton-action"></div>
+
+      </div>
+
+    }
+
+  </section>
+
+}
+
+
+<!-- ============================================================
+     ERROR STATE
+============================================================ -->
+@else if (error()) {
+
+  <section class="services-state mb-12">
+
+    <span class="material-symbols-outlined state-icon">
+      error
+    </span>
+
+    <h3>
+      Unable to load services
+    </h3>
+
+    <p>
+      {{ error() }}
+    </p>
+
+  </section>
+
+}
+
+
+<!-- ============================================================
+     EMPTY STATE
+============================================================ -->
+@else if (services().length === 0) {
+
+  <section class="services-state mb-12">
+
+    <span class="material-symbols-outlined state-icon">
+      search_off
+    </span>
+
+    <h3>
+      No services available
+    </h3>
+
+    <p>
+      There are currently no services available for this category.
+    </p>
+
+  </section>
+
+}
+
+
+<!-- ============================================================
+     SERVICES
+============================================================ -->
+@else {
+
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+
+    @for (service of services(); track service.id) {
+
+      <article class="service-card">
+
+        <!-- Service Icon -->
+        <!-- Dummy icon for now -->
+        <div class="service-card-icon">
+
+          <span class="material-symbols-outlined">
+            plumbing
+          </span>
+
+        </div>
+
+
+        <!-- Service Content -->
+        <div class="service-card-content">
+
+          <h3 class="service-card-title">
+            {{ service.name }}
+          </h3>
+
+          <p class="service-card-description">
+            {{ service.description }}
+          </p>
+
+        </div>
+
+
+        <!-- Service Action -->
+        <div class="service-card-action">
+
+          <span>
+            View Service Details
+          </span>
+
+          <span class="material-symbols-outlined">
+            arrow_forward
+          </span>
+
+        </div>
+
+      </article>
+
+    }
+
+  </section>
+
+
+  <!-- ==========================================================
+       LOAD MORE
+  =========================================================== -->
+  @if (hasMore()) {
+
+    <div class="load-more-wrapper mb-16">
+
+      <button
+        type="button"
+  class="load-more-button"
+  (click)="loadMore.emit()"
+      >
+
+        <span>
+          Load More Services
+        </span>
+
+        <span class="material-symbols-outlined">
+          expand_more
+        </span>
+
+      </button>
+
+    </div>
+
+  }
+
+}

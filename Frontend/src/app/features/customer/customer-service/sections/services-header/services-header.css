@@ -1,0 +1,99 @@
+/* ============================================================
+   HOST BLOCK
+============================================================ */
+
+:host {
+  display: block;
+}
+
+
+/* ============================================================
+   CATEGORY PILL ROW
+   Horizontal scroll with hidden scrollbar for the quick-switch
+   category pills. Not available globally, so defined here.
+============================================================ */
+
+.category-pills-row {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.category-pills-row::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ============================================================
+   CATEGORY PILL — BASE
+   Uses glass-input visual treatment for inactive state.
+============================================================ */
+
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  padding: 0.375rem 0.75rem;
+
+  border-radius: 0.5rem;
+
+  /* glass-input treatment for inactive pills */
+  background-color: #0b111b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+
+  color: var(--color-on-surface-variant);
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.category-pill:hover {
+  color: var(--color-on-surface);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+
+/* ============================================================
+   CATEGORY PILL — ACTIVE
+============================================================ */
+
+.category-pill--active {
+  background: rgba(46, 74, 209, 0.3);
+  border-color: rgba(189, 194, 255, 0.4);
+  color: var(--color-primary);
+}
+
+.category-pill--active:hover {
+  color: var(--color-primary);
+  border-color: rgba(189, 194, 255, 0.5);
+}
+
+
+/* ============================================================
+   LIGHT MODE
+============================================================ */
+
+:host-context(html:not(.dark)) .category-pill {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: var(--color-on-surface-variant);
+}
+
+:host-context(html:not(.dark)) .category-pill:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: var(--color-on-surface);
+}
+
+:host-context(html:not(.dark)) .category-pill--active {
+  background: rgba(46, 74, 209, 0.12);
+  border-color: rgba(94, 106, 210, 0.4);
+  color: var(--color-primary-container);
+}

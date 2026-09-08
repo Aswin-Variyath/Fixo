@@ -10,6 +10,11 @@ export const customerRoutes: Routes = [
       import('../features/customer/home/customer-home').then((m) => m.CustomerHome),
   },
   {
+    path: 'customer/customer-service',
+    canActivate: [authGuard, roleGuard('customer')],
+    loadComponent: () =>import('../features/customer/customer-service/customer-service').then((m) => m.CustomerService),
+  },
+  {
     path: 'customer/discovery',
     canActivate: [authGuard, roleGuard('customer')],
     loadComponent: () =>
