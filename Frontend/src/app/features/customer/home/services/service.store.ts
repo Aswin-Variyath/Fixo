@@ -1,10 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 
-import { Service, ServiceCategory } from './service.types';
+import {
+    Service,
+    ServiceCategory
+} from './service.types';
 
 @Injectable()
 export class ServiceStore {
-
     private readonly _services = signal<Service[]>([]);
     private readonly _categories = signal<ServiceCategory[]>([]);
     private readonly _hasMore = signal(false);
@@ -19,6 +21,15 @@ export class ServiceStore {
 
     setServices(services: Service[]): void {
         this._services.set(services);
+    }
+
+    appendServices(services: Service[]): void {
+        this._services.update(
+            (currentServices) => [
+                ...currentServices,
+                ...services
+            ]
+        );
     }
 
     setCategories(categories: ServiceCategory[]): void {

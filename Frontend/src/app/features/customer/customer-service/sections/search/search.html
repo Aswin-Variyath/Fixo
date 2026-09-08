@@ -1,46 +1,43 @@
-<!-- ============================================================
-     SEARCH SECTION
-     Stitch: full-width centered glass search input, max ~640px
-============================================================ -->
 <section class="w-full">
-
   <div class="max-w-[640px] mx-auto">
 
-    <!-- Search input wrapper — glass-input from global _components.css -->
     <div class="search-wrapper glass-input rounded-xl">
 
-      <!-- Search icon -->
-      <span class="material-symbols-outlined search-icon text-outline text-[22px] pointer-events-none">
+      <span
+        class="material-symbols-outlined search-icon text-outline text-[22px] pointer-events-none"
+      >
         search
       </span>
 
-      <!-- Input -->
+
       <input
+        #serviceSearchInput
         id="serviceSearchInput"
         type="text"
-        placeholder="Search plumbing services (e.g. Tap Repair, Pipe Leakage)..."
+        [placeholder]="placeholder()"
         class="search-input text-on-surface placeholder:text-outline text-sm md:text-base"
         autocomplete="off"
+        (input)="onSearch($event)"
       />
 
-      <!-- Filter / tune icon button -->
-      <button
-        type="button"
-        class="search-filter-btn text-outline hover:text-on-surface transition-colors"
-        title="Filter search"
-        aria-label="Filter search"
-      >
-        <span class="material-symbols-outlined text-[20px]">tune</span>
-      </button>
 
-    </div>
+      @if (searchText()) {
 
-    <!-- Result count hint -->
-    <div class="flex items-center justify-between px-2 mt-2 text-xs text-outline font-mono">
-      <span>Showing 6 catalogue services</span>
-      <span>Sorted by popularity</span>
+        <button
+          type="button"
+          class="search-clear-btn text-outline hover:text-on-surface transition-colors"
+          title="Clear search"
+          aria-label="Clear search"
+          (click)="clearSearch(serviceSearchInput)"
+        >
+          <span class="material-symbols-outlined text-[20px]">
+            close
+          </span>
+        </button>
+
+      }
+
     </div>
 
   </div>
-
 </section>

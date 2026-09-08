@@ -20,10 +20,11 @@ import { CategoryStore } from '../../categories/category.store';
 import { ServiceApi } from '../../services/service-api';
 import { ServiceService } from '../../services/service.service';
 import { ServiceStore } from '../../services/service.store';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-services',
-    imports: [],
+    imports: [RouterLink],
     providers: [
         CategoryService,
         CategoryStore,

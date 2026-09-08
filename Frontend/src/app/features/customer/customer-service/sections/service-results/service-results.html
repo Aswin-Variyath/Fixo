@@ -3,124 +3,192 @@
 ============================================================ -->
 <section class="mb-6">
   <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-glass-stroke/50">
+
     <div>
       <h2 class="font-headline-lg font-semibold text-2xl md:text-3xl text-white tracking-tight">
         Available Services
       </h2>
+
       <p class="text-on-surface-variant text-sm mt-1">
         Choose a service to view details and continue.
       </p>
     </div>
+
     <div class="flex items-center gap-2 text-xs font-mono text-outline">
       <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
-      <span>Instant booking available</span>
+
+      <span>
+        Instant booking available
+      </span>
     </div>
+
   </div>
 </section>
 
+
 <!-- ============================================================
-     SERVICES GRID
+     LOADING STATE
 ============================================================ -->
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="servicesGrid">
-  @for (service of services; track service.id) {
-    <article class="service-card glass-panel rounded-[20px] p-6 flex flex-col justify-between h-[230px] border border-glass-stroke relative group cursor-pointer">
-      <div>
-        <!-- Service Icon -->
-        <div class="service-icon-wrap w-12 h-12 rounded-xl bg-surface-container border border-glass-stroke text-sky-blue flex items-center justify-center mb-4 transition-all duration-200">
-          <span class="material-symbols-outlined text-[26px]">{{ service.icon }}</span>
+@if (isLoading()) {
+
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+
+    @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+
+      <div class="service-card skeleton-card">
+
+        <div class="skeleton-icon"></div>
+
+        <div class="skeleton-content">
+
+          <div class="skeleton-title"></div>
+
+          <div class="skeleton-description"></div>
+
+          <div class="skeleton-description short"></div>
+
         </div>
-        <!-- Service Name -->
-        <h3 class="font-headline-lg font-semibold text-xl text-white tracking-tight group-hover:text-primary transition-colors">
-          {{ service.title }}
-        </h3>
-        <!-- Service Description -->
-        <p class="text-on-surface-variant text-sm mt-2 line-clamp-2 leading-relaxed">
-          {{ service.description }}
-        </p>
+
+        <div class="skeleton-action"></div>
+
       </div>
-      <!-- Action Link -->
-      <div class="pt-4 border-t border-glass-stroke/40 flex items-center justify-between text-sm font-medium text-sky-blue group-hover:text-primary transition-colors">
-        <span>View Service Details</span>
-        <span class="service-arrow material-symbols-outlined text-[18px] transition-transform duration-200">arrow_forward</span>
-      </div>
-    </article>
+
+    }
+
+  </section>
+
+}
+
+
+<!-- ============================================================
+     ERROR STATE
+============================================================ -->
+@else if (error()) {
+
+  <section class="services-state mb-12">
+
+    <span class="material-symbols-outlined state-icon">
+      error
+    </span>
+
+    <h3>
+      Unable to load services
+    </h3>
+
+    <p>
+      {{ error() }}
+    </p>
+
+  </section>
+
+}
+
+
+<!-- ============================================================
+     EMPTY STATE
+============================================================ -->
+@else if (services().length === 0) {
+
+  <section class="services-state mb-12">
+
+    <span class="material-symbols-outlined state-icon">
+      search_off
+    </span>
+
+    <h3>
+      No services available
+    </h3>
+
+    <p>
+      There are currently no services available for this category.
+    </p>
+
+  </section>
+
+}
+
+
+<!-- ============================================================
+     SERVICES
+============================================================ -->
+@else {
+
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+
+    @for (service of services(); track service.id) {
+
+      <article class="service-card">
+
+        <!-- Service Icon -->
+        <!-- Dummy icon for now -->
+        <div class="service-card-icon">
+
+          <span class="material-symbols-outlined">
+            plumbing
+          </span>
+
+        </div>
+
+
+        <!-- Service Content -->
+        <div class="service-card-content">
+
+          <h3 class="service-card-title">
+            {{ service.name }}
+          </h3>
+
+          <p class="service-card-description">
+            {{ service.description }}
+          </p>
+
+        </div>
+
+
+        <!-- Service Action -->
+        <div class="service-card-action">
+
+          <span>
+            View Service Details
+          </span>
+
+          <span class="material-symbols-outlined">
+            arrow_forward
+          </span>
+
+        </div>
+
+      </article>
+
+    }
+
+  </section>
+
+
+  <!-- ==========================================================
+       LOAD MORE
+  =========================================================== -->
+  @if (hasMore()) {
+
+    <div class="load-more-wrapper mb-16">
+
+      <button
+        type="button"
+  class="load-more-button"
+  (click)="loadMore.emit()"
+      >
+
+        <span>
+          Load More Services
+        </span>
+
+        <span class="material-symbols-outlined">
+          expand_more
+        </span>
+
+      </button>
+
+    </div>
+
   }
-</section>
 
-<!-- ============================================================
-     LOAD MORE BUTTON
-============================================================ -->
-<div class="flex justify-center mb-16">
-  <button
-    type="button"
-    class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl glass-panel text-on-surface hover:text-white hover:bg-white/10 hover:border-primary/40 border border-glass-stroke transition-all duration-200 text-sm font-medium shadow-sm active:scale-95 group focus:outline-none"
-  >
-    <span>Load More Services</span>
-    <span class="material-symbols-outlined text-[20px] text-outline group-hover:text-primary transition-colors">expand_more</span>
-  </button>
-</div>
-
-<!-- ============================================================
-     UI STATES DEMONSTRATION (Empty, Skeleton, Error)
-============================================================ -->
-<section class="mt-14 pt-12 border-t border-glass-stroke/50">
-  <div class="flex items-center justify-between mb-6">
-    <div class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-outline text-[20px]">layers</span>
-      <span class="text-xs uppercase tracking-wider font-mono text-outline font-medium">UI States &amp; Validation Previews</span>
-    </div>
-    <span class="text-[11px] font-mono text-outline">Production-ready fallback UI</span>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-    <!-- EMPTY STATE -->
-    <div class="glass-panel rounded-2xl p-6 border border-glass-stroke flex flex-col items-center text-center justify-center min-h-[260px]">
-      <div class="w-12 h-12 rounded-full bg-surface-container border border-glass-stroke text-primary flex items-center justify-center mb-3">
-        <span class="material-symbols-outlined text-[24px]">search_off</span>
-      </div>
-      <h4 class="font-headline-lg font-semibold text-lg text-white mb-1">No services found</h4>
-      <p class="text-on-surface-variant text-xs leading-relaxed max-w-[260px] mb-4">
-        We couldn't find any services matching your search. Try a different search.
-      </p>
-      <button
-        type="button"
-        class="px-4 py-2 rounded-lg glass-input text-xs font-medium text-sky-blue hover:text-white hover:border-white/25 transition-colors"
-      >
-        Clear Search Query
-      </button>
-    </div>
-
-    <!-- SKELETON LOADING STATE -->
-    <div class="glass-panel rounded-2xl p-6 border border-glass-stroke flex flex-col justify-between min-h-[260px] animate-pulse-subtle">
-      <div>
-        <div class="w-12 h-12 rounded-xl bg-surface-container-high mb-4"></div>
-        <div class="w-3/4 h-5 rounded-md bg-surface-container-high mb-3"></div>
-        <div class="w-full h-3 rounded bg-surface-container-high mb-2"></div>
-        <div class="w-5/6 h-3 rounded bg-surface-container-high"></div>
-      </div>
-      <div class="pt-4 border-t border-glass-stroke/40 flex items-center justify-between">
-        <div class="w-1/2 h-3.5 rounded bg-surface-container-high"></div>
-        <div class="w-4 h-4 rounded-full bg-surface-container-high"></div>
-      </div>
-    </div>
-
-    <!-- ERROR STATE -->
-    <div class="glass-panel rounded-2xl p-6 border border-glass-stroke flex flex-col items-center text-center justify-center min-h-[260px]">
-      <div class="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mb-3">
-        <span class="material-symbols-outlined text-[24px]">error</span>
-      </div>
-      <h4 class="font-headline-lg font-semibold text-lg text-white mb-1">Unable to load services</h4>
-      <p class="text-on-surface-variant text-xs leading-relaxed max-w-[260px] mb-4">
-        Something went wrong while loading services. Please try again.
-      </p>
-      <button
-        type="button"
-        class="px-5 py-2 rounded-xl glass-panel border border-glass-stroke hover:border-primary/40 text-xs font-medium text-on-surface hover:text-white hover:bg-white/5 transition-all"
-      >
-        Try Again
-      </button>
-    </div>
-
-  </div>
-</section>
+}
