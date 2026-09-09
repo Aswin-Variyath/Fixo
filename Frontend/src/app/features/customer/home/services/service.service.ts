@@ -16,6 +16,7 @@ import { ServiceStore } from './service.store';
 
 @Injectable()
 export class ServiceService {
+
     private readonly serviceApi = inject(ServiceApi);
     private readonly serviceStore = inject(ServiceStore);
 
@@ -25,10 +26,6 @@ export class ServiceService {
     readonly isLoading = this.serviceStore.isLoading;
     readonly error = this.serviceStore.error;
 
-    /**
-     * Search the complete service catalogue.
-     * Used by Customer Home.
-     */
     searchServices(
         search: string,
         limit = 6,
@@ -39,9 +36,14 @@ export class ServiceService {
         this.serviceStore.setError(null);
 
         return this.serviceApi
-            .searchServices(search, limit, offset)
+            .searchServices(
+                search,
+                limit,
+                offset
+            )
             .pipe(
                 tap((response) => {
+
                     this.serviceStore.setServices(
                         response.data.services
                     );
@@ -55,6 +57,7 @@ export class ServiceService {
                     );
                 }),
                 catchError((error) => {
+
                     console.error(
                         'Failed to search services:',
                         error
@@ -72,12 +75,55 @@ export class ServiceService {
             );
     }
 
-    /**
-     * Load services for a selected category.
-     *
-     * When search is provided, only matching services
-     * inside that category are returned.
-     */
+    loadMoreSearchServices(
+        search: string,
+        limit: number,
+        offset: number
+    ): Observable<ServiceApiResponse> {
+
+        this.serviceStore.setLoading(true);
+        this.serviceStore.setError(null);
+
+        return this.serviceApi
+            .searchServices(
+                search,
+                limit,
+                offset
+            )
+            .pipe(
+                tap((response) => {
+
+                    this.serviceStore.appendServices(
+                        response.data.services
+                    );
+
+                    this.serviceStore.setCategories(
+                        response.data.categories
+                    );
+
+                    this.serviceStore.setHasMore(
+                        response.data.hasMore
+                    );
+                }),
+                catchError((error) => {
+
+                    console.error(
+                        'Failed to load more search services:',
+                        error
+                    );
+
+                    this.serviceStore.setError(
+                        'Unable to load more services. Please try again.'
+                    );
+
+                    return throwError(() => error);
+                }),
+                finalize(() => {
+                    this.serviceStore.setLoading(false);
+                })
+            );
+    }
+
     loadServices(
         categoryId: string,
         search?: string,
@@ -97,6 +143,7 @@ export class ServiceService {
             )
             .pipe(
                 tap((response) => {
+
                     this.serviceStore.setServices(
                         response.data.services
                     );
@@ -110,6 +157,7 @@ export class ServiceService {
                     );
                 }),
                 catchError((error) => {
+
                     console.error(
                         'Failed to load services:',
                         error
@@ -128,52 +176,54 @@ export class ServiceService {
     }
 
     loadMoreServices(
-    categoryId: string,
-    search: string | undefined,
-    limit: number,
-    offset: number
-): Observable<ServiceApiResponse> {
+        categoryId: string,
+        search: string | undefined,
+        limit: number,
+        offset: number
+    ): Observable<ServiceApiResponse> {
 
-    this.serviceStore.setLoading(true);
-    this.serviceStore.setError(null);
+        this.serviceStore.setLoading(true);
+        this.serviceStore.setError(null);
 
-    return this.serviceApi
-        .getServices(
-            categoryId,
-            search,
-            limit,
-            offset
-        )
-        .pipe(
-            tap((response) => {
-                this.serviceStore.appendServices(
-                    response.data.services
-                );
+        return this.serviceApi
+            .getServices(
+                categoryId,
+                search,
+                limit,
+                offset
+            )
+            .pipe(
+                tap((response) => {
 
-                this.serviceStore.setHasMore(
-                    response.data.hasMore
-                );
-            }),
-            catchError((error) => {
-                console.error(
-                    'Failed to load more services:',
-                    error
-                );
+                    this.serviceStore.appendServices(
+                        response.data.services
+                    );
 
-                this.serviceStore.setError(
-                    'Unable to load more services. Please try again.'
-                );
+                    this.serviceStore.setHasMore(
+                        response.data.hasMore
+                    );
+                }),
+                catchError((error) => {
 
-                return throwError(() => error);
-            }),
-            finalize(() => {
-                this.serviceStore.setLoading(false);
-            })
-        );
-}
+                    console.error(
+                        'Failed to load more services:',
+                        error
+                    );
+
+                    this.serviceStore.setError(
+                        'Unable to load more services. Please try again.'
+                    );
+
+                    return throwError(() => error);
+                }),
+                finalize(() => {
+                    this.serviceStore.setLoading(false);
+                })
+            );
+    }
 
     appendServices(services: Service[]): void {
-    this.serviceStore.appendServices(services);
+        this.serviceStore.appendServices(services);
     }
 
     reset(): void {

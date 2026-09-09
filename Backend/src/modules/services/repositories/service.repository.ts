@@ -40,9 +40,14 @@ export class ServiceRepository implements IserviceRepository {
                 description: true,
                 displayOrder: true,
             },
-            orderBy: {
+            orderBy: [
+            {
                 displayOrder: "asc",
             },
+            {
+                id:'asc'
+            }
+        ],
             skip,
             take: take + 1,
         });

@@ -14,13 +14,13 @@ import {
     Subject,
     switchMap,
 } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 import { CategoryService } from '../../categories/category.service';
 import { CategoryStore } from '../../categories/category.store';
 import { ServiceApi } from '../../services/service-api';
 import { ServiceService } from '../../services/service.service';
 import { ServiceStore } from '../../services/service.store';
-import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-services',
@@ -43,6 +43,17 @@ export class Services implements OnInit {
 
     private readonly searchSubject = new Subject<string>();
 
+    /*
+     * Number of services requested per API call.
+     *
+     * Set to 1 temporarily for pagination testing.
+     * Change back to 6 after testing.
+     */
+    private readonly pageSize = 6;
+
+    private currentOffset = 0;
+    private currentSearch = '';
+
     readonly categories = this.categoryService.categories;
     readonly isLoading = this.categoryService.isLoading;
     readonly error = this.categoryService.error;
@@ -51,9 +62,9 @@ export class Services implements OnInit {
     readonly searchCategories = this.serviceService.categories;
     readonly isSearching = this.serviceService.isLoading;
     readonly searchError = this.serviceService.error;
+    readonly hasMore = this.serviceService.hasMore;
 
     readonly searchText = signal('');
-
 
     readonly serviceCategoryIcons = computed(() => {
 
@@ -66,47 +77,107 @@ export class Services implements OnInit {
         return categoryMap;
     });
 
-
-
     ngOnInit(): void {
-        this.categoryService.loadCategories().subscribe();
+
+        this.categoryService
+            .loadCategories()
+            .pipe(
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe();
 
         this.searchSubject
             .pipe(
                 debounceTime(400),
                 distinctUntilChanged(),
-                filter((searchText) => searchText.length > 0),
-                switchMap((searchText) =>
-                    this.serviceService.searchServices(searchText)
+                filter(
+                    (searchText) =>
+                        searchText.length > 0
                 ),
+                switchMap((searchText) => {
+
+                    this.currentSearch = searchText;
+                    this.currentOffset = 0;
+
+                    return this.serviceService.searchServices(
+                        searchText,
+                        this.pageSize,
+                        this.currentOffset
+                    );
+                }),
                 takeUntilDestroyed(this.destroyRef)
             )
             .subscribe();
     }
 
     onSearch(searchText: string): void {
-        const trimmedSearchText = searchText.trim();
+
+        const trimmedSearchText =
+            searchText.trim();
 
         this.searchText.set(searchText);
 
-        if (trimmedSearchText.length === 0) {
+        if (!trimmedSearchText) {
+
+            this.currentSearch = '';
+            this.currentOffset = 0;
 
             this.serviceService.reset();
 
             return;
         }
 
-        this.searchSubject.next(trimmedSearchText);
-
+        this.searchSubject.next(
+            trimmedSearchText
+        );
     }
 
-    getServiceCategoryIcon(categoryId: string): string {
+    loadMore(): void {
 
-        return this.serviceCategoryIcons().get(categoryId) ?? 'handyman';
+        if (
+            !this.currentSearch ||
+            !this.hasMore() ||
+            this.isSearching()
+        ) {
+            return;
+        }
 
+        const nextOffset =
+            this.currentOffset +
+            this.pageSize;
+
+        this.serviceService
+            .loadMoreSearchServices(
+                this.currentSearch,
+                this.pageSize,
+                nextOffset
+            )
+            .pipe(
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                next: () => {
+                    this.currentOffset =
+                        nextOffset;
+                },
+            });
+    }
+
+    getServiceCategoryIcon(
+        categoryId: string
+    ): string {
+
+        return this.serviceCategoryIcons()
+            .get(categoryId) ?? 'handyman';
     }
 
     retryLoadingCategories(): void {
-        this.categoryService.loadCategories().subscribe();
+
+        this.categoryService
+            .loadCategories()
+            .pipe(
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe();
     }
 }

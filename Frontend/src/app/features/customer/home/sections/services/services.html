@@ -64,7 +64,10 @@
 
         <div class="search-results">
 
-            <!-- SEARCH LOADING -->
+            <!-- =================================================
+                 SEARCH LOADING
+            ================================================== -->
+
             @if (isSearching()) {
 
                 <div class="services-grid">
@@ -96,10 +99,16 @@
             }
 
 
-            <!-- SEARCH FINISHED -->
+            <!-- =================================================
+                 SEARCH FINISHED
+            ================================================== -->
+
             @else {
 
-                <!-- SEARCH ERROR -->
+                <!-- =============================================
+                     SEARCH ERROR
+                ============================================== -->
+
                 @if (searchError()) {
 
                     <div class="services-state">
@@ -121,7 +130,10 @@
                 }
 
 
-                <!-- SEARCH EMPTY -->
+                <!-- =============================================
+                     SEARCH EMPTY
+                ============================================== -->
+
                 @else if (
                     searchCategories().length === 0 &&
                     services().length === 0
@@ -148,7 +160,10 @@
                 }
 
 
-                <!-- SEARCH RESULTS -->
+                <!-- =============================================
+                     SEARCH RESULTS
+                ============================================== -->
+
                 @else {
 
                     <div class="services-grid">
@@ -166,7 +181,9 @@
                             <a
                                 class="service-card"
                                 [routerLink]="['/customer/customer-service']"
-                                [queryParams]="{ category: category.slug }"
+                                [queryParams]="{
+                                    category: category.slug
+                                }"
                             >
 
                                 <div class="service-card-icon">
@@ -219,12 +236,17 @@
 
                             <a
                                 class="service-card"
-[routerLink]="['/customer/service', service.id]"                            >
+                                [routerLink]="[
+                                    '/customer/service',
+                                    service.id
+                                ]"
+                            >
 
                                 <div class="service-card-icon">
 
                                     <span class="material-symbols-outlined">
-{{ getServiceCategoryIcon(service.categoryId) }}                                    </span>
+                                        {{ getServiceCategoryIcon(service.categoryId) }}
+                                    </span>
 
                                 </div>
 
@@ -260,6 +282,46 @@
 
                     </div>
 
+
+                    <!-- ===================================
+                         LOAD MORE SERVICES
+                    ==================================== -->
+
+                    @if (hasMore()) {
+
+                        <div class="load-more-wrapper">
+
+                            <button
+                                type="button"
+                                class="load-more-button"
+                                [disabled]="isSearching()"
+                                (click)="loadMore()"
+                            >
+
+                                @if (isSearching()) {
+
+                                    <span>
+                                        Loading...
+                                    </span>
+
+                                } @else {
+
+                                    <span>
+                                        Load More
+                                    </span>
+
+                                    <span class="material-symbols-outlined">
+                                        expand_more
+                                    </span>
+
+                                }
+
+                            </button>
+
+                        </div>
+
+                    }
+
                 }
 
             }
@@ -275,12 +337,18 @@
 
     @else {
 
-        <!-- CATEGORY LOADING -->
+        <!-- =============================================
+             CATEGORY LOADING
+        ============================================== -->
+
         @if (isLoading()) {
 
             <div class="services-grid">
 
-                @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+                @for (
+                    item of [1, 2, 3, 4, 5, 6];
+                    track item
+                ) {
 
                     <div class="service-card skeleton-card">
 
@@ -307,7 +375,10 @@
         }
 
 
-        <!-- CATEGORY ERROR -->
+        <!-- =============================================
+             CATEGORY ERROR
+        ============================================== -->
+
         @else if (error()) {
 
             <div class="services-state">
@@ -337,7 +408,10 @@
         }
 
 
-        <!-- NO CATEGORIES -->
+        <!-- =============================================
+             NO CATEGORIES
+        ============================================== -->
+
         @else if (categories().length === 0) {
 
             <div class="services-state">
@@ -359,7 +433,10 @@
         }
 
 
-        <!-- CATEGORY LIST -->
+        <!-- =============================================
+             CATEGORY LIST
+        ============================================== -->
+
         @else {
 
             <div class="services-grid">
@@ -371,10 +448,13 @@
 
                     <a
                         class="service-card"
-                        [routerLink]="['/customer/customer-service']"
-                        [queryParams]="{ category: category.slug }"
-
-                   >
+                        [routerLink]="[
+                            '/customer/customer-service'
+                        ]"
+                        [queryParams]="{
+                            category: category.slug
+                        }"
+                    >
 
                         <div class="service-card-icon">
 
@@ -413,28 +493,6 @@
                     </a>
 
                 }
-
-            </div>
-
-
-            <!-- LOAD MORE -->
-
-            <div class="load-more-wrapper">
-
-                <button
-                    type="button"
-                    class="load-more-button"
-                >
-
-                    <span>
-                        Load More
-                    </span>
-
-                    <span class="material-symbols-outlined">
-                        expand_more
-                    </span>
-
-                </button>
 
             </div>
 
