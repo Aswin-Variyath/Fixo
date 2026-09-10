@@ -117,7 +117,7 @@
 
     @for (service of services(); track service.id) {
 
-      <article class="service-card">
+      <a class="service-card" [routerLink]="['/customer/service', service.id]">
 
         <!-- Service Icon -->
         <!-- Dummy icon for now -->
@@ -157,7 +157,7 @@
 
         </div>
 
-      </article>
+      </a>
 
     }
 
