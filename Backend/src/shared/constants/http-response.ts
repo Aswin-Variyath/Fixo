@@ -50,7 +50,8 @@ export const HttpResponse = {
   },
 
   SERVICE: {
-    LIST: "Services retrieved successfully"
+    LIST: "Services retrieved successfully",
+    DETAILS: "Service retrieved successfully"
   },
 
 } as const;
