@@ -25,3 +25,13 @@ export interface ServiceApiResponse {
         hasMore: boolean;
     };
 }
+
+export interface ServiceDetailsData  extends Service {
+    category: ServiceCategory
+}
+
+export interface ServiceDetailsApiResponse {
+    success:boolean
+    message:string
+    data:ServiceDetailsData 
+}

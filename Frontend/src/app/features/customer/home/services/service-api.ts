@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ENV } from '../../../../../environments/environments';
-import { ServiceApiResponse } from './service.types';
+import { ServiceApiResponse, ServiceDetailsApiResponse } from './service.types';
 
 @Injectable()
 export class ServiceApi {
@@ -57,5 +57,9 @@ export class ServiceApi {
             this.serviceUrl,
             { params }
         );
+    }
+
+    getServiceById(serviceId:string):Observable<ServiceDetailsApiResponse> {
+        return this.http.get<ServiceDetailsApiResponse>(`${this.serviceUrl}/${serviceId}`)
     }
 }

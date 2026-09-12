@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
+import { ServiceDetailsData } from '../../../home/services/service.types';
 @Component({
   selector: 'app-service-overview',
   imports: [RouterLink],
@@ -8,6 +8,15 @@ import { RouterLink } from '@angular/router';
   styleUrl: './service-overview.css',
 })
 export class ServiceOverview {
+
+  readonly service = input<ServiceDetailsData  | null>(null)
+
+  constructor() {
+    effect(() => {
+      console.log('ServiceOverview received:', this.service());
+    });
+  }
+
   readonly information = [
     {
       icon: 'check_circle',

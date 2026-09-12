@@ -10,9 +10,11 @@ import {
 import { ServiceApi } from './service-api';
 import {
     Service,
-    ServiceApiResponse
+    ServiceApiResponse,
+    ServiceDetailsApiResponse
 } from './service.types';
 import { ServiceStore } from './service.store';
+import { ServiceDetails } from '../../service-details/service-details';
 
 @Injectable()
 export class ServiceService {
@@ -228,5 +230,14 @@ export class ServiceService {
 
     reset(): void {
         this.serviceStore.reset();
+    }
+
+    getServiceById(serviceId:string):Observable<ServiceDetailsApiResponse> {
+        return this.serviceApi.getServiceById(serviceId).pipe(
+            catchError((error)=> {
+                console.error('Failed to load service details',error)
+                return throwError(()=>error)
+            })
+        )
     }
 }

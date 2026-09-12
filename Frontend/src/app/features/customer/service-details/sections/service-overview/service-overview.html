@@ -1,40 +1,98 @@
-<nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
-  <a [routerLink]="['/customer/home']" class="flex items-center gap-1.5 transition-colors hover:text-primary">
+<nav
+  aria-label="Breadcrumb"
+  class="mb-6 flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant"
+>
+  <a
+    [routerLink]="['/customer/home']"
+    class="flex items-center gap-1.5 transition-colors hover:text-primary"
+  >
     <span class="material-symbols-outlined text-[16px]">home</span>
     <span>Home</span>
   </a>
+
   <span class="text-outline">/</span>
-  <a [routerLink]="['/customer/customer-service']" class="transition-colors hover:text-primary">Plumbing</a>
+
+  <a
+    [routerLink]="['/customer/customer-service']"
+    class="transition-colors hover:text-primary"
+  >
+    {{ service()?.category?.name }}
+  </a>
+
   <span class="text-outline">/</span>
-  <span class="font-medium text-on-surface">Pipe Leakage Repair</span>
+
+  <span class="font-medium text-on-surface">
+    {{ service()?.name }}
+  </span>
 </nav>
 
-<section class="relative mb-8 overflow-hidden rounded-[20px] border border-glass-stroke bg-surface-container/70 p-8 shadow-xl backdrop-blur-xl md:p-12">
-  <div class="pointer-events-none absolute top-0 right-0 h-80 w-80 bg-gradient-to-bl from-primary-container/15 via-transparent to-transparent"></div>
+<section
+  class="relative mb-8 overflow-hidden rounded-[20px] border border-glass-stroke bg-surface-container/70 p-8 shadow-xl backdrop-blur-xl md:p-12"
+>
+  <div
+    class="pointer-events-none absolute top-0 right-0 h-80 w-80 bg-gradient-to-bl from-primary-container/15 via-transparent to-transparent"
+  ></div>
 
   <div class="relative z-10 flex w-full flex-col gap-6">
-    <div class="inline-flex w-fit items-center gap-2 rounded-full border border-glass-stroke bg-surface-container-high/90 px-3 py-1.5 text-primary shadow-sm">
-      <span class="material-symbols-outlined text-[18px]">plumbing</span>
-      <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Plumbing Category</span>
+
+    <div
+      class="inline-flex w-fit items-center gap-2 rounded-full border border-glass-stroke bg-surface-container-high/90 px-3 py-1.5 text-primary shadow-sm"
+    >
+      <span class="material-symbols-outlined text-[18px]">
+        {{ service()?.category?.icon }}
+      </span>
+
+      <span
+        class="font-label-sm text-label-sm font-semibold uppercase tracking-wider"
+      >
+        {{ service()?.category?.name }} Category
+      </span>
     </div>
 
     <div class="max-w-3xl">
-      <h1 class="font-headline-lg text-headline-lg-mobile leading-none tracking-tight text-on-surface md:text-display-lg">Pipe Leakage Repair</h1>
-      <p class="mt-3 font-body-xl text-base leading-relaxed text-on-surface-variant md:text-body-xl">
-        Get professional help for leaking pipes, damaged connections, hidden seepage, and common household plumbing issues.
+
+      <h1
+        class="font-headline-lg text-headline-lg-mobile leading-none tracking-tight text-on-surface md:text-display-lg"
+      >
+        {{ service()?.name }}
+      </h1>
+
+      <p
+        class="mt-3 font-body-xl text-base leading-relaxed text-on-surface-variant md:text-body-xl"
+      >
+        {{ service()?.description }}
       </p>
+
     </div>
 
     <div class="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2 lg:grid-cols-4">
+
       @for (item of information; track item.label) {
-        <article class="flex flex-col gap-2 rounded-xl border border-glass-stroke bg-surface-container-lowest/80 p-4 backdrop-blur-sm">
-          <div class="flex items-center gap-2 font-label-sm text-xs font-semibold uppercase tracking-wider" [class]="item.accent">
-            <span class="material-symbols-outlined text-[18px]">{{ item.icon }}</span>
+
+        <article
+          class="flex flex-col gap-2 rounded-xl border border-glass-stroke bg-surface-container-lowest/80 p-4 backdrop-blur-sm"
+        >
+
+          <div
+            class="flex items-center gap-2 font-label-sm text-xs font-semibold uppercase tracking-wider"
+            [class]="item.accent"
+          >
+            <span class="material-symbols-outlined text-[18px]">
+              {{ item.icon }}
+            </span>
+
             <span>{{ item.label }}</span>
           </div>
-          <p class="text-xs leading-relaxed text-on-surface-variant">{{ item.description }}</p>
+
+          <p class="text-xs leading-relaxed text-on-surface-variant">
+            {{ item.description }}
+          </p>
+
         </article>
+
       }
+
     </div>
+
   </div>
 </section>

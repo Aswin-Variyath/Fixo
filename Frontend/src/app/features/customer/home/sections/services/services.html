@@ -1,11 +1,8 @@
 <section class="services-section">
-
     <!-- =======================================================
          SECTION HEADER
     ======================================================== -->
-
     <div class="services-header">
-
         <div>
             <p class="section-label">
                 EXPLORE SERVICES
@@ -13,14 +10,12 @@
 
             <h2 class="section-title">
                 Find the right service for your home
-            </h2>
+            </h2> 
 
             <p class="section-description">
                 Browse trusted local services or search for exactly what you need.
             </p>
         </div>
-
-
         <!-- Search -->
         <div class="search-wrapper">
 
@@ -69,23 +64,14 @@
             ================================================== -->
 
             @if (isSearching()) {
-
                 <div class="services-grid">
-
                     @for (item of [1, 2, 3]; track item) {
-
                         <div class="service-card skeleton-card">
-
                             <div class="skeleton-icon"></div>
-
                             <div class="skeleton-content">
-
                                 <div class="skeleton-title"></div>
-
                                 <div class="skeleton-description"></div>
-
                                 <div class="skeleton-description short"></div>
-
                             </div>
 
                             <div class="skeleton-action"></div>
