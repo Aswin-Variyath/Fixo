@@ -27,6 +27,12 @@ export const customerRoutes: Routes = [
       import('../features/customer/tasker-profile/tasker-profile').then((m) => m.TaskerProfile),
   },
   {
+    path: 'customer/service/:serviceId',
+    canActivate: [authGuard, roleGuard('customer')],
+    loadComponent: () =>
+      import('../features/customer/service-details/service-details').then((m) => m.ServiceDetails),
+  },
+  {
     path: 'customer/booking/appointment',
     canActivate: [authGuard, roleGuard('customer')],
     loadComponent: () =>

@@ -4,11 +4,13 @@ import {
     output
 } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+
 import { ServiceStore } from '../../../home/services/service.store';
 
 @Component({
     selector: 'app-service-results',
-    imports: [],
+    imports: [RouterLink],
     templateUrl: './service-results.html',
     styleUrl: './service-results.css',
 })

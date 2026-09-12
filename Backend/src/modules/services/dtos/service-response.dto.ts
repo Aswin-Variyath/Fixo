@@ -16,6 +16,11 @@ export interface ServiceCategoryResponseDto {
     displayOrder:number
 }
 
+export interface ServiceDetailsResponseDto  extends ServiceResponseDto {
+    category:ServiceCategoryResponseDto
+}
+
+
 export interface ServiceSearchResponseDto {
     services:ServiceResponseDto[]
     categories:ServiceCategoryResponseDto[]

@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { successResponse } from "../../../shared/utils/response.util";
 import { HttpResponse } from "../../../shared/constants";
+import { ServiceDetailsParams } from "../types/service-detail-params.types";
 
 @injectable()
 export class ServiceController {
@@ -16,5 +17,11 @@ export class ServiceController {
         const offset = typeof req.query.offset === "string" ? Number(req.query.offset) : undefined
         const result = await this.serviceQueryServices.getServices(cotegoryId,search,limit,offset)
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.SERVICE.LIST,result))
+    }
+
+    getServiceById = async (req:Request,res:Response):Promise<void> => {
+        const serviceId = req.params.serviceId as string;        
+        const result = await this.serviceQueryServices.getServiceById(serviceId)
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.SERVICE.DETAILS,result))
     }
 }

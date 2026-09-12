@@ -1,0 +1,32 @@
+<article class="group flex h-full flex-col justify-between rounded-[20px] border border-glass-stroke bg-surface-container/70 p-5 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-surface-container/90 hover:shadow-2xl">
+  <div class="flex flex-col gap-4">
+    <img [src]="tasker().imageUrl" [alt]="tasker().name + ' profile photo'" class="h-16 w-16 rounded-full object-cover shadow-md" />
+
+    <div>
+      <h3 class="font-headline-lg text-body-xl font-bold text-on-surface transition-colors group-hover:text-primary">{{ tasker().name }}</h3>
+      <p class="mt-0.5 text-sm text-on-surface-variant">{{ tasker().title }}</p>
+    </div>
+
+    <div class="flex flex-col gap-1.5 pt-1 font-body-md text-sm">
+      <div class="flex items-center gap-1.5 text-on-surface">
+        <span class="material-symbols-outlined text-[18px] text-tertiary" style="font-variation-settings: 'FILL' 1">star</span>
+        <span class="font-semibold">{{ tasker().rating }}</span>
+        <span class="text-xs text-on-surface-variant">({{ tasker().reviewCount }} reviews)</span>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+        <span class="material-symbols-outlined text-[16px] text-outline">near_me</span>
+        <span>{{ tasker().distance }} away</span>
+      </div>
+    </div>
+
+    <span class="inline-flex w-fit items-center gap-1.5 rounded-full bg-secondary-container/40 px-3 py-1 font-label-sm text-[11px] text-secondary-fixed">
+      <span class="h-1.5 w-1.5 rounded-full bg-secondary-fixed"></span>
+      {{ tasker().availability }}
+    </span>
+  </div>
+
+  <a [routerLink]="['/customer/tasker-profile']" class="mt-10 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-surface-container-high py-2.5 font-body-md text-sm font-semibold text-on-surface shadow transition-all duration-200 hover:bg-primary-container hover:text-on-primary-container">
+    <span>View Profile</span>
+    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+  </a>
+</article>

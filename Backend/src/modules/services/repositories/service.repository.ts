@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 
 import prisma from "../../../database/prisma/prisma";
-import {ServiceCategoryResponseDto, ServiceResponseDto,ServiceSearchResponseDto,} from "../dtos/service-response.dto";
+import {ServiceCategoryResponseDto, ServiceDetailsResponseDto, ServiceResponseDto,ServiceSearchResponseDto,} from "../dtos/service-response.dto";
 import { IserviceRepository } from "../interfaces/service-repository.interface";
 
 @injectable()
@@ -90,5 +90,34 @@ export class ServiceRepository implements IserviceRepository {
             categories,
             hasMore,
         };
+    }
+    
+    async findActiveServiceById(serviceId: string): Promise<ServiceDetailsResponseDto | null> {
+        const service = await prisma.service.findFirst({
+            where:{
+                id:serviceId,
+                status:"ACTIVE"
+            },
+            select: {
+                id:true,
+                categoryId:true,
+                name:true,
+                slug:true,
+                description:true,
+                displayOrder:true,
+                category:{
+                    select:{
+                        id:true,
+                        name:true,
+                        slug:true,
+                        icon:true,
+                        description:true,
+                        displayOrder:true
+                    }
+                }
+            }
+        })
+        if(!service) return null
+        return service
     }
 }

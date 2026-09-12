@@ -1,0 +1,12 @@
+<app-navbar></app-navbar>
+
+<div class="ambient-blob w-[600px] h-[600px] bg-royal-blue top-[-140px] left-[-260px]"></div>
+<div class="ambient-blob w-[520px] h-[520px] bg-sky-blue bottom-[-120px] right-[-160px]"></div>
+
+<main class="relative w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-28 md:pt-32 pb-section-gap">
+  <app-service-overview [service]="service()"></app-service-overview>
+  <app-location-context></app-location-context>
+  <app-recommended-taskers></app-recommended-taskers>
+</main>
+
+<app-footer></app-footer>

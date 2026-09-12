@@ -1,0 +1,919 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Fixo Home Services - Pipe Leakage Repair</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @layer base {
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          overscroll-behavior: none;
+        }
+        main > :first-child {
+          margin-top: 0 !important;
+        }
+        main > :last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'on-secondary-fixed-variant': '#25496c',
+              background: '#121317',
+              'on-tertiary-fixed-variant': '#673d00',
+              'secondary-container': '#274b6e',
+              'on-error-container': '#ffdad6',
+              'primary-container': '#5e6ad2',
+              surface: '#121317',
+              'primary-fixed': '#dfe0ff',
+              'tertiary-fixed': '#ffddbb',
+              'surface-container-low': '#1a1b20',
+              'on-error': '#690005',
+              'secondary-fixed': '#d0e4ff',
+              'deep-navy': '#0B111B',
+              'inverse-primary': '#4854bb',
+              'tertiary-container': '#a56500',
+              'on-surface-variant': '#c6c5d5',
+              'on-tertiary-container': '#fffaf8',
+              'on-primary': '#121f8b',
+              'on-primary-fixed': '#000965',
+              'surface-variant': '#343439',
+              'primary-fixed-dim': '#bdc2ff',
+              'error-container': '#93000a',
+              tertiary: '#ffb867',
+              outline: '#908f9e',
+              'accent-glow': 'rgba(94, 106, 210, 0.4)',
+              'surface-dim': '#121317',
+              'secondary-fixed-dim': '#a7caf3',
+              'surface-container': '#1e1f24',
+              'on-tertiary-fixed': '#2b1700',
+              'surface-tint': '#bdc2ff',
+              'on-secondary-container': '#99bbe4',
+              'on-secondary': '#063254',
+              'surface-container-lowest': '#0d0e12',
+              'outline-variant': '#454652',
+              secondary: '#a7caf3',
+              'surface-bright': '#38393e',
+              'royal-blue': '#2E4AD1',
+              'sky-blue': '#7CC4FA',
+              'on-primary-fixed-variant': '#2e3aa2',
+              'surface-container-high': '#292a2e',
+              'inverse-on-surface': '#2f3035',
+              'on-primary-container': '#fdfaff',
+              'on-secondary-fixed': '#001d35',
+              'on-surface': '#e3e2e8',
+              'inverse-surface': '#e3e2e8',
+              'on-tertiary': '#482900',
+              'glass-stroke': 'rgba(255, 255, 255, 0.15)',
+              'surface-container-highest': '#343439',
+              error: '#ffb4ab',
+              'on-background': '#e3e2e8',
+              primary: '#bdc2ff',
+              'tertiary-fixed-dim': '#ffb867',
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+            spacing: {
+              'container-max': '1200px',
+              'margin-mobile': '16px',
+              'stack-md': '16px',
+              'section-gap': '80px',
+              gutter: '24px',
+              'stack-sm': '8px',
+            },
+            fontFamily: {
+              'headline-lg': ['Hanken Grotesk'],
+              'display-lg': ['Hanken Grotesk'],
+              'body-xl': ['Inter'],
+              'body-md': ['Inter'],
+              'headline-lg-mobile': ['Hanken Grotesk'],
+              'label-sm': ['JetBrains Mono'],
+            },
+            fontSize: {
+              'headline-lg': [
+                '40px',
+                {
+                  lineHeight: '48px',
+                  letterSpacing: '-0.01em',
+                  fontWeight: '600',
+                },
+              ],
+              'display-lg': [
+                '64px',
+                {
+                  lineHeight: '72px',
+                  letterSpacing: '-0.02em',
+                  fontWeight: '700',
+                },
+              ],
+              'body-xl': [
+                '20px',
+                {
+                  lineHeight: '32px',
+                  fontWeight: '400',
+                },
+              ],
+              'body-md': [
+                '16px',
+                {
+                  lineHeight: '24px',
+                  fontWeight: '400',
+                },
+              ],
+              'headline-lg-mobile': [
+                '32px',
+                {
+                  lineHeight: '40px',
+                  fontWeight: '600',
+                },
+              ],
+              'label-sm': [
+                '12px',
+                {
+                  lineHeight: '16px',
+                  letterSpacing: '0.05em',
+                  fontWeight: '500',
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-background font-body-md text-body-md text-on-surface antialiased">
+    <header
+      class="fixed top-0 left-0 right-0 z-50 bg-surface/85 backdrop-blur-xl border-b border-glass-stroke"
+    >
+      <div
+        class="h-20 max-w-container-max mx-auto px-gutter flex items-center justify-between gap-stack-md"
+      >
+        <div class="flex items-center gap-gutter">
+          <a class="flex items-center gap-2 group" data-path="home" href="#"
+            ><span class="font-headline-lg text-headline-lg font-bold tracking-tight text-primary"
+              >Fixo<span class="text-on-surface">.</span></span
+            ></a
+          >
+          <div
+            class="hidden xl:flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full border border-glass-stroke"
+          >
+            <span class="material-symbols-outlined text-primary text-[18px]">location_on</span
+            ><span class="font-label-sm text-label-sm text-on-surface-variant font-medium"
+              >Kozhikode, Kerala</span
+            >
+          </div>
+        </div>
+        <div class="hidden md:flex flex-1 max-w-md mx-stack-md">
+          <div
+            class="w-full flex items-center bg-surface-container-lowest/80 px-3.5 py-2 rounded-full border border-glass-stroke focus-within:border-primary-container transition-colors"
+          >
+            <span class="material-symbols-outlined text-on-surface-variant mr-2.5 text-[20px]"
+              >search</span
+            ><input
+              class="bg-transparent border-none outline-none text-on-surface placeholder:text-outline text-sm font-body-md w-full"
+              placeholder="Search home repair, cleaning, AC..."
+              type="text"
+            />
+          </div>
+        </div>
+        <nav
+          class="hidden lg:flex items-center gap-2"
+          data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-full px-4 py-2"
+        >
+          <a
+            class="text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-full font-body-md text-body-md transition-colors"
+            data-path="home"
+            href="#"
+            >Home</a
+          ><a
+            aria-current="page"
+            class="transition-colors bg-primary-container text-on-primary-container font-semibold rounded-full px-4 py-2"
+            data-path="services"
+            href="#"
+            >Services</a
+          ><a
+            class="text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-full font-body-md text-body-md transition-colors"
+            data-path="bookings"
+            href="#"
+            >Bookings</a
+          ><a
+            class="text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-full font-body-md text-body-md transition-colors"
+            data-path="messages"
+            href="#"
+            >Messages</a
+          >
+        </nav>
+        <div class="flex items-center gap-stack-md">
+          <button
+            aria-label="Notifications"
+            class="relative p-2 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-on-surface-variant text-[22px]"
+              >notifications</span
+            ><span
+              class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-tertiary ring-2 ring-surface"
+            ></span>
+          </button>
+          <div class="flex items-center gap-3 pl-2">
+            <div class="hidden sm:flex flex-col text-right">
+              <span class="font-body-md text-sm font-medium text-on-surface leading-tight"
+                >Rahul Kumar</span
+              ><span class="font-label-sm text-[11px] text-primary">Premium Member</span>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="w-full pt-20 bg-background min-h-screen">
+      <div class="flex flex-col w-full">
+        <div class="relative w-full overflow-hidden">
+          <div
+            class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary-container/20 blur-[120px] pointer-events-none"
+          ></div>
+          <div
+            class="absolute top-1/3 -right-32 w-96 h-96 rounded-full bg-secondary-container/25 blur-[140px] pointer-events-none"
+          ></div>
+          <div class="max-w-container-max mx-auto px-gutter py-8">
+            <!-- 1. BREADCRUMB -->
+            <nav
+              aria-label="Breadcrumb"
+              class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm mb-6"
+            >
+              <a
+                class="hover:text-primary transition-colors flex items-center gap-1.5"
+                data-path="home"
+                href="#"
+              >
+                <span class="material-symbols-outlined text-[16px]">home</span>
+                <span>Home</span>
+              </a>
+              <span class="text-outline">/</span>
+              <a class="hover:text-primary transition-colors" data-path="services" href="#">
+                Plumbing
+              </a>
+              <span class="text-outline">/</span>
+              <span class="text-on-surface font-medium">Pipe Leakage Repair</span>
+            </nav>
+            <!-- 2. SERVICE OVERVIEW HEADER -->
+            <div
+              class="relative bg-surface-container/70 backdrop-blur-xl rounded-[20px] p-8 md:p-12 mb-8 shadow-xl overflow-hidden border border-glass-stroke"
+            >
+              <div
+                class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-primary-container/15 via-transparent to-transparent pointer-events-none"
+              ></div>
+              <div class="relative z-10 w-full flex flex-col gap-6">
+                <!-- Category Badge -->
+                <div
+                  class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/90 text-primary w-fit shadow-sm border border-glass-stroke"
+                >
+                  <span class="material-symbols-outlined text-[18px]">plumbing</span>
+                  <span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold"
+                    >Plumbing Category</span
+                  >
+                </div>
+                <!-- Main Title & Description -->
+                <div class="flex flex-col gap-3 max-w-3xl">
+                  <h1
+                    class="font-headline-lg text-display-lg text-on-surface tracking-tight leading-none"
+                  >
+                    Pipe Leakage Repair
+                  </h1>
+                  <p class="font-body-xl text-body-xl text-on-surface-variant leading-relaxed">
+                    Get professional help for leaking pipes, damaged connections, hidden seepage,
+                    and common household plumbing issues.
+                  </p>
+                </div>
+                <!-- Integrated Service Information Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                  <div
+                    class="bg-surface-container-lowest/80 border border-glass-stroke rounded-xl p-4 flex flex-col gap-2 backdrop-blur-sm"
+                  >
+                    <div
+                      class="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider font-label-sm"
+                    >
+                      <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                      <span>Issues Covered</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                      Leaking pipes, damaged pipe connections, water seepage, minor pipeline leaks
+                    </p>
+                  </div>
+                  <div
+                    class="bg-surface-container-lowest/80 border border-glass-stroke rounded-xl p-4 flex flex-col gap-2 backdrop-blur-sm"
+                  >
+                    <div
+                      class="flex items-center gap-2 text-secondary-fixed font-semibold text-xs uppercase tracking-wider font-label-sm"
+                    >
+                      <span class="material-symbols-outlined text-[18px]">schedule</span>
+                      <span>Typical Duration</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                      30–90 min (depending on pipe material &amp; leak source accessibility)
+                    </p>
+                  </div>
+                  <div
+                    class="bg-surface-container-lowest/80 border border-glass-stroke rounded-xl p-4 flex flex-col gap-2 backdrop-blur-sm"
+                  >
+                    <div
+                      class="flex items-center gap-2 text-tertiary font-semibold text-xs uppercase tracking-wider font-label-sm"
+                    >
+                      <span class="material-symbols-outlined text-[18px]">home_repair_service</span>
+                      <span>Service Type</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                      On-site repair, diagnosis &amp; high-pressure pipe fitting inspection
+                    </p>
+                  </div>
+                  <div
+                    class="bg-surface-container-lowest/80 border border-glass-stroke rounded-xl p-4 flex flex-col gap-2 backdrop-blur-sm"
+                  >
+                    <div
+                      class="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider font-label-sm"
+                    >
+                      <span class="material-symbols-outlined text-[18px]">info</span>
+                      <span>Customer Preparation</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                      Keep the affected area accessible &amp; shut off local valve if leaking
+                      heavily
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 3. LOCATION / RADIUS CONTEXT STATE -->
+            <div
+              class="bg-surface-container-low/90 backdrop-blur-md rounded-2xl p-4 md:p-5 mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-md border border-glass-stroke"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <div
+                  class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary flex-shrink-0"
+                >
+                  <span class="material-symbols-outlined text-[22px]">location_on</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <p class="font-body-md text-body-md text-on-surface font-medium truncate">
+                    Showing taskers within <span class="text-primary font-semibold">10 km</span> of
+                    your location (<span class="text-on-surface">Kozhikode, Kerala</span>)
+                  </p>
+                  <p class="font-label-sm text-[11px] text-outline">
+                    Need nearby taskers fast? Enable GPS location for pinpoint accuracy.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+                <button
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-surface-container-highest/60 hover:bg-surface-container-highest text-primary font-label-sm text-label-sm transition-colors border border-glass-stroke"
+                  type="button"
+                >
+                  <span class="material-symbols-outlined text-[16px]">tune</span>
+                  <span>Change Location / Radius</span>
+                </button>
+              </div>
+            </div>
+            <!-- 4. BASIC TASKER FILTERS -->
+            <div
+              class="mb-6 p-2.5 rounded-xl bg-surface-container-lowest/90 border border-glass-stroke backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
+            >
+              <div class="flex items-center gap-2 px-1 text-xs font-label-sm text-outline">
+                <span class="material-symbols-outlined text-[16px] text-primary"
+                  >developer_mode</span
+                ><span class="text-slate-300 font-medium">Preview State:</span>
+              </div>
+              <div class="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap">
+                <button
+                  class="px-2.5 py-1 rounded-lg text-xs font-label-sm bg-primary-container text-on-primary-container font-semibold transition-colors"
+                  type="button"
+                >
+                  Default (Found)</button
+                ><button
+                  class="px-2.5 py-1 rounded-lg text-xs font-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                  type="button"
+                >
+                  Loading Skeletons</button
+                ><button
+                  class="px-2.5 py-1 rounded-lg text-xs font-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                  type="button"
+                >
+                  No Taskers Found</button
+                ><button
+                  class="px-2.5 py-1 rounded-lg text-xs font-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                  type="button"
+                >
+                  Expand Radius</button
+                ><button
+                  class="px-2.5 py-1 rounded-lg text-xs font-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                  type="button"
+                >
+                  Location Needed</button
+                ><button
+                  class="px-2.5 py-1 rounded-lg text-xs font-label-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                  type="button"
+                >
+                  API Error
+                </button>
+              </div>
+            </div>
+            <section class="flex flex-col gap-6 mb-12 scroll-mt-28" id="recommended-taskers">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-2">
+                <div>
+                  <span
+                    class="font-label-sm text-xs uppercase tracking-wider text-primary font-semibold"
+                    >AVAILABLE SPECIALISTS</span
+                  >
+                  <h2
+                    class="text-2xl md:text-3xl font-bold font-['Hanken_Grotesk'] text-white mt-1"
+                  >
+                    Recommended Taskers
+                  </h2>
+                  <p class="text-sm text-slate-400 mt-1 font-['Inter']">
+                    Trusted local professionals ready to help.
+                  </p>
+                </div>
+                <div
+                  class="flex items-center gap-2.5 overflow-x-auto whitespace-nowrap flex-nowrap shrink-0 pt-2 md:pt-0"
+                >
+                  <div class="relative inline-flex items-center">
+                    <button
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-medium text-slate-200 hover:border-indigo-400/50 hover:bg-slate-800 transition-all cursor-pointer"
+                      type="button"
+                    >
+                      <span class="text-slate-400 font-normal">Radius:</span
+                      ><span class="font-semibold text-white">10 km</span
+                      ><span class="material-symbols-outlined text-[16px] text-slate-400"
+                        >expand_more</span
+                      >
+                    </button>
+                  </div>
+                  <div class="relative inline-flex items-center">
+                    <button
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-medium text-slate-200 hover:border-indigo-400/50 hover:bg-slate-800 transition-all cursor-pointer"
+                      type="button"
+                    >
+                      <span class="text-slate-400 font-normal">Availability:</span
+                      ><span class="font-semibold text-white">Available Today</span
+                      ><span class="material-symbols-outlined text-[16px] text-slate-400"
+                        >expand_more</span
+                      >
+                    </button>
+                  </div>
+                  <div class="relative inline-flex items-center">
+                    <button
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-medium text-slate-200 hover:border-indigo-400/50 hover:bg-slate-800 transition-all cursor-pointer"
+                      type="button"
+                    >
+                      <span class="text-slate-400 font-normal">Sort:</span
+                      ><span class="font-semibold text-indigo-300">Recommended</span
+                      ><span class="material-symbols-outlined text-[16px] text-slate-400"
+                        >expand_more</span
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- 5. RECOMMENDED TASKERS GRID (4 Cards) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+                <!-- Card 1 -->
+                <div
+                  class="group relative bg-surface-container/70 backdrop-blur-xl border border-glass-stroke rounded-[20px] p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-surface-container/90 shadow-lg"
+                >
+                  <div class="flex flex-col gap-4">
+                    <!-- Clean Avatar -->
+                    <div class="flex items-start justify-between">
+                      <img
+                        class="w-16 h-16 rounded-full object-cover shadow-md"
+                        data-alt="Portrait of Rahul Kumar, an experienced Indian plumbing technician wearing a clean work uniform and holding inspection tools, warm atmospheric indoor lighting, photorealistic style"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXaBCyr_hsLmdqYGiX_5buAkVNoyXNSFYa2imA5m5ZyipW_N3R7BvnTS7ccYzzV4hPJGX5lXL5a8JEBBT73SVAyXuEficKh-Q0UxGAHNOx_-hDbhw57HVrXIjvO6HiJecCvTjws921VTd0vEPdObLT-xVBjCpWpwUwDIlhpcaR_Uckhr8zwRLL921nWo_hy8MJNZgOLH2-9mMqaR76dLhW0H_mRalr23PpDpr29mw4Ad-lZGM1ZxJA"
+                      />
+                    </div>
+                    <!-- Name & Title -->
+                    <div>
+                      <h3
+                        class="font-headline-lg text-body-xl font-bold text-on-surface group-hover:text-primary transition-colors"
+                      >
+                        Rahul Kumar
+                      </h3>
+                      <p class="font-body-md text-sm text-on-surface-variant mt-0.5">
+                        Plumbing Specialist
+                      </p>
+                    </div>
+                    <!-- Rating & Distance Info -->
+                    <div class="flex flex-col gap-1.5 pt-1 font-body-md text-sm">
+                      <div class="flex items-center gap-1.5 text-on-surface">
+                        <span
+                          class="material-symbols-outlined text-tertiary text-[18px]"
+                          style="font-variation-settings: 'FILL' 1"
+                          >star</span
+                        >
+                        <span class="font-semibold">4.8</span>
+                        <span class="text-on-surface-variant text-xs">(124 reviews)</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-on-surface-variant text-xs">
+                        <span class="material-symbols-outlined text-outline text-[16px]"
+                          >near_me</span
+                        >
+                        <span>3.2 km away</span>
+                      </div>
+                    </div>
+                    <!-- Badge: Only Next Availability -->
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/40 text-secondary-fixed font-label-sm text-[11px]"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+                        Available Today
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Rate & CTA -->
+                  <div class="flex flex-col pt-6 mt-4 border-t border-glass-stroke">
+                    <button
+                      class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface font-body-md text-sm font-semibold transition-all duration-200 shadow flex items-center justify-center gap-2"
+                      type="button"
+                    >
+                      <span>View Profile</span>
+                      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- Card 2 -->
+                <div
+                  class="group relative bg-surface-container/70 backdrop-blur-xl border border-glass-stroke rounded-[20px] p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-surface-container/90 shadow-lg"
+                >
+                  <div class="flex flex-col gap-4">
+                    <!-- Clean Avatar -->
+                    <div class="flex items-start justify-between">
+                      <img
+                        class="w-16 h-16 rounded-full object-cover shadow-md"
+                        data-alt="Close up portrait of Mohammed Ali, an expert master plumber with a calm confident expression, wearing blue technician overalls in Kerala, warm lighting, cinematic depth of field"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7_8xm_N97tozW778khQ7mGs88HJ87KJkAwxW-T4-Bd_UD5m3GEwYvWDBKt0Nl0lGTkX1QNI6C9WYoMxL_7Qv55d4L1BfO5KlYO8aJVBF1q5gsqs98fFo5RWt1SSu1Dh8y6mt-30sgsgtnyqfuEqd2iPz4HejoFtcYxX83TMG_ylFOOxuEPY8GCGuTUuaGXeyzKt7zNhQba8p_YB_SDPxsQ3GbVzaORSkRNDX21PNoRlTQxleQgiXe"
+                      />
+                    </div>
+                    <!-- Name & Title -->
+                    <div>
+                      <h3
+                        class="font-headline-lg text-body-xl font-bold text-on-surface group-hover:text-primary transition-colors"
+                      >
+                        Mohammed Ali
+                      </h3>
+                      <p class="font-body-md text-sm text-on-surface-variant mt-0.5">
+                        Master Plumber &amp; Pipe Fitter
+                      </p>
+                    </div>
+                    <!-- Rating & Distance Info -->
+                    <div class="flex flex-col gap-1.5 pt-1 font-body-md text-sm">
+                      <div class="flex items-center gap-1.5 text-on-surface">
+                        <span
+                          class="material-symbols-outlined text-tertiary text-[18px]"
+                          style="font-variation-settings: 'FILL' 1"
+                          >star</span
+                        >
+                        <span class="font-semibold">5.0</span>
+                        <span class="text-on-surface-variant text-xs">(210 reviews)</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-on-surface-variant text-xs">
+                        <span class="material-symbols-outlined text-outline text-[16px]"
+                          >near_me</span
+                        >
+                        <span>4.1 km away</span>
+                      </div>
+                    </div>
+                    <!-- Badge: Only Next Availability -->
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/40 text-secondary-fixed font-label-sm text-[11px]"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+                        Available Today
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Rate & CTA -->
+                  <div class="flex flex-col pt-6 mt-4 border-t border-glass-stroke">
+                    <button
+                      class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface font-body-md text-sm font-semibold transition-all duration-200 shadow flex items-center justify-center gap-2"
+                      type="button"
+                    >
+                      <span>View Profile</span>
+                      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- Card 3 -->
+                <div
+                  class="group relative bg-surface-container/70 backdrop-blur-xl border border-glass-stroke rounded-[20px] p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-surface-container/90 shadow-lg"
+                >
+                  <div class="flex flex-col gap-4">
+                    <!-- Clean Avatar -->
+                    <div class="flex items-start justify-between">
+                      <img
+                        class="w-16 h-16 rounded-full object-cover shadow-md"
+                        data-alt="Professional photo of Anil Thomas, mature South Indian pipeline contractor with protective gear, standing in front of organized toolbox, crisp studio-grade portrait"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuASYY3K7Kjwq6gnOrJy7VPcgq1XkrLnnubexjP6YXHhI6yTEQ_NSkb66DsqAMVI1m6VRzcPptPoS0YxrsfqiNmSiuRfcFT4nE_E1wVGBH6GjjCQvx0XNd8WYcGmayzbG6PM8cfrYkANzrYWvmIcj6weF6pjT7Fa8NjlDKow6MsW_K_JuE52RQ5YheRgEYs_anzBftEjt9gogCLsjwpRt-jcDjc83wEVWf8_fVIFoapQLvaUhd9NmW6R"
+                      />
+                    </div>
+                    <!-- Name & Title -->
+                    <div>
+                      <h3
+                        class="font-headline-lg text-body-xl font-bold text-on-surface group-hover:text-primary transition-colors"
+                      >
+                        Anil Thomas
+                      </h3>
+                      <p class="font-body-md text-sm text-on-surface-variant mt-0.5">
+                        Drain &amp; Pipeline Specialist
+                      </p>
+                    </div>
+                    <!-- Rating & Distance Info -->
+                    <div class="flex flex-col gap-1.5 pt-1 font-body-md text-sm">
+                      <div class="flex items-center gap-1.5 text-on-surface">
+                        <span
+                          class="material-symbols-outlined text-tertiary text-[18px]"
+                          style="font-variation-settings: 'FILL' 1"
+                          >star</span
+                        >
+                        <span class="font-semibold">4.9</span>
+                        <span class="text-on-surface-variant text-xs">(98 reviews)</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-on-surface-variant text-xs">
+                        <span class="material-symbols-outlined text-outline text-[16px]"
+                          >near_me</span
+                        >
+                        <span>5.8 km away</span>
+                      </div>
+                    </div>
+                    <!-- Badge: Only Next Availability -->
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-container/30 text-tertiary font-label-sm text-[11px]"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                        Available Tomorrow
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Rate & CTA -->
+                  <div class="flex flex-col pt-6 mt-4 border-t border-glass-stroke">
+                    <button
+                      class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface font-body-md text-sm font-semibold transition-all duration-200 shadow flex items-center justify-center gap-2"
+                      type="button"
+                    >
+                      <span>View Profile</span>
+                      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- Card 4 -->
+                <div
+                  class="group relative bg-surface-container/70 backdrop-blur-xl border border-glass-stroke rounded-[20px] p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-surface-container/90 shadow-lg"
+                >
+                  <div class="flex flex-col gap-4">
+                    <!-- Clean Avatar -->
+                    <div class="flex items-start justify-between">
+                      <img
+                        class="w-16 h-16 rounded-full object-cover shadow-md"
+                        data-alt="Portrait photo of Suresh R., young Indian sanitary leakage repair specialist, smiling with confidence in safety polo shirt, soft blue studio illumination, high clarity"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOztd4WU0tXPwSodDV2AjzIKPMhGAw-y02YLv1p_a0xps7llOY0eKXmrFK5UDjeSCfX8FMmhpfu3KAMw_SRz5kjZi3fZbzSbNJRnJDl8J295PjpvEBvfCwcMITtJSiHp2kWr7AJOzop59ToI4OIOMhwmqY3hj0XJK7XfFHf1lnnC8MyQVke0Gjg5IBnHKX2Y2aWkZmRFwPcT6fs6XV7-N8e6LifAHAcAJorNE8ZCFH_01wk1W60zW3"
+                      />
+                    </div>
+                    <!-- Name & Title -->
+                    <div>
+                      <h3
+                        class="font-headline-lg text-body-xl font-bold text-on-surface group-hover:text-primary transition-colors"
+                      >
+                        Suresh R.
+                      </h3>
+                      <p class="font-body-md text-sm text-on-surface-variant mt-0.5">
+                        Sanitary &amp; Leakage Expert
+                      </p>
+                    </div>
+                    <!-- Rating & Distance Info -->
+                    <div class="flex flex-col gap-1.5 pt-1 font-body-md text-sm">
+                      <div class="flex items-center gap-1.5 text-on-surface">
+                        <span
+                          class="material-symbols-outlined text-tertiary text-[18px]"
+                          style="font-variation-settings: 'FILL' 1"
+                          >star</span
+                        >
+                        <span class="font-semibold">4.7</span>
+                        <span class="text-on-surface-variant text-xs">(85 reviews)</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-on-surface-variant text-xs">
+                        <span class="material-symbols-outlined text-outline text-[16px]"
+                          >near_me</span
+                        >
+                        <span>6.4 km away</span>
+                      </div>
+                    </div>
+                    <!-- Badge: Only Next Availability -->
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                      <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-[11px]"
+                      >
+                        Next available Sep 14
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Rate & CTA -->
+                  <div class="flex flex-col pt-6 mt-4 border-t border-glass-stroke">
+                    <button
+                      class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface font-body-md text-sm font-semibold transition-all duration-200 shadow flex items-center justify-center gap-2"
+                      type="button"
+                    >
+                      <span>View Profile</span>
+                      <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-center pt-6">
+                <button
+                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-white/10 bg-slate-900/50 text-slate-300 hover:text-white hover:border-indigo-400/40 text-sm font-medium transition-all shadow-sm"
+                  type="button"
+                >
+                  <span>Load More Taskers</span
+                  ><span class="material-symbols-outlined text-[18px]">expand_more</span>
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="w-full bg-surface-container-lowest border-t border-glass-stroke mt-section-gap">
+      <div class="max-w-container-max mx-auto px-gutter py-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-12">
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+              <span
+                class="font-headline-lg text-headline-lg-mobile font-bold tracking-tight text-primary"
+                >Fixo<span class="text-on-surface">.</span></span
+              >
+            </div>
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Premium home services at your fingertips. Reliable, verified professionals for all
+              your needs.
+            </p>
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-low border border-glass-stroke w-fit"
+            >
+              <span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span
+              ><span class="font-label-sm text-label-sm text-secondary-fixed font-medium"
+                >Systems 100% Operational</span
+              >
+            </div>
+          </div>
+          <div>
+            <h3 class="font-headline-lg text-body-xl font-semibold text-on-surface mb-4">
+              Services
+            </h3>
+            <ul class="space-y-2.5">
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="services" href="#">Plumbing</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="services" href="#">Electrical</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="services" href="#">Cleaning</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="services" href="#">Painting</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="services" href="#">Carpentry</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="services" href="#">AC &amp; Appliance</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-headline-lg text-body-xl font-semibold text-on-surface mb-4">
+              Company
+            </h3>
+            <ul class="space-y-2.5">
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="about-us" href="#">About Us</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="careers" href="#">Careers</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="blog" href="#">Blog</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="become-a-tasker" href="#">Become a Tasker</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-headline-lg text-body-xl font-semibold text-on-surface mb-4">
+              Legal &amp; Support
+            </h3>
+            <ul class="space-y-2.5">
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="privacy-policy" href="#">Privacy Policy</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="terms-of-service" href="#">Terms of Service</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="trust-and-safety" href="#">Trust &amp; Safety</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="help-center" href="#">Help Center</a>
+              </li>
+              <li
+                class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                <a data-path="contact-us" href="#">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="pt-8 border-t border-glass-stroke flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <p class="font-body-md text-sm text-on-surface-variant">
+            © 2024 Fixo Home Services. All rights reserved.
+          </p>
+          <div class="flex items-center gap-6 font-body-md text-sm text-on-surface-variant">
+            <a class="hover:text-on-surface transition-colors" data-path="privacy-policy" href="#"
+              >Privacy</a
+            ><a
+              class="hover:text-on-surface transition-colors"
+              data-path="terms-of-service"
+              href="#"
+              >Terms</a
+            ><a
+              class="hover:text-on-surface transition-colors"
+              data-path="trust-and-safety"
+              href="#"
+              >Security</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
