@@ -1,18 +1,20 @@
 model TaskerLocation {
-  id              String   @id @default(uuid())
-  taskerProfileId String   @unique
-  addressLine     String
-  city            String
-  state           String
-  postalCode      String
-  country         String
-  latitude        Decimal  @db.Decimal(10, 7)
-  longitude       Decimal  @db.Decimal(10, 7)
-  serviceRadiusKm Decimal  @db.Decimal(6, 2)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String                     @id @default(uuid())
+  taskerProfileId       String                     @unique
+  addressLine           String
+  city                  String
+  state                 String
+  postalCode            String
+  country               String
+  latitude              Decimal                    @db.Decimal(10, 7)
+  longitude             Decimal                    @db.Decimal(10, 7)
+  maximumRoadDistanceKm Decimal                    @db.Decimal(6, 2)
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  location              Unsupported("geography")
 
   taskerProfile TaskerProfile @relation(fields: [taskerProfileId], references: [id])
 
   @@index([latitude, longitude])
+  @@index([location], map: "TaskerLocation_location_gist_idx", type: Gist)
 }
