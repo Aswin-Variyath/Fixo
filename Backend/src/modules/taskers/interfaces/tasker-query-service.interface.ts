@@ -1,3 +1,4 @@
+import { NearbyTaskerResponseDto } from "../dtos/nearby-tasker-response.dto";
 import { NearbyTasker } from "../types/nearby-tasker.type";
 
 export interface NearbyTaskerLocation {
@@ -7,5 +8,5 @@ export interface NearbyTaskerLocation {
 }
 
 export interface ITaskerQueryService {
-    findNearbyTasker(userId:string, serviceId:string, location:NearbyTaskerLocation, distanceKm:number):Promise<NearbyTasker[]>
+    findNearbyTasker(userId:string, serviceId:string, location:NearbyTaskerLocation, distanceKm:number):Promise<NearbyTaskerResponseDto[]>
 }

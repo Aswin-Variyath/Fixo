@@ -38,5 +38,8 @@ export const ENV = {
       PASS:getRequiredEnv("SMTP_PASS"),
     },
     FROM:getRequiredEnv("MAIL_FROM")
+  },
+  OSRM: {
+    BASE_URL:getRequiredEnv("OSRM_BASE_URL")
   }
 } as const

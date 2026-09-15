@@ -1,4 +1,4 @@
-export interface NearbyTasker {
+export interface NearbyTaskerResponseDto {
     taskerProfileId: string;
     userId: string;
     firstName: string;
@@ -8,9 +8,6 @@ export interface NearbyTasker {
     totalReviews: number;
     hourlyRate: number | null;
     dailyRate: number | null;
-    latitude: number;
-    longitude: number;
-    maximumRoadDistanceKm: number;
     distanceKm: number;
     durationMinutes: number;
 }

@@ -38,4 +38,6 @@ export const TYPES = {
     TaskerController: Symbol.for("TaskerController"),
     // Customer Address 
     CustomerAddressRepository: Symbol.for("CustomerAddressRepository"),
+    // Routing
+    RoutingService: Symbol.for("RoutingService"),
 } as const

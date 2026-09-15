@@ -7,3 +7,4 @@ export interface customerAddressLocation {
 export interface ICustomerAddressRepository {
     findLocationByIdAndUserId(addressId:string,userId:string):Promise<customerAddressLocation | null>
 }
+

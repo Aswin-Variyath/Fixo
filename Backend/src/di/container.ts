@@ -55,6 +55,8 @@ import { TaskerQueryService } from "../modules/taskers/services/tasker-query.ser
 import { TaskerController } from "../modules/taskers/controllers/tasker.controller";
 import { ICustomerAddressRepository } from "../modules/customer-addresses/interfaces/customer-address-repository.interface";
 import { CustomerAddressRepository } from "../modules/customer-addresses/repositories/customer-address.repository";
+import { IRoutingService } from "../shared/providers/routing/interfaces/routing.service.interface";
+import { OsrmRoutingService } from "../shared/providers/routing/services/osrm-routing.service";
 
 export const container = new Container()
 
@@ -88,3 +90,4 @@ container.bind<ITaskerRepositoy>(TYPES.TaskerRepository).to(TaskerRepository).in
 container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryService).inSingletonScope()
 container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
 container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(CustomerAddressRepository).inSingletonScope()
+container.bind<IRoutingService>(TYPES.RoutingService).to(OsrmRoutingService).inSingletonScope()
