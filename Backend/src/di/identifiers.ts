@@ -31,5 +31,9 @@ export const TYPES = {
     // Service
     ServiceRepository: Symbol.for("ServiceRepository"),
     ServiceQueryService: Symbol.for("ServiceQueryService"),
-    ServiceController: Symbol.for("ServiceController")
+    ServiceController: Symbol.for("ServiceController"),
+    // Tasker
+    TaskerRepository: Symbol.for("TaskerRepository"),
+        TaskerQueryService: Symbol.for("TaskerQueryService"),
+        TaskerController: Symbol.for("TaskerController"),
 } as const

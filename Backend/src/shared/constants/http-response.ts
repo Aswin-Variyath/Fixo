@@ -54,4 +54,8 @@ export const HttpResponse = {
     DETAILS: "Service retrieved successfully"
   },
 
+  TASKER: {
+    NEARBY: "Nearby taskers retrieved successfully",
+  },
+
 } as const;

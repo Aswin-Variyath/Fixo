@@ -1,0 +1,1 @@
+export { default as taskerRoutes } from "./routes/tasker.routes";

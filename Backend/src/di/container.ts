@@ -48,6 +48,11 @@ import { ServiceRepository } from "../modules/services/repositories/service.repo
 import { IserviceQueryService } from "../modules/services/interfaces/service-query-service.interface";
 import { ServiceQueryService } from "../modules/services/services/service-query.service";
 import { ServiceController } from "../modules/services/controllers/service.controller";
+import { ITaskerRepositoy } from "../modules/taskers/interfaces/tasker-repository.interface";
+import { TaskerRepository } from "../modules/taskers/repositories/tasker.repository";
+import { ITaskerQueryService } from "../modules/taskers/interfaces/tasker-query-service.interface";
+import { TaskerQueryService } from "../modules/taskers/services/tasker-query.service";
+import { TaskerController } from "../modules/taskers/controllers/tasker.controller";
 
 export const container = new Container()
 
@@ -77,3 +82,6 @@ container.bind<CategoryController>(TYPES.CategoryController).to(CategoryControll
 container.bind<IserviceRepository>(TYPES.ServiceRepository).to(ServiceRepository).inSingletonScope()
 container.bind<IserviceQueryService>(TYPES.ServiceQueryService).to(ServiceQueryService).inSingletonScope()
 container.bind<ServiceController>(TYPES.ServiceController).to(ServiceController).inSingletonScope()
+container.bind<ITaskerRepositoy>(TYPES.TaskerRepository).to(TaskerRepository).inSingletonScope()
+container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryService).inSingletonScope()
+container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
