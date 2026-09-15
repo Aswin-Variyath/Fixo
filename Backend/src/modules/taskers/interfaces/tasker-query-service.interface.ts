@@ -1,5 +1,11 @@
 import { NearbyTasker } from "../types/nearby-tasker.type";
 
+export interface NearbyTaskerLocation {
+    addressId?: string
+    latitude?:number
+    longitude?:number
+}
+
 export interface ITaskerQueryService {
-    findNearbyTasker(serviceId:string, latitude:number,longitude:number,distanceKm:number):Promise<NearbyTasker[]>
+    findNearbyTasker(userId:string, serviceId:string, location:NearbyTaskerLocation, distanceKm:number):Promise<NearbyTasker[]>
 }

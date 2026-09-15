@@ -53,6 +53,8 @@ import { TaskerRepository } from "../modules/taskers/repositories/tasker.reposit
 import { ITaskerQueryService } from "../modules/taskers/interfaces/tasker-query-service.interface";
 import { TaskerQueryService } from "../modules/taskers/services/tasker-query.service";
 import { TaskerController } from "../modules/taskers/controllers/tasker.controller";
+import { ICustomerAddressRepository } from "../modules/customer-addresses/interfaces/customer-address-repository.interface";
+import { CustomerAddressRepository } from "../modules/customer-addresses/repositories/customer-address.repository";
 
 export const container = new Container()
 
@@ -85,3 +87,4 @@ container.bind<ServiceController>(TYPES.ServiceController).to(ServiceController)
 container.bind<ITaskerRepositoy>(TYPES.TaskerRepository).to(TaskerRepository).inSingletonScope()
 container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryService).inSingletonScope()
 container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
+container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(CustomerAddressRepository).inSingletonScope()
