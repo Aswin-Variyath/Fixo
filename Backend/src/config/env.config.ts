@@ -14,7 +14,8 @@ export const ENV = {
     URL: getRequiredEnv("DATABASE_URL")
   },
   REDIS: {
-    URL: getRequiredEnv("REDIS_URL")
+    URL: getRequiredEnv("REDIS_URL"),
+    NEARBY_TASKER_SEARCH_TTL_SECONDS:Number(getRequiredEnv("NEARBY_TASKER_SEARCH_TTL_SECONDS"))
   },
   AUTH: {
     JWT: {

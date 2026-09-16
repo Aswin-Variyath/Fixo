@@ -36,6 +36,7 @@ export const TYPES = {
     TaskerRepository: Symbol.for("TaskerRepository"),
     TaskerQueryService: Symbol.for("TaskerQueryService"),
     TaskerController: Symbol.for("TaskerController"),
+    NearbyTaskerSearchStore: Symbol.for("NearbyTaskerSearchStore"),
     // Customer Address 
     CustomerAddressRepository: Symbol.for("CustomerAddressRepository"),
     // Routing
