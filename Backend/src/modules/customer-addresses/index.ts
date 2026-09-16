@@ -1,0 +1,1 @@
+export { default as customerAddressRoutes } from "./routes/customer-address.routes"

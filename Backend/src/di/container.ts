@@ -59,6 +59,9 @@ import { IRoutingService } from "../shared/providers/routing/interfaces/routing.
 import { OsrmRoutingService } from "../shared/providers/routing/services/osrm-routing.service";
 import { INearbyTaskerSearchStore } from "../modules/taskers/interfaces/nearby-tasker-search-store.interface";
 import { NearbyTaskerSearchStore } from "../modules/taskers/stores/nearby-tasker-search.store";
+import { ICustomerAddressQueryService } from "../modules/customer-addresses/interfaces/customer-address-query-service.interface";
+import { CustomerAddressQueryService } from "../modules/customer-addresses/services/customer-address-query.service";
+import { CustomerAddressController } from "../modules/customer-addresses/controllers/customer-address.controller";
 
 export const container = new Container()
 
@@ -93,4 +96,6 @@ container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryServ
 container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
 container.bind<INearbyTaskerSearchStore>(TYPES.NearbyTaskerSearchStore).to(NearbyTaskerSearchStore).inSingletonScope()
 container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(CustomerAddressRepository).inSingletonScope()
+container.bind<ICustomerAddressQueryService>(TYPES.CustomerAddressQueryService).to(CustomerAddressQueryService).inSingletonScope()
+container.bind<CustomerAddressController>(TYPES.CustomerAddressController).to(CustomerAddressController).inSingletonScope()
 container.bind<IRoutingService>(TYPES.RoutingService).to(OsrmRoutingService).inSingletonScope()

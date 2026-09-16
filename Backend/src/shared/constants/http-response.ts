@@ -57,5 +57,8 @@ export const HttpResponse = {
   TASKER: {
     NEARBY: "Nearby taskers retrieved successfully",
   },
+  CUSTOMER_ADDRESS :{
+    LIST:'Customer addresses retrieved successfully'
+  }
 
 } as const;

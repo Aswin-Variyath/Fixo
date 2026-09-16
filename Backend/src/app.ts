@@ -8,6 +8,7 @@ import { ENV } from "./config/env.config";
 import { categoryRoutes } from "./modules/categories";
 import { serviceRoutes } from "./modules/services";
 import { taskerRoutes } from "./modules/taskers";
+import { customerAddressRoutes } from "./modules/customer-addresses";
 
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/users",userRouter);
 app.use("/categories",categoryRoutes)
 app.use("/services", serviceRoutes)
 app.use("/taskers", taskerRoutes)
+app.use("/customer-addresses", customerAddressRoutes);
 app.use(errorMiddleware);
 
 export default app;

@@ -9,6 +9,8 @@ import { ServiceService } from '../home/services/service.service';
 import { ServiceDetailsData } from '../home/services/service.types';
 import { ServiceApi } from '../home/services/service-api';
 import { ServiceStore } from '../home/services/service.store';
+import { NearbyTaskerApi } from '../taskers/nearby/api/nearby-tasker-api';
+import { NearbyTasker } from '../taskers/nearby/services/nearby-tasker';
 
 @Component({
   selector: 'app-service-details',
@@ -23,6 +25,8 @@ import { ServiceStore } from '../home/services/service.store';
     ServiceApi,
     ServiceService,
     ServiceStore,
+    NearbyTaskerApi,
+    NearbyTasker
   ],
   templateUrl: './service-details.html',
   styleUrl: './service-details.css',
