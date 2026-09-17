@@ -1,4 +1,4 @@
-export interface CustomerAddress {
+export interface CustomerAddressItem {
     id: string;
     label: string;
     addressLine: string;
@@ -14,7 +14,21 @@ export interface CustomerAddress {
 export interface CustomerAddressApiResponse {
     success: boolean;
     message: string;
-    data: {
-        addresses: CustomerAddress[];
-    };
+    data: CustomerAddressItem[]
+}
+
+export type LocationContextState =
+    | 'loading'
+    | 'address-selection'
+    | 'location-required'
+    | 'error';
+
+
+export type LocationSource = 'address' | 'gps';
+
+export interface SelectedLocation {
+  source: LocationSource;
+  addressId?: string;
+  latitude?: number;
+  longitude?: number;
 }

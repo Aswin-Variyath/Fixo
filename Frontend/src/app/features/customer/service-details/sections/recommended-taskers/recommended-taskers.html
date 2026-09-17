@@ -68,7 +68,7 @@
     }
     @default {
       <div class="grid grid-cols-1 items-stretch gap-gutter md:grid-cols-2 lg:grid-cols-4">
-        @for (tasker of taskers; track tasker.name) { <app-tasker-card [tasker]="tasker"></app-tasker-card> }
+        @for (tasker of taskers(); track tasker.name) { <app-tasker-card [tasker]="tasker"></app-tasker-card> }
       </div>
       <div class="mt-8 flex justify-center">
         <button type="button" class="inline-flex items-center gap-2 rounded-full border border-glass-stroke bg-surface-container-high/80 px-6 py-3 text-sm font-medium text-on-surface shadow-sm transition-colors hover:bg-surface-container-highest"><span>Load More Taskers</span><span class="material-symbols-outlined text-[18px]">expand_more</span></button>
