@@ -1,9 +1,10 @@
 export interface NearbyTaskerSearchCriteria {
-    serviceId:string
+    serviceId: string
     addressId?: string
-    latitude?:number
-    longitude?:number
-    distance:number
+    latitude?: number
+    longitude?: number
+    distance: number
+    sortBy: 'recommended' | 'nearest'
 }
 
 export interface NearbyTaskerItem  {
