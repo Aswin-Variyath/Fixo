@@ -1,3 +1,9 @@
+export type TaskerDiscoverySort =
+    | "recommended"
+    | "nearest"
+    | "highestRated"
+    | "lowestPrice";
+
 export interface NearbyTasker {
     taskerProfileId: string;
     userId: string;
