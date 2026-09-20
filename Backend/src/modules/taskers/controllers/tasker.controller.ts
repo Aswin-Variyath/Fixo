@@ -13,7 +13,7 @@ export class TaskerController {
     constructor(@inject(TYPES.TaskerQueryService) private readonly taskerQueryService:ITaskerQueryService) {}
     getNearbyTasker = async (req:Request, res:Response):Promise<void> => {
         if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
-        const {serviceId, addressId, latitude, longitude, distance, searchId, page}: NearbyTaskerInput = req.query as unknown as NearbyTaskerInput
+        const {serviceId, addressId, latitude, longitude, distance, searchId, page, sortBy}: NearbyTaskerInput = req.query as unknown as NearbyTaskerInput
         const location: NearbyTaskerLocation = {
             addressId: addressId as string | undefined,
             latitude: latitude !== undefined ? Number(latitude) : undefined,
@@ -25,7 +25,8 @@ export class TaskerController {
              location, 
              distance !== undefined ? Number(distance) : undefined, 
              searchId as string | undefined, 
-             page !== undefined ? Number(page) : undefined
+             page !== undefined ? Number(page) : undefined,
+             sortBy
         )
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.TASKER.NEARBY,result))
     }

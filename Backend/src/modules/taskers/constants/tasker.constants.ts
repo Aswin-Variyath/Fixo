@@ -1,1 +1,1 @@
-export const TASKER_SEARCH_PAGE_SIZE = 10;
+export const TASKER_SEARCH_PAGE_SIZE = 3;

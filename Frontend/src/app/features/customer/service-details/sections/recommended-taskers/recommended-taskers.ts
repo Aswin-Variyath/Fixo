@@ -1,9 +1,12 @@
 import {
     Component,
+    ElementRef,
     effect,
     inject,
     input,
+    OnDestroy,
     signal,
+    ViewChild,
 } from '@angular/core';
 
 import {
@@ -31,10 +34,13 @@ type TaskerSectionState =
     templateUrl: './recommended-taskers.html',
     styleUrl: './recommended-taskers.css',
 })
-export class RecommendedTaskers {
-    private readonly nearbyTaskerService = inject(NearbyTasker);
+export class RecommendedTaskers implements OnDestroy {
 
-    readonly serviceId = input.required<string>();
+    private readonly nearbyTaskerService =
+        inject(NearbyTasker);
+
+    readonly serviceId =
+        input.required<string>();
 
     readonly selectedLocation =
         input<SelectedLocation | null>(null);
@@ -45,14 +51,68 @@ export class RecommendedTaskers {
     readonly taskers =
         signal<TaskerPresentation[]>([]);
 
+    readonly isLoadingMore =
+        signal(false);
+
+    readonly hasMore =
+        signal(false);
+
+    private searchId: string | null = null;
+
+    private currentPage = 1;
+
+    private observer?: IntersectionObserver;
+
+    @ViewChild('loadMoreTrigger')
+    set loadMoreTrigger(
+        element: ElementRef<HTMLElement> | undefined
+    ) {
+        if (!element) return;
+
+        this.observer?.disconnect();
+
+        this.observer = new IntersectionObserver(
+            (entries) => {
+                const entry = entries[0];
+
+                if (!entry.isIntersecting) return;
+
+                this.loadNextPage();
+            },
+            {
+                root: null,
+                rootMargin: '300px',
+                threshold: 0,
+            }
+        );
+
+        this.observer.observe(
+            element.nativeElement
+        );
+    }
+
     constructor() {
         effect(() => {
             const location = this.selectedLocation();
 
             if (!location) return;
 
+            this.resetSearch();
             this.loadTasker();
         });
+    }
+
+    ngOnDestroy(): void {
+        this.observer?.disconnect();
+    }
+
+    private resetSearch(): void {
+        this.searchId = null;
+        this.currentPage = 1;
+
+        this.hasMore.set(false);
+        this.isLoadingMore.set(false);
+        this.taskers.set([]);
     }
 
     loadTasker(): void {
@@ -71,8 +131,20 @@ export class RecommendedTaskers {
             })
             .subscribe({
                 next: (response) => {
-                    const taskers = response.data.taskers.map(
-                        (tasker) => this.toPresentation(tasker)
+                    const taskers =
+                        response.data.taskers.map(
+                            (tasker) =>
+                                this.toPresentation(tasker)
+                        );
+
+                    this.searchId =
+                        response.data.searchId;
+
+                    this.currentPage =
+                        response.data.page;
+
+                    this.hasMore.set(
+                        response.data.hasMore
                     );
 
                     this.taskers.set(taskers);
@@ -95,6 +167,61 @@ export class RecommendedTaskers {
             });
     }
 
+    private loadNextPage(): void {
+        if (
+            !this.searchId ||
+            !this.hasMore() ||
+            this.isLoadingMore()
+        ) {
+            return;
+        }
+
+        this.isLoadingMore.set(true);
+
+        const nextPage =
+            this.currentPage + 1;
+
+        this.nearbyTaskerService
+            .getSearchResults(
+                this.searchId,
+                nextPage
+            )
+            .subscribe({
+                next: (response) => {
+                    const newTaskers =
+                        response.data.taskers.map(
+                            (tasker) =>
+                                this.toPresentation(tasker)
+                        );
+
+                    this.taskers.update(
+                        (currentTaskers) => [
+                            ...currentTaskers,
+                            ...newTaskers,
+                        ]
+                    );
+
+                    this.currentPage =
+                        response.data.page;
+
+                    this.hasMore.set(
+                        response.data.hasMore
+                    );
+
+                    this.isLoadingMore.set(false);
+                },
+
+                error: (error) => {
+                    console.error(
+                        'Failed to load more taskers',
+                        error
+                    );
+
+                    this.isLoadingMore.set(false);
+                },
+            });
+    }
+
     private toPresentation(
         tasker: NearbyTaskerItem
     ): TaskerPresentation {
@@ -103,17 +230,23 @@ export class RecommendedTaskers {
                 tasker.profileImageUrl ??
                 'assets/images/default-profile.png',
 
-            name: `${tasker.firstName} ${tasker.lastName}`,
+            name:
+                `${tasker.firstName} ${tasker.lastName}`,
 
-            title: 'Service Professional',
+            title:
+                'Service Professional',
 
-            rating: tasker.averageRating.toFixed(1),
+            rating:
+                tasker.averageRating.toFixed(1),
 
-            reviewCount: tasker.totalReviews,
+            reviewCount:
+                tasker.totalReviews,
 
-            distance: `${tasker.distanceKm.toFixed(1)} km`,
+            distance:
+                `${tasker.distanceKm.toFixed(1)} km`,
 
-            availability: 'Available',
+            availability:
+                'Available',
         };
     }
 }

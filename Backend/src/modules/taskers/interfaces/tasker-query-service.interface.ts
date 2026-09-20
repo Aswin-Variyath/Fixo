@@ -9,5 +9,5 @@ export interface NearbyTaskerLocation {
 }
 
 export interface ITaskerQueryService {
-    findNearbyTasker(userId:string, serviceId?:string, location?:NearbyTaskerLocation, distanceKm?:number, searchId?: string, page?: number):Promise<NearbyTaskerSearchResponseDto>
+    findNearbyTasker(userId:string, serviceId?:string, location?:NearbyTaskerLocation, distanceKm?:number, searchId?: string, page?: number, sortBy?: 'recommended' | 'nearest'):Promise<NearbyTaskerSearchResponseDto>
 }
