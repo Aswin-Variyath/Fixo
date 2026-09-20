@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { ENV } from '../../../../../../environments/environments';
 import { NearbyTaskerSearchApiResponse, NearbyTaskerSearchCriteria } from '../types/nearby-tasker.types';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 
 @Service()
 export class NearbyTaskerApi {
@@ -14,7 +14,7 @@ export class NearbyTaskerApi {
         let params = new HttpParams()
         .set('serviceId',criteria.serviceId)
         .set('distance',criteria.distance)
-
+        .set('sortBy', criteria.sortBy)
         if(criteria.addressId) {
             params = params.set('addressId',criteria.addressId)
         }else {

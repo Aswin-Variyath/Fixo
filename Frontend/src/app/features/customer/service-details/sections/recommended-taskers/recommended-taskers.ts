@@ -57,6 +57,12 @@ export class RecommendedTaskers implements OnDestroy {
     readonly hasMore =
         signal(false);
 
+    readonly selectedDistance =
+        signal(10);
+
+        readonly selectedSort =
+    signal<'recommended' | 'nearest'>('recommended');
+
     private searchId: string | null = null;
 
     private currentPage = 1;
@@ -115,6 +121,26 @@ export class RecommendedTaskers implements OnDestroy {
         this.taskers.set([]);
     }
 
+    onDistanceChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const distance = Number(select.value);
+
+    this.selectedDistance.set(distance);
+
+    this.resetSearch();
+    this.loadTasker();
+}
+onSortChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const sortBy = select.value as 'recommended' | 'nearest';
+
+    this.selectedSort.set(sortBy);
+
+    this.resetSearch();
+    this.loadTasker();
+}
+
+
     loadTasker(): void {
         const location = this.selectedLocation();
 
@@ -125,7 +151,8 @@ export class RecommendedTaskers implements OnDestroy {
         this.nearbyTaskerService
             .createSearch({
                 serviceId: this.serviceId(),
-                distance: 10,
+                distance: this.selectedDistance(),
+                sortBy: this.selectedSort(),
                 latitude: location.latitude!,
                 longitude: location.longitude!,
             })
