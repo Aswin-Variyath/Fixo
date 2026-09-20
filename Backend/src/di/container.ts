@@ -48,6 +48,20 @@ import { ServiceRepository } from "../modules/services/repositories/service.repo
 import { IserviceQueryService } from "../modules/services/interfaces/service-query-service.interface";
 import { ServiceQueryService } from "../modules/services/services/service-query.service";
 import { ServiceController } from "../modules/services/controllers/service.controller";
+import { ITaskerRepositoy } from "../modules/taskers/interfaces/tasker-repository.interface";
+import { TaskerRepository } from "../modules/taskers/repositories/tasker.repository";
+import { ITaskerQueryService } from "../modules/taskers/interfaces/tasker-query-service.interface";
+import { TaskerQueryService } from "../modules/taskers/services/tasker-query.service";
+import { TaskerController } from "../modules/taskers/controllers/tasker.controller";
+import { ICustomerAddressRepository } from "../modules/customer-addresses/interfaces/customer-address-repository.interface";
+import { CustomerAddressRepository } from "../modules/customer-addresses/repositories/customer-address.repository";
+import { IRoutingService } from "../shared/providers/routing/interfaces/routing.service.interface";
+import { OsrmRoutingService } from "../shared/providers/routing/services/osrm-routing.service";
+import { INearbyTaskerSearchStore } from "../modules/taskers/interfaces/nearby-tasker-search-store.interface";
+import { NearbyTaskerSearchStore } from "../modules/taskers/stores/nearby-tasker-search.store";
+import { ICustomerAddressQueryService } from "../modules/customer-addresses/interfaces/customer-address-query-service.interface";
+import { CustomerAddressQueryService } from "../modules/customer-addresses/services/customer-address-query.service";
+import { CustomerAddressController } from "../modules/customer-addresses/controllers/customer-address.controller";
 
 export const container = new Container()
 
@@ -77,3 +91,11 @@ container.bind<CategoryController>(TYPES.CategoryController).to(CategoryControll
 container.bind<IserviceRepository>(TYPES.ServiceRepository).to(ServiceRepository).inSingletonScope()
 container.bind<IserviceQueryService>(TYPES.ServiceQueryService).to(ServiceQueryService).inSingletonScope()
 container.bind<ServiceController>(TYPES.ServiceController).to(ServiceController).inSingletonScope()
+container.bind<ITaskerRepositoy>(TYPES.TaskerRepository).to(TaskerRepository).inSingletonScope()
+container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryService).inSingletonScope()
+container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
+container.bind<INearbyTaskerSearchStore>(TYPES.NearbyTaskerSearchStore).to(NearbyTaskerSearchStore).inSingletonScope()
+container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(CustomerAddressRepository).inSingletonScope()
+container.bind<ICustomerAddressQueryService>(TYPES.CustomerAddressQueryService).to(CustomerAddressQueryService).inSingletonScope()
+container.bind<CustomerAddressController>(TYPES.CustomerAddressController).to(CustomerAddressController).inSingletonScope()
+container.bind<IRoutingService>(TYPES.RoutingService).to(OsrmRoutingService).inSingletonScope()

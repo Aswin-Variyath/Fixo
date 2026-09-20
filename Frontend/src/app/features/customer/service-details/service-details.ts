@@ -9,6 +9,9 @@ import { ServiceService } from '../home/services/service.service';
 import { ServiceDetailsData } from '../home/services/service.types';
 import { ServiceApi } from '../home/services/service-api';
 import { ServiceStore } from '../home/services/service.store';
+import { NearbyTaskerApi } from '../taskers/nearby/api/nearby-tasker-api';
+import { NearbyTasker } from '../taskers/nearby/services/nearby-tasker';
+import { SelectedLocation } from '../addresses/types/customer-address.types';
 
 @Component({
   selector: 'app-service-details',
@@ -19,40 +22,48 @@ import { ServiceStore } from '../home/services/service.store';
     RecommendedTaskers,
     ServiceOverview,
   ],
-   providers: [
+  providers: [
     ServiceApi,
     ServiceService,
     ServiceStore,
+    NearbyTaskerApi,
+    NearbyTasker
   ],
   templateUrl: './service-details.html',
   styleUrl: './service-details.css',
 })
-export class ServiceDetails implements OnInit{
-  private readonly route = inject(ActivatedRoute)
-  private readonly serviceService = inject(ServiceService)
+export class ServiceDetails implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly serviceService = inject(ServiceService);
 
-  serviceId: string = ''
-  
-  // 2. Change this from a plain property to a Writable Signal
+  serviceId: string = '';
+
   service = signal<ServiceDetailsData | null>(null);
 
+  selectedLocation = signal<SelectedLocation | null>(null);
+
   ngOnInit(): void {
-    const serviceId = this.route.snapshot.paramMap.get('serviceId')
-    if (!serviceId) return
-    this.serviceId = serviceId
+    const serviceId = this.route.snapshot.paramMap.get('serviceId');
+
+    if (!serviceId) return;
+
+    this.serviceId = serviceId;
 
     this.serviceService.getServiceById(serviceId).subscribe({
       next: (response) => {
         console.log('Service details response:', response);
-        
-        // 3. Update the signal value using the .set() method
         this.service.set(response.data);
-        
         console.log('Service details data set in signal!');
       },
       error: (error) => {
-        console.error("Failed to load service details", error)
-      }
-    })
+        console.error('Failed to load service details', error);
+      },
+    });
+  }
+
+  onLocationSelected(location: SelectedLocation): void {
+    this.selectedLocation.set(location);
+
+    console.log('Selected location:', location);
   }
 }

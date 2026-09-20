@@ -1,0 +1,1 @@
+export const TASKER_SEARCH_PAGE_SIZE = 3;

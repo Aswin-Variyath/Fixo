@@ -14,7 +14,9 @@ export const ENV = {
     URL: getRequiredEnv("DATABASE_URL")
   },
   REDIS: {
-    URL: getRequiredEnv("REDIS_URL")
+    URL: getRequiredEnv("REDIS_URL"),
+    NEARBY_TASKER_SEARCH_TTL_SECONDS:Number(getRequiredEnv("NEARBY_TASKER_SEARCH_TTL_SECONDS")),
+    NEARBY_TASKER_SEARCH_METADATA_TTL_SECONDS: Number(getRequiredEnv("NEARBY_TASKER_SEARCH_METADATA_TTL_SECONDS"))
   },
   AUTH: {
     JWT: {
@@ -38,5 +40,8 @@ export const ENV = {
       PASS:getRequiredEnv("SMTP_PASS"),
     },
     FROM:getRequiredEnv("MAIL_FROM")
+  },
+  OSRM: {
+    BASE_URL:getRequiredEnv("OSRM_BASE_URL")
   }
 } as const

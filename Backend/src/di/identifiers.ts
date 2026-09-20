@@ -1,4 +1,5 @@
 export const TYPES = {
+    //Prisma
     PrismaClient: Symbol.for("PrismaClient"),
     // Auth
     PasswordService: Symbol.for("PasswordService"),
@@ -31,5 +32,16 @@ export const TYPES = {
     // Service
     ServiceRepository: Symbol.for("ServiceRepository"),
     ServiceQueryService: Symbol.for("ServiceQueryService"),
-    ServiceController: Symbol.for("ServiceController")
+    ServiceController: Symbol.for("ServiceController"),
+    // Tasker
+    TaskerRepository: Symbol.for("TaskerRepository"),
+    TaskerQueryService: Symbol.for("TaskerQueryService"),
+    TaskerController: Symbol.for("TaskerController"),
+    NearbyTaskerSearchStore: Symbol.for("NearbyTaskerSearchStore"),
+    // Customer Address 
+    CustomerAddressRepository: Symbol.for("CustomerAddressRepository"),
+    CustomerAddressQueryService: Symbol.for("CustomerAddressQueryService"),
+    CustomerAddressController: Symbol.for("CustomerAddressController"),
+    // Routing
+    RoutingService: Symbol.for("RoutingService"),
 } as const

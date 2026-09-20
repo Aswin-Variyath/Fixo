@@ -1,18 +1,153 @@
-<section class="mb-10 flex flex-col items-start justify-between gap-4 rounded-2xl border border-glass-stroke bg-surface-container-low/90 p-4 shadow-md backdrop-blur-md md:flex-row md:items-center md:p-5" aria-label="Tasker location context">
-  <div class="flex min-w-0 items-center gap-3">
-    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-container/20 text-primary">
-      <span class="material-symbols-outlined text-[22px]">location_on</span>
-    </div>
-    <div class="min-w-0">
-      <p class="truncate font-body-md text-sm font-medium text-on-surface md:text-body-md">
-        Showing taskers within <span class="font-semibold text-primary">10 km</span> of your location (<span class="text-on-surface">Kozhikode, Kerala</span>)
-      </p>
-      <p class="font-label-sm text-[11px] text-outline">Need nearby taskers fast? Enable GPS location for pinpoint accuracy.</p>
-    </div>
-  </div>
+<section
+  class="mb-10 rounded-2xl border border-glass-stroke bg-surface-container-low/90 p-4 shadow-md backdrop-blur-md md:p-5"
+  aria-label="Tasker location context"
+>
+  @if (locationState() === 'loading') {
+    <div class="flex items-center gap-3">
+      <div
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-container/20 text-primary"
+      >
+        <span class="material-symbols-outlined text-[22px]">
+          location_on
+        </span>
+      </div>
 
-  <button type="button" class="inline-flex shrink-0 items-center gap-1.5 self-end rounded-lg border border-glass-stroke bg-surface-container-highest/60 px-3.5 py-2 font-label-sm text-label-sm text-primary transition-colors hover:bg-surface-container-highest md:self-center">
-    <span class="material-symbols-outlined text-[16px]">tune</span>
-    <span>Change Location / Radius</span>
-  </button>
+      <div>
+        <p class="font-body-md text-sm font-medium text-on-surface">
+          Finding your location...
+        </p>
+
+        <p class="font-label-sm text-[11px] text-outline">
+          Checking your saved addresses.
+        </p>
+      </div>
+    </div>
+  }
+
+  @if (locationState() === 'address-selection') {
+    <div class="flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-container/20 text-primary"
+        >
+          <span class="material-symbols-outlined text-[22px]">
+            location_on
+          </span>
+        </div>
+
+        <div>
+          <p class="font-body-md text-sm font-medium text-on-surface">
+            Where should we find your tasker?
+          </p>
+
+          <p class="font-label-sm text-[11px] text-outline">
+            Choose a saved address or use your current location.
+          </p>
+        </div>
+      </div>
+
+      @if (addresses().length > 0) {
+        <div class="grid gap-3 md:grid-cols-2">
+          @for (address of addresses(); track address.id) {
+            <button
+              type="button"
+              (click)="selectAddress(address)"
+              class="flex items-start gap-3 rounded-xl border p-4 text-left transition"
+              [class.border-primary]="selectedAddress()?.id === address.id"
+              [class.bg-primary-container/10]="selectedAddress()?.id === address.id"
+              [class.border-glass-stroke]="selectedAddress()?.id !== address.id"
+            >
+              <span class="material-symbols-outlined text-primary">
+                location_on
+              </span>
+
+              <div class="min-w-0">
+                <p class="font-semibold text-on-surface">
+                  {{ address.label }}
+                </p>
+
+                <p class="mt-1 text-sm text-outline">
+                  {{ address.addressLine }}
+                </p>
+
+                <p class="text-sm text-outline">
+                  {{ address.city }}, {{ address.state }}
+                </p>
+              </div>
+            </button>
+          }
+        </div>
+      }
+
+      <button
+        type="button"
+        (click)="useCurrentLocation()"
+        class="inline-flex w-fit items-center gap-2 rounded-xl border border-primary px-4 py-2.5 text-sm font-medium text-primary transition hover:bg-primary/10"
+      >
+        <span class="material-symbols-outlined text-[18px]">
+          my_location
+        </span>
+
+        Use my current location
+      </button>
+    </div>
+  }
+
+  @if (locationState() === 'location-required') {
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+        <div
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-container/20 text-primary"
+        >
+          <span class="material-symbols-outlined text-[22px]">
+            location_off
+          </span>
+        </div>
+
+        <div>
+          <p class="font-body-md text-sm font-medium text-on-surface">
+            Location is required
+          </p>
+
+          <p class="font-label-sm text-[11px] text-outline">
+            Add an address or turn on your current location to find nearby taskers.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="useCurrentLocation()"
+        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white"
+      >
+        <span class="material-symbols-outlined text-[18px]">
+          my_location
+        </span>
+
+        Turn on Location
+      </button>
+    </div>
+  }
+
+  @if (locationState() === 'error') {
+    <div class="flex items-center gap-3">
+      <div
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-500"
+      >
+        <span class="material-symbols-outlined text-[22px]">
+          error
+        </span>
+      </div>
+
+      <div>
+        <p class="font-body-md text-sm font-medium text-on-surface">
+          Unable to load your addresses
+        </p>
+
+        <p class="font-label-sm text-[11px] text-outline">
+          Please try again later.
+        </p>
+      </div>
+    </div>
+  }
 </section>
