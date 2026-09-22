@@ -66,20 +66,23 @@
 
         <nav class="hidden md:flex gap-gutter items-center">
 
-          <a
-            href="/customer/home"
-            class="text-primary border-b-2 border-primary pb-1 active:scale-95 transition-transform"
-          >
-            Home
-          </a>
+        <a
+  routerLink="/customer/home"
+  routerLinkActive="text-primary border-b-2 border-primary"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="text-on-surface-variant hover:text-on-surface transition-colors px-3 py-2"
+>
+  Home
+</a>
 
-          <a
-            href="/services"
-            class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
-          >
-            Services
-          </a>
-
+<a
+  routerLink="/customer/discovery"
+  routerLinkActive="text-primary border-b-2 border-primary"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="text-on-surface-variant hover:text-on-surface transition-colors px-3 py-2"
+>
+  Services
+</a>
           <a
             href="/bookings"
             class="text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/10 rounded-lg px-3 py-2"
