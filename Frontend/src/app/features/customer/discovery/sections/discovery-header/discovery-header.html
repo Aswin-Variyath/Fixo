@@ -16,7 +16,10 @@
 
   </div>
 
-  <div class="glass-panel p-stack-md md:p-gutter mt-stack-md">
+  <div
+    class="glass-panel p-stack-md md:p-gutter mt-stack-md
+           relative z-50"
+  >
 
     <form class="flex flex-col md:flex-row gap-stack-md w-full">
 
@@ -37,11 +40,16 @@
           />
 
         </div>
+        @if (locationError()) {
+  <p class="text-sm text-error mt-2">
+    {{ locationError() }}
+  </p>
+}
 
       </div>
 
       <!-- Location -->
-      <div class="flex-1 relative">
+      <div class="flex-1 relative z-50">
 
         <div class="glass-input rounded-xl flex items-center px-4 py-3 h-full">
 
@@ -54,20 +62,90 @@
                    placeholder-on-surface-variant focus:ring-0 p-0 text-base"
             placeholder="Location"
             type="text"
-            value="Kozhikode"
+            [ngModel]="locationText()"
+            (ngModelChange)="onLocationInput($event)"
+            name="location"
+            autocomplete="off"
           />
 
-          <button
-            class="text-primary hover:text-sky-blue ml-2"
-            title="Current Location"
-            type="button"
-          >
+          @if (isLoading()) {
+            <span
+              class="material-symbols-outlined
+                     animate-spin text-primary ml-2"
+            >
+              progress_activity
+            </span>
+          }
+
+<button
+  class="text-primary hover:text-sky-blue ml-2"
+  title="Current Location"
+  type="button"
+  (click)="useCurrentLocation()"
+>
             <span class="material-symbols-outlined text-sm">
               my_location
             </span>
           </button>
 
         </div>
+
+        <!-- Location Suggestions -->
+        @if (suggestions().length > 0) {
+
+          <div
+            class="absolute left-0 right-0 top-full mt-2 z-[100]
+                   glass-panel rounded-xl overflow-hidden"
+          >
+
+            @for (
+              suggestion of suggestions();
+              track suggestion.properties.place_id
+            ) {
+
+              <button
+                type="button"
+                class="w-full text-left px-4 py-3
+                       hover:bg-white/10 transition-colors
+                       border-b border-glass-stroke
+                       last:border-b-0"
+                (click)="selectLocation(suggestion)"
+              >
+
+                <div class="flex items-start gap-3">
+
+                  <span
+                    class="material-symbols-outlined
+                           text-primary mt-0.5"
+                  >
+                    location_on
+                  </span>
+
+                  <div class="flex flex-col min-w-0">
+
+                    <span
+                      class="text-sm font-medium text-on-surface"
+                    >
+                      {{ suggestion.properties.name }}
+                    </span>
+
+                    <span
+                      class="text-xs text-on-surface-variant truncate"
+                    >
+                      {{ suggestion.properties.formatted }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </button>
+
+            }
+
+          </div>
+
+        }
 
       </div>
 
