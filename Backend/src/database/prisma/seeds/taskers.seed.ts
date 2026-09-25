@@ -193,6 +193,19 @@ const availability: {
   },
 ];
 
+const testBookingSlots = [
+  {
+    taskerIndex: 0,
+    startTime: "11:00",
+    endTime: "13:00",
+  },
+  {
+    taskerIndex: 1,
+    startTime: "14:00",
+    endTime: "16:00",
+  },
+];
+
 async function findOrCreateUser(data: {
   firstName: string;
   lastName: string;
@@ -406,6 +419,11 @@ export async function seedTaskers() {
    * ---------------------------------------------------------
    */
 
+  const seededTaskerProfiles: {
+    profileId: string;
+    serviceId: string;
+  }[] = [];
+
   for (let index = 0; index < taskers.length; index++) {
     const tasker = taskers[index];
 
@@ -454,32 +472,56 @@ export async function seedTaskers() {
       },
     });
 
-    await prisma.taskerLocation.upsert({
-      where: {
-        taskerProfileId: profile.id,
-      },
-      update: {
-        addressLine: tasker.addressLine,
-        city: "Kozhikode",
-        state: "Kerala",
-        postalCode: "673001",
-        country: "India",
-        latitude: tasker.latitude,
-        longitude: tasker.longitude,
-        serviceRadiusKm: "10.00",
-      },
-      create: {
-        taskerProfileId: profile.id,
-        addressLine: tasker.addressLine,
-        city: "Kozhikode",
-        state: "Kerala",
-        postalCode: "673001",
-        country: "India",
-        latitude: tasker.latitude,
-        longitude: tasker.longitude,
-        serviceRadiusKm: "10.00",
-      },
-    });
+await prisma.$executeRaw`
+  INSERT INTO "TaskerLocation" (
+    "id",
+    "taskerProfileId",
+    "addressLine",
+    "city",
+    "state",
+    "postalCode",
+    "country",
+    "latitude",
+    "longitude",
+    "maximumRoadDistanceKm",
+    "location",
+    "createdAt",
+    "updatedAt"
+  )
+  VALUES (
+    gen_random_uuid(),
+    ${profile.id},
+    ${tasker.addressLine},
+    ${"Kozhikode"},
+    ${"Kerala"},
+    ${"673001"},
+    ${"India"},
+    ${tasker.latitude},
+    ${tasker.longitude},
+    ${"10.00"},
+    ST_SetSRID(
+      ST_MakePoint(
+        ${tasker.longitude}::double precision,
+        ${tasker.latitude}::double precision
+      ),
+      4326
+    )::geography,
+    NOW(),
+    NOW()
+  )
+  ON CONFLICT ("taskerProfileId")
+  DO UPDATE SET
+    "addressLine" = EXCLUDED."addressLine",
+    "city" = EXCLUDED."city",
+    "state" = EXCLUDED."state",
+    "postalCode" = EXCLUDED."postalCode",
+    "country" = EXCLUDED."country",
+    "latitude" = EXCLUDED."latitude",
+    "longitude" = EXCLUDED."longitude",
+    "maximumRoadDistanceKm" = EXCLUDED."maximumRoadDistanceKm",
+    "location" = EXCLUDED."location",
+    "updatedAt" = NOW();
+`;
 
     const additionalServices =
       index % 4 === 0
@@ -515,6 +557,11 @@ export async function seedTaskers() {
       });
     }
 
+    seededTaskerProfiles.push({
+      profileId: profile.id,
+      serviceId: pipeLeakageRepair.id,
+    });
+
     for (const slot of availability) {
       await prisma.taskerAvailability.upsert({
         where: {
@@ -539,8 +586,56 @@ export async function seedTaskers() {
     }
   }
 
+  /*
+   * ---------------------------------------------------------
+   * Seed temporary bookings for availability testing
+   * ---------------------------------------------------------
+   */
+
+  const bookingDate = new Date();
+  bookingDate.setHours(0, 0, 0, 0);
+
+  for (const booking of testBookingSlots) {
+    const tasker = seededTaskerProfiles[booking.taskerIndex];
+
+    const existingBooking = await prisma.booking.findFirst({
+      where: {
+        customerId: customer.id,
+        taskerProfileId: tasker.profileId,
+        serviceId: tasker.serviceId,
+        bookingDate,
+        startTime: booking.startTime,
+        endTime: booking.endTime,
+      },
+    });
+
+    if (existingBooking) {
+      await prisma.booking.update({
+        where: {
+          id: existingBooking.id,
+        },
+        data: {
+          status: "CONFIRMED",
+        },
+      });
+    } else {
+      await prisma.booking.create({
+        data: {
+          customerId: customer.id,
+          taskerProfileId: tasker.profileId,
+          serviceId: tasker.serviceId,
+          bookingDate,
+          startTime: booking.startTime,
+          endTime: booking.endTime,
+          status: "CONFIRMED",
+        },
+      });
+    }
+  }
+
   console.log("Customer and taskers seeded successfully.");
   console.log("Customer: test.customer@fixo.dev");
   console.log(`Test password: ${TEST_PASSWORD}`);
   console.log(`Taskers seeded: ${taskers.length}`);
+  console.log("Temporary availability bookings seeded successfully.");
 }

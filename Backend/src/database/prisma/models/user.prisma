@@ -12,6 +12,7 @@ model User {
   updatedAt           DateTime             @updatedAt
   statusId            String
   deletedAt           DateTime?
+  bookings            Booking[]
   customerAddresses   CustomerAddress[]
   taskerProfile       TaskerProfile?
   passwordResetTokens PasswordResetToken[]
