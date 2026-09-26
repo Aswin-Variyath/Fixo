@@ -5,5 +5,7 @@ export interface NearbyTaskerSearchSession {
     serviceId?: string;
     location: NearbyTaskerLocation;
     distanceKm: number;
+    requestedDate?: Date;
+    requestedTime?: string;
     sortBy: TaskerDiscoverySort;
 }

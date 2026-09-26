@@ -592,46 +592,58 @@ await prisma.$executeRaw`
    * ---------------------------------------------------------
    */
 
-  const bookingDate = new Date();
-  bookingDate.setHours(0, 0, 0, 0);
+  const TEST_BOOKING_DAYS = 14;
 
-  for (const booking of testBookingSlots) {
-    const tasker = seededTaskerProfiles[booking.taskerIndex];
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
-    const existingBooking = await prisma.booking.findFirst({
-      where: {
-        customerId: customer.id,
-        taskerProfileId: tasker.profileId,
-        serviceId: tasker.serviceId,
-        bookingDate,
-        startTime: booking.startTime,
-        endTime: booking.endTime,
-      },
-    });
+for (let day = 1; day <= TEST_BOOKING_DAYS; day++) {
+    const bookingDate = new Date(today);
+    bookingDate.setDate(today.getDate() + day);
 
-    if (existingBooking) {
-      await prisma.booking.update({
-        where: {
-          id: existingBooking.id,
-        },
-        data: {
-          status: "CONFIRMED",
-        },
-      });
-    } else {
-      await prisma.booking.create({
-        data: {
-          customerId: customer.id,
-          taskerProfileId: tasker.profileId,
-          serviceId: tasker.serviceId,
-          bookingDate,
-          startTime: booking.startTime,
-          endTime: booking.endTime,
-          status: "CONFIRMED",
-        },
-      });
+    for (const booking of testBookingSlots) {
+        const tasker = seededTaskerProfiles[booking.taskerIndex];
+
+        const existingBooking =
+            await prisma.booking.findFirst({
+                where: {
+                    customerId: customer.id,
+                    taskerProfileId: tasker.profileId,
+                    serviceId: tasker.serviceId,
+                    bookingDate,
+                    startTime: booking.startTime,
+                    endTime: booking.endTime,
+                },
+            });
+
+        if (existingBooking) {
+            await prisma.booking.update({
+                where: {
+                    id: existingBooking.id,
+                },
+                data: {
+                    status: "CONFIRMED",
+                },
+            });
+        } else {
+            await prisma.booking.create({
+                data: {
+                    customerId: customer.id,
+                    taskerProfileId: tasker.profileId,
+                    serviceId: tasker.serviceId,
+                    bookingDate,
+                    startTime: booking.startTime,
+                    endTime: booking.endTime,
+                    status: "CONFIRMED",
+                },
+            });
+        }
     }
-  }
+}
+
+console.log(
+    `Temporary availability bookings seeded for the next ${TEST_BOOKING_DAYS} days.`
+);
 
   console.log("Customer and taskers seeded successfully.");
   console.log("Customer: test.customer@fixo.dev");

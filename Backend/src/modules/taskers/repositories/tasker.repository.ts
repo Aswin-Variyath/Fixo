@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import { ITaskerRepositoy } from "../interfaces/tasker-repository.interface";
 import { NearbyTasker } from "../types/nearby-tasker.type";
 import prisma from "../../../database/prisma/prisma";
+import { TaskerAvailabilityRecord, TaskerBookingRecord } from "../types/tasker-availability.type";
 
 @injectable()
 export class TaskerRepository implements ITaskerRepositoy {
@@ -160,4 +161,42 @@ export class TaskerRepository implements ITaskerRepositoy {
         ORDER BY "distanceKm" ASC
     `;
     }
+
+    async findTaskerAvailability(taskerProfileId: string, dayOfWeek: string): Promise<TaskerAvailabilityRecord[]> {
+        return prisma.taskerAvailability.findMany({
+            where:{
+                taskerProfileId,
+                dayOfWeek:dayOfWeek as any,
+                status:'ACTIVE'
+            },
+            select:{
+                startTime:true,
+                endTime:true
+            },
+            orderBy:{
+                startTime:'asc'
+            }
+        })
+    }
+
+    async findTaskerBookings(taskerProfileId: string, bookingDate: Date): Promise<TaskerBookingRecord[]> {
+        return prisma.booking.findMany({
+            where:{
+                taskerProfileId,
+                bookingDate,
+                status:{
+                    in:["PENDING","CONFIRMED", "IN_PROGRESS"]
+                }
+            },
+            select:{
+                startTime:true,
+                endTime:true,
+                status:true
+            },
+            orderBy:{
+                startTime:'asc'
+            }
+        })
+    }
+    
 }

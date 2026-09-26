@@ -8,8 +8,15 @@ export interface NearbyTaskerLocation {
     longitude?:number
 }
 
-export interface ITaskerQueryService {
-    findNearbyTasker(userId:string, serviceId?:string, location?:NearbyTaskerLocation, distanceKm?:number, searchId?: string, page?: number, sortBy?: 'recommended' | 'nearest'):Promise<NearbyTaskerSearchResponseDto>
-    discoverTaskers(userId:string, location?:NearbyTaskerLocation, distanceKm?:number,searchId?:string,page?:number,sortBy?:TaskerDiscoverySort):Promise<NearbyTaskerSearchResponseDto>
+export interface TaskerSearchCriteria {
+    serviceId?: string;
+    location: NearbyTaskerLocation;
+    distanceKm: number;
+    requestedDate?: Date;
+    requestedTime?: string;
+    sortBy: TaskerDiscoverySort;
+}
 
+export interface ITaskerQueryService {
+    searchTaskers(userId: string, criteria: TaskerSearchCriteria, searchId?: string, page?: number): Promise<NearbyTaskerSearchResponseDto>;
 }

@@ -1,3 +1,4 @@
+import prisma from "../database/prisma/prisma";
 import { Container } from "inversify";
 import { IUserRepository } from "../modules/users/interfaces/user-repository.interface";
 import { TYPES } from "./identifiers";
@@ -27,7 +28,6 @@ import { AuthMiddleware } from "../shared/middlewares/auth.middleware";
 import { IAuthorizationMiddleware } from "../modules/auth/interfaces/authoriazation-middleware.interface";
 import { AuthorizationMiddleware } from "../shared/middlewares/authorization.middleware";
 import { PrismaClient } from "@prisma/client/extension";
-import prisma from "../database/prisma/prisma";
 import { IPasswordResetRepository } from "../modules/auth/interfaces/password-reset.repository.interface";
 import { PasswordResetRepository } from "../modules/auth/repositories/password-reset.repository";
 import { IRateLimitStore } from "../modules/auth/interfaces/rate-limit-store.interface";
@@ -62,6 +62,8 @@ import { NearbyTaskerSearchStore } from "../modules/taskers/stores/nearby-tasker
 import { ICustomerAddressQueryService } from "../modules/customer-addresses/interfaces/customer-address-query-service.interface";
 import { CustomerAddressQueryService } from "../modules/customer-addresses/services/customer-address-query.service";
 import { CustomerAddressController } from "../modules/customer-addresses/controllers/customer-address.controller";
+import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-availability.service";
+import { ITaskerAvailabilityService } from "../modules/taskers/interfaces/tasker-availability-service.interface";
 
 export const container = new Container()
 
@@ -99,3 +101,4 @@ container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(C
 container.bind<ICustomerAddressQueryService>(TYPES.CustomerAddressQueryService).to(CustomerAddressQueryService).inSingletonScope()
 container.bind<CustomerAddressController>(TYPES.CustomerAddressController).to(CustomerAddressController).inSingletonScope()
 container.bind<IRoutingService>(TYPES.RoutingService).to(OsrmRoutingService).inSingletonScope()
+container.bind<ITaskerAvailabilityService>(TYPES.TaskerAvailabilityService).to(TaskerAvailabilityService).inSingletonScope()
