@@ -8,7 +8,6 @@ import { HttpResponse } from "../../../shared/constants";
 import { AppError } from "../../../shared/errors/app.error";
 import { NearbyTaskerInput } from "../validations/nearby-tasker.schema";
 
-
 @injectable()
 export class TaskerController {
     constructor(@inject(TYPES.TaskerQueryService) private readonly taskerQueryService:ITaskerQueryService) {}

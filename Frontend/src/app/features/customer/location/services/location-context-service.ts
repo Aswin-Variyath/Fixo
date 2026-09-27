@@ -1,6 +1,5 @@
 import { Service, signal } from '@angular/core';
-import { SelectedLocation } from '../../addresses/types/customer-address.types';
-
+import { SelectedLocation } from '../types/location.types';
 @Service()
 export class LocationContextService {
     private readonly storageKey = 'fixo_customer_location';
