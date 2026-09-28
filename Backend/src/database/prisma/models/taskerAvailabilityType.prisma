@@ -1,0 +1,4 @@
+enum TaskerAvailabilityType {
+  RECURRING
+  ONE_OFF
+}

@@ -1,0 +1,21 @@
+model Payment {
+  id        String @id @default(uuid())
+  bookingId String @unique
+
+  amount Decimal        @db.Decimal(10, 2)
+  status PaymentStatus  @default(PENDING)
+  method PaymentMethod?
+
+  provider          String?
+  providerPaymentId String?
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  @@index([status])
+  @@index([providerPaymentId])
+}

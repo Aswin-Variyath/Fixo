@@ -472,56 +472,56 @@ export async function seedTaskers() {
       },
     });
 
-await prisma.$executeRaw`
-  INSERT INTO "TaskerLocation" (
-    "id",
-    "taskerProfileId",
-    "addressLine",
-    "city",
-    "state",
-    "postalCode",
-    "country",
-    "latitude",
-    "longitude",
-    "maximumRoadDistanceKm",
-    "location",
-    "createdAt",
-    "updatedAt"
-  )
-  VALUES (
-    gen_random_uuid(),
-    ${profile.id},
-    ${tasker.addressLine},
-    ${"Kozhikode"},
-    ${"Kerala"},
-    ${"673001"},
-    ${"India"},
-    ${tasker.latitude},
-    ${tasker.longitude},
-    ${"10.00"},
-    ST_SetSRID(
-      ST_MakePoint(
-        ${tasker.longitude}::double precision,
-        ${tasker.latitude}::double precision
-      ),
-      4326
-    )::geography,
-    NOW(),
-    NOW()
-  )
-  ON CONFLICT ("taskerProfileId")
-  DO UPDATE SET
-    "addressLine" = EXCLUDED."addressLine",
-    "city" = EXCLUDED."city",
-    "state" = EXCLUDED."state",
-    "postalCode" = EXCLUDED."postalCode",
-    "country" = EXCLUDED."country",
-    "latitude" = EXCLUDED."latitude",
-    "longitude" = EXCLUDED."longitude",
-    "maximumRoadDistanceKm" = EXCLUDED."maximumRoadDistanceKm",
-    "location" = EXCLUDED."location",
-    "updatedAt" = NOW();
-`;
+    await prisma.$executeRaw`
+      INSERT INTO "TaskerLocation" (
+        "id",
+        "taskerProfileId",
+        "addressLine",
+        "city",
+        "state",
+        "postalCode",
+        "country",
+        "latitude",
+        "longitude",
+        "maximumRoadDistanceKm",
+        "location",
+        "createdAt",
+        "updatedAt"
+      )
+      VALUES (
+        gen_random_uuid(),
+        ${profile.id},
+        ${tasker.addressLine},
+        ${"Kozhikode"},
+        ${"Kerala"},
+        ${"673001"},
+        ${"India"},
+        ${tasker.latitude},
+        ${tasker.longitude},
+        ${"10.00"},
+        ST_SetSRID(
+          ST_MakePoint(
+            ${tasker.longitude}::double precision,
+            ${tasker.latitude}::double precision
+          ),
+          4326
+        )::geography,
+        NOW(),
+        NOW()
+      )
+      ON CONFLICT ("taskerProfileId")
+      DO UPDATE SET
+        "addressLine" = EXCLUDED."addressLine",
+        "city" = EXCLUDED."city",
+        "state" = EXCLUDED."state",
+        "postalCode" = EXCLUDED."postalCode",
+        "country" = EXCLUDED."country",
+        "latitude" = EXCLUDED."latitude",
+        "longitude" = EXCLUDED."longitude",
+        "maximumRoadDistanceKm" = EXCLUDED."maximumRoadDistanceKm",
+        "location" = EXCLUDED."location",
+        "updatedAt" = NOW();
+    `;
 
     const additionalServices =
       index % 4 === 0
@@ -563,27 +563,40 @@ await prisma.$executeRaw`
     });
 
     for (const slot of availability) {
-      await prisma.taskerAvailability.upsert({
-        where: {
-          taskerProfileId_dayOfWeek_startTime_endTime: {
-            taskerProfileId: profile.id,
-            dayOfWeek: slot.dayOfWeek,
-            startTime: slot.startTime,
-            endTime: slot.endTime,
-          },
-        },
-        update: {
-          status: "ACTIVE",
-        },
-        create: {
-          taskerProfileId: profile.id,
-          dayOfWeek: slot.dayOfWeek,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-          status: "ACTIVE",
-        },
-      });
-    }
+  const existingAvailability =
+    await prisma.taskerAvailability.findFirst({
+      where: {
+        taskerProfileId: profile.id,
+        dayOfWeek: slot.dayOfWeek,
+        specificDate: null,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+      },
+    });
+
+  if (existingAvailability) {
+    await prisma.taskerAvailability.update({
+      where: {
+        id: existingAvailability.id,
+      },
+      data: {
+        type: "RECURRING",
+        status: "ACTIVE",
+      },
+    });
+  } else {
+    await prisma.taskerAvailability.create({
+      data: {
+        taskerProfileId: profile.id,
+        type: "RECURRING",
+        dayOfWeek: slot.dayOfWeek,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        status: "ACTIVE",
+      },
+    });
+  }
+}
   }
 
   /*
@@ -594,56 +607,53 @@ await prisma.$executeRaw`
 
   const TEST_BOOKING_DAYS = 14;
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-for (let day = 1; day <= TEST_BOOKING_DAYS; day++) {
+  for (let day = 1; day <= TEST_BOOKING_DAYS; day++) {
     const bookingDate = new Date(today);
     bookingDate.setDate(today.getDate() + day);
 
     for (const booking of testBookingSlots) {
-        const tasker = seededTaskerProfiles[booking.taskerIndex];
+      const tasker = seededTaskerProfiles[booking.taskerIndex];
 
-        const existingBooking =
-            await prisma.booking.findFirst({
-                where: {
-                    customerId: customer.id,
-                    taskerProfileId: tasker.profileId,
-                    serviceId: tasker.serviceId,
-                    bookingDate,
-                    startTime: booking.startTime,
-                    endTime: booking.endTime,
-                },
-            });
+      const existingBooking = await prisma.booking.findFirst({
+        where: {
+          customerId: customer.id,
+          taskerProfileId: tasker.profileId,
+          serviceId: tasker.serviceId,
+          bookingDate,
+          requestedStartTime: booking.startTime,
+        },
+      });
 
-        if (existingBooking) {
-            await prisma.booking.update({
-                where: {
-                    id: existingBooking.id,
-                },
-                data: {
-                    status: "CONFIRMED",
-                },
-            });
-        } else {
-            await prisma.booking.create({
-                data: {
-                    customerId: customer.id,
-                    taskerProfileId: tasker.profileId,
-                    serviceId: tasker.serviceId,
-                    bookingDate,
-                    startTime: booking.startTime,
-                    endTime: booking.endTime,
-                    status: "CONFIRMED",
-                },
-            });
-        }
+      if (existingBooking) {
+        await prisma.booking.update({
+          where: {
+            id: existingBooking.id,
+          },
+          data: {
+            status: "CONFIRMED",
+          },
+        });
+      } else {
+        await prisma.booking.create({
+          data: {
+            customerId: customer.id,
+            taskerProfileId: tasker.profileId,
+            serviceId: tasker.serviceId,
+            bookingDate,
+            requestedStartTime: booking.startTime,
+            status: "CONFIRMED",
+          },
+        });
+      }
     }
-}
+  }
 
-console.log(
-    `Temporary availability bookings seeded for the next ${TEST_BOOKING_DAYS} days.`
-);
+  console.log(
+    `Temporary availability bookings seeded for the next ${TEST_BOOKING_DAYS} days.`,
+  );
 
   console.log("Customer and taskers seeded successfully.");
   console.log("Customer: test.customer@fixo.dev");

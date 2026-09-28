@@ -29,6 +29,7 @@ export interface TaskerSearchItem {
   dailyRate: number;
   distanceKm: number;
   durationMinutes: number;
+  availability: TaskerAvailability;
 }
 
 export interface TaskerSearchResponse {
@@ -48,4 +49,13 @@ export interface TaskerSearchApiResponse {
 export interface TaskerSearchPaginationParams {
   searchId: string;
   page: number;
+}
+
+export interface TaskerAvailabilityWindow {
+  startTime: string;
+  endTime: string;
+}
+
+export interface TaskerAvailability {
+  today: TaskerAvailabilityWindow[];
 }

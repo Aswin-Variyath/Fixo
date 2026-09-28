@@ -1,17 +1,36 @@
 model Booking {
-  id              String        @id @default(uuid())
+  id String @id @default(uuid())
+
   customerId      String
   taskerProfileId String
   serviceId       String
-  bookingDate     DateTime      @db.Date
-  startTime       String
-  endTime         String
-  status          BookingStatus @default(PENDING)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  customer        User          @relation(fields: [customerId], references: [id])
-  service         Service       @relation(fields: [serviceId], references: [id])
-  taskerProfile   TaskerProfile @relation(fields: [taskerProfileId], references: [id])
+
+  bookingDate        DateTime @db.Date
+  requestedStartTime String
+
+  actualStartTime DateTime?
+  actualEndTime   DateTime?
+
+  status BookingStatus @default(PENDING)
+
+  jobStartOtpHash String?
+  otpVerifiedAt   DateTime?
+
+  billingRate     Decimal? @db.Decimal(10, 2)
+  billableMinutes Int?
+  serviceAmount   Decimal? @db.Decimal(10, 2)
+  platformFee     Decimal? @db.Decimal(10, 2)
+  taxAmount       Decimal? @db.Decimal(10, 2)
+  discountAmount  Decimal? @db.Decimal(10, 2)
+  finalAmount     Decimal? @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer      User          @relation(fields: [customerId], references: [id])
+  service       Service       @relation(fields: [serviceId], references: [id])
+  taskerProfile TaskerProfile @relation(fields: [taskerProfileId], references: [id])
+  payment       Payment?
 
   @@index([customerId, bookingDate])
   @@index([taskerProfileId, bookingDate, status])

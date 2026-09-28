@@ -4,7 +4,8 @@ export interface TaskerAvailabilityRecord {
 }
 
 export interface TaskerBookingRecord {
-    startTime: string;
-    endTime: string;
+    requestedStartTime: string;
+    actualStartTime: Date | null;
+    actualEndTime: Date | null;
     status: string;
 }

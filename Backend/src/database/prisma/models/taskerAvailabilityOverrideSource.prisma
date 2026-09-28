@@ -1,0 +1,5 @@
+enum TaskerAvailabilityOverrideSource {
+  JOB_COMPLETION
+  TASKER_MANUAL
+  ADMIN
+}
