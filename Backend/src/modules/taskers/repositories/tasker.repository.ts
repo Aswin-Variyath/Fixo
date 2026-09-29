@@ -169,27 +169,35 @@ export class TaskerRepository implements ITaskerRepositoy {
         `;
     }
 
-    async findTaskerAvailability(
-        taskerProfileId: string,
-        dayOfWeek: string
-    ): Promise<TaskerAvailabilityRecord[]> {
-
-        return prisma.taskerAvailability.findMany({
-            where: {
+async findTaskerAvailability(
+    taskerProfileId: string,
+    bookingDate: Date
+): Promise<TaskerAvailabilityRecord[]> {
+    return prisma.taskerAvailability.findMany({
+        where: {
+            schedule: {
                 taskerProfileId,
-                dayOfWeek: dayOfWeek as any,
                 status: "ACTIVE",
-                type: "RECURRING",
+                validFrom: {
+                    lte: bookingDate,
+                },
+                validUntil: {
+                    gte: bookingDate,
+                },
             },
-            select: {
-                startTime: true,
-                endTime: true,
-            },
-            orderBy: {
-                startTime: "asc",
-            },
-        });
-    }
+            date: bookingDate,
+            status: "ACTIVE",
+        },
+        select: {
+            date: true,
+            startTime: true,
+            endTime: true,
+        },
+        orderBy: {
+            startTime: "asc",
+        },
+    });
+}
 
     async findTaskerBookings(
         taskerProfileId: string,

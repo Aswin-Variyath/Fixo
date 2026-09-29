@@ -1,11 +1,8 @@
 model TaskerAvailability {
-  id              String @id @default(uuid())
-  taskerProfileId String
+  id         String @id @default(uuid())
+  scheduleId String
 
-  type         TaskerAvailabilityType
-  dayOfWeek    DayOfWeek?
-  specificDate DateTime?              @db.Date
-
+  date      DateTime @db.Date
   startTime String
   endTime   String
 
@@ -14,9 +11,8 @@ model TaskerAvailability {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  taskerProfile TaskerProfile @relation(fields: [taskerProfileId], references: [id])
+  schedule TaskerAvailabilitySchedule @relation(fields: [scheduleId], references: [id])
 
-  @@unique([taskerProfileId, dayOfWeek, specificDate, startTime, endTime])
-  @@index([taskerProfileId, dayOfWeek, status])
-  @@index([taskerProfileId, specificDate, status])
+  @@unique([scheduleId, date, startTime, endTime])
+  @@index([scheduleId, date, status])
 }

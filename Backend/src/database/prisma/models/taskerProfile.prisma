@@ -11,9 +11,11 @@ model TaskerProfile {
   updatedAt       DateTime            @updatedAt
 
   bookings              Booking[]
-  availability          TaskerAvailability[]
+  availabilitySchedules TaskerAvailabilitySchedule[]
+  weeklyAvailability    TaskerWeeklyAvailability[]
   blackouts             TaskerBlackout[]
   availabilityOverrides TaskerAvailabilityOverride[]
+  availabilityReminders TaskerAvailabilityReminder[]
 
   kyc              TaskerKyc?
   location         TaskerLocation?

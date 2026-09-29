@@ -1,0 +1,23 @@
+model TaskerAvailabilitySchedule {
+  id              String @id @default(uuid())
+  taskerProfileId String
+
+  version     Int
+  validFrom   DateTime @db.Date
+  validUntil  DateTime @db.Date
+  publishedAt DateTime
+
+  status       TaskerAvailabilityScheduleStatus @default(ACTIVE)
+  supersededAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  taskerProfile TaskerProfile                @relation(fields: [taskerProfileId], references: [id])
+  availability  TaskerAvailability[]
+  reminders     TaskerAvailabilityReminder[]
+
+  @@unique([taskerProfileId, version])
+  @@index([taskerProfileId, status])
+  @@index([taskerProfileId, validFrom, validUntil])
+}

@@ -2,10 +2,10 @@ import { inject, injectable } from "inversify";
 import {
     ITaskerAvailabilityService,
     TaskerAvailabilityResult,
+    TaskerAvailabilityWindow,
 } from "../interfaces/tasker-availability-service.interface";
 import { ITaskerRepositoy } from "../interfaces/tasker-repository.interface";
 import { TYPES } from "../../../di";
-import { DayOfWeek } from "../../../database/generated/prisma/enums";
 
 @injectable()
 export class TaskerAvailabilityService
@@ -21,18 +21,17 @@ export class TaskerAvailabilityService
         bookingDate: Date,
         requestedTime: string
     ): Promise<TaskerAvailabilityResult> {
-        const dayOfWeek = this.getDayOfWeek(bookingDate);
-
         const availabilities =
             await this.taskerRepository.findTaskerAvailability(
                 taskerProfileId,
-                dayOfWeek
+                bookingDate
             );
 
         if (availabilities.length === 0) {
             return {
                 available: false,
                 nextAvailableStartTime: null,
+                windows: [],
             };
         }
 
@@ -42,23 +41,26 @@ export class TaskerAvailabilityService
                 bookingDate
             );
 
-        for (const availability of availabilities) {
-            if (availability.endTime < requestedTime) {
-                continue;
-            }
+        const windows: TaskerAvailabilityWindow[] = [];
 
-            let currentStartTime =
+        for (const availability of availabilities) {
+            const windowStart =
                 availability.startTime > requestedTime
                     ? availability.startTime
                     : requestedTime;
+
+            if (windowStart >= availability.endTime) {
+                continue;
+            }
+
+            let currentStartTime = windowStart;
 
             for (const booking of bookings) {
                 const bookingStartTime =
                     booking.requestedStartTime;
 
                 /*
-                 * If the booking has actually ended,
-                 * availability can reopen after actualEndTime.
+                 * Booking has already ended.
                  */
                 if (booking.actualEndTime) {
                     const actualEndTime =
@@ -68,7 +70,10 @@ export class TaskerAvailabilityService
                         continue;
                     }
 
-                    if (bookingStartTime >= availability.endTime) {
+                    if (
+                        bookingStartTime >=
+                        availability.endTime
+                    ) {
                         break;
                     }
 
@@ -94,59 +99,82 @@ export class TaskerAvailabilityService
                 }
 
                 /*
-                 * No actual end time means the tasker is
-                 * occupied from the requested start onward.
+                 * Booking has no actual end time.
                  *
-                 * We must not invent a future end time.
+                 * We cannot predict when the tasker
+                 * will become available again.
                  */
                 if (bookingStartTime <= currentStartTime) {
-                    return {
-                        available: false,
-                        nextAvailableStartTime: null,
-                    };
+                    currentStartTime = availability.endTime;
+                    break;
                 }
 
                 /*
-                 * A future booking does not block the current
-                 * available window.
+                 * Future booking.
+                 *
+                 * Current availability ends when the
+                 * booking starts.
                  */
                 if (bookingStartTime > currentStartTime) {
-                    break;
+                    const freeWindowEnd =
+                        bookingStartTime < availability.endTime
+                            ? bookingStartTime
+                            : availability.endTime;
+
+                    if (currentStartTime < freeWindowEnd) {
+                        windows.push({
+                            startTime: currentStartTime,
+                            endTime: freeWindowEnd,
+                        });
+                    }
+
+                    currentStartTime = bookingStartTime;
+
+                    if (
+                        currentStartTime >=
+                        availability.endTime
+                    ) {
+                        break;
+                    }
                 }
             }
 
-            if (currentStartTime <= availability.endTime) {
-                return {
-                    available: true,
-                    nextAvailableStartTime: currentStartTime,
-                };
+            /*
+             * Add remaining availability after
+             * the last booking.
+             */
+            if (
+                currentStartTime <
+                availability.endTime
+            ) {
+                windows.push({
+                    startTime: currentStartTime,
+                    endTime: availability.endTime,
+                });
             }
         }
 
         return {
-            available: false,
-            nextAvailableStartTime: null,
+            available: windows.length > 0,
+            nextAvailableStartTime:
+                windows.length > 0
+                    ? windows[0].startTime
+                    : null,
+            windows,
         };
     }
 
     private formatTime(date: Date): string {
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const hours = date
+            .getHours()
+            .toString()
+            .padStart(2, "0");
+
+        const minutes = date
+            .getMinutes()
+            .toString()
+            .padStart(2, "0");
 
         return `${hours}:${minutes}`;
-    }
-
-    private getDayOfWeek(date: Date): DayOfWeek {
-        const days: DayOfWeek[] = [
-            DayOfWeek.SUNDAY,
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY,
-            DayOfWeek.FRIDAY,
-            DayOfWeek.SATURDAY,
-        ];
-
-        return days[date.getDay()];
     }
 }

@@ -1,4 +1,5 @@
 export interface TaskerAvailabilityRecord {
+    date: Date;
     startTime: string;
     endTime: string;
 }
