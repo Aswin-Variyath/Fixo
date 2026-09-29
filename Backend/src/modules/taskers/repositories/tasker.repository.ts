@@ -4,6 +4,7 @@ import { NearbyTasker } from "../types/nearby-tasker.type";
 import prisma from "../../../database/prisma/prisma";
 import {
     TaskerAvailabilityRecord,
+    TaskerBlackoutRecord,
     TaskerBookingRecord,
 } from "../types/tasker-availability.type";
 
@@ -227,5 +228,21 @@ async findTaskerAvailability(
                 requestedStartTime: "asc",
             },
         });
+    }
+    async findTaskerBlackouts(taskerProfileId: string, bookingDate: Date): Promise<TaskerBlackoutRecord[]> {
+        return prisma.taskerBlackout.findMany({
+            where:{
+                taskerProfileId,
+                date:bookingDate,
+                status:'ACTIVE'
+            },
+            select:{
+                startTime:true,
+                endTime:true
+            },
+            orderBy:{
+                startTime:'asc'
+            }
+        })
     }
 }

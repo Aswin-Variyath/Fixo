@@ -10,4 +10,20 @@ export interface NearbyTaskerResponseDto {
     dailyRate: number | null;
     distanceKm: number;
     durationMinutes: number;
+
+    availability: {
+    available: boolean;
+    nextAvailableStartTime: string | null;
+    windows: {
+        startTime: string;
+        endTime: string;
+    }[];
+    days?: {
+        date: string;
+        windows: {
+            startTime: string;
+            endTime: string;
+        }[];
+    }[];
+} | null;
 }

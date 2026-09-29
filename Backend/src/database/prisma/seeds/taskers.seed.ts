@@ -215,19 +215,27 @@ function getDayOfWeek(date: Date): DayOfWeek {
     DayOfWeek.SATURDAY,
   ];
 
-  return days[date.getDay()];
+  return days[date.getUTCDay()];
 }
 
 function createDateOnly(date: Date): Date {
-  const result = new Date(date);
-  result.setHours(0, 0, 0, 0);
-  return result;
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
 }
 
 function addDays(date: Date, days: number): Date {
   const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return createDateOnly(result);
+
+  result.setUTCDate(result.getUTCDate() + days);
+
+  return new Date(
+    Date.UTC(
+      result.getUTCFullYear(),
+      result.getUTCMonth(),
+      result.getUTCDate(),
+    ),
+  );
 }
 
 async function findOrCreateUser(data: {
@@ -625,21 +633,34 @@ export async function seedTaskers() {
      * ---------------------------------------------------------
      */
 
-    const existingSchedule =
-      await prisma.taskerAvailabilitySchedule.findFirst({
-        where: {
-          taskerProfileId: profile.id,
-          validFrom,
-          validUntil,
-        },
-        orderBy: {
-          version: "desc",
-        },
-      });
+    const existingSchedule = await prisma.taskerAvailabilitySchedule.findFirst({
+      where: {
+        taskerProfileId: profile.id,
+        validFrom,
+        validUntil,
+      },
+      orderBy: {
+        version: "desc",
+      },
+    });
 
     let schedule;
 
     if (existingSchedule) {
+      await prisma.taskerAvailabilitySchedule.updateMany({
+        where: {
+          taskerProfileId: profile.id,
+          status: "ACTIVE",
+          id: {
+            not: existingSchedule.id,
+          },
+        },
+        data: {
+          status: "SUPERSEDED",
+          supersededAt: new Date(),
+        },
+      });
+
       schedule = await prisma.taskerAvailabilitySchedule.update({
         where: {
           id: existingSchedule.id,
@@ -651,18 +672,28 @@ export async function seedTaskers() {
         },
       });
     } else {
-      const latestSchedule =
-        await prisma.taskerAvailabilitySchedule.findFirst({
-          where: {
-            taskerProfileId: profile.id,
-          },
-          orderBy: {
-            version: "desc",
-          },
-          select: {
-            version: true,
-          },
-        });
+      await prisma.taskerAvailabilitySchedule.updateMany({
+        where: {
+          taskerProfileId: profile.id,
+          status: "ACTIVE",
+        },
+        data: {
+          status: "SUPERSEDED",
+          supersededAt: new Date(),
+        },
+      });
+
+      const latestSchedule = await prisma.taskerAvailabilitySchedule.findFirst({
+        where: {
+          taskerProfileId: profile.id,
+        },
+        orderBy: {
+          version: "desc",
+        },
+        select: {
+          version: true,
+        },
+      });
 
       const nextVersion = (latestSchedule?.version ?? 0) + 1;
 

@@ -10,3 +10,8 @@ export interface TaskerBookingRecord {
     actualEndTime: Date | null;
     status: string;
 }
+
+export interface TaskerBlackoutRecord {
+    startTime:string
+    endTime:string
+}

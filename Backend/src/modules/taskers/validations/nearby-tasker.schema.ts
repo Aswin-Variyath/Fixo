@@ -52,6 +52,9 @@ export const nearbyTaskerSchema = z.object({
                 .min(-90, "Latitude must be between -90 and 90")
                 .max(90, "Latitude must be between -90 and 90")
                 .optional(),
+                availabilityFilter: z
+    .enum(["today", "tomorrow", "thisWeek"])
+    .optional(),
 
             longitude: z.coerce
                 .number()
@@ -69,6 +72,7 @@ export const nearbyTaskerSchema = z.object({
                 data.sortBy !== undefined ||
                 data.requestedDate !== undefined ||
                 data.requestedTime !== undefined ||
+                data.availabilityFilter !== undefined ||
                 data.addressId !== undefined ||
                 data.latitude !== undefined ||
                 data.longitude !== undefined;

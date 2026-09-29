@@ -7,5 +7,6 @@ export interface NearbyTaskerSearchSession {
     distanceKm: number;
     requestedDate?: Date;
     requestedTime?: string;
+    availabilityFilter?: | "today" | "tomorrow" | "thisWeek"
     sortBy: TaskerDiscoverySort;
 }

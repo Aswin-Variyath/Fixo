@@ -8,12 +8,18 @@ export interface NearbyTaskerLocation {
     longitude?:number
 }
 
+export type TaskerAvailabilityFilter =
+    | "today"
+    | "tomorrow"
+    | "thisWeek";
+
 export interface TaskerSearchCriteria {
     serviceId?: string;
     location: NearbyTaskerLocation;
     distanceKm: number;
     requestedDate?: Date;
     requestedTime?: string;
+    availabilityFilter?: TaskerAvailabilityFilter;
     sortBy: TaskerDiscoverySort;
 }
 
