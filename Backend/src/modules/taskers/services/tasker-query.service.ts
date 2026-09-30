@@ -448,20 +448,20 @@ private async buildTaskerResults(
             ),
         );
 
-    return this.sortTaskers(
-        availabilityResults
-            .filter(
-                ({ availability }) =>
-                    availability.available,
-            )
-            .map(
-                ({ tasker, availability }) => ({
-                    ...tasker,
-                    availability,
-                }),
-            ),
-        criteria.sortBy,
-    );
+return this.sortTaskers(
+    availabilityResults
+        .filter(
+            ({ availability }) =>
+                availability.available,
+        )
+        .map(
+            ({ tasker, availability }) => ({
+                ...tasker,
+                availability,
+            }),
+        ),
+    criteria.sortBy,
+);
 }
 
     /*

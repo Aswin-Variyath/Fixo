@@ -43,6 +43,12 @@ export class TaskerSearchApi {
         if(params.sortBy) {
             httpParams = httpParams.set('sortBy',params.sortBy)
         }
+        if(params.availabilityFilter) {
+            httpParams = httpParams.set('availabilityFilter',params.availabilityFilter)
+        }
+        if (params.rating !== undefined) {
+  httpParams = httpParams.set('rating', params.rating);
+}
         return this.http.get<TaskerSearchApiResponse>(this.taskerSearchUrl,{params:httpParams})
         .pipe(map((response)=>response.data))
 

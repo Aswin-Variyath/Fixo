@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 
 import { Footer } from '../../../shared/components/footer/footer';
 import { Navbar } from '../../../shared/components/navbar/navbar';
-import { Filters } from './sections/filters/filters';
+import { DiscoveryFilters, Filters } from './sections/filters/filters';
 import { TaskerResults } from './sections/tasker-results/tasker-results';
 import { DiscoveryHeader } from './sections/discovery-header/discovery-header';
 import { DiscoveryLocation } from './services/discovery-location';
@@ -13,6 +13,7 @@ import { TaskerSearchApi } from './api/tasker-search-api';
 import { LocationModal } from '../location/components/location-modal/location-modal';
 import { LocationContextService } from '../location/services/location-context-service';
 import { SelectedLocation } from '../location/types/location.types';
+import { TaskerAvailabilityFilter } from './types/tasker-search';
 
 @Component({
   selector: 'app-discovery',
@@ -36,13 +37,23 @@ import { SelectedLocation } from '../location/types/location.types';
 export class Discovery implements OnInit {
   private readonly taskerSearch = inject(TaskerSearch);
   private readonly locationContext = inject(LocationContextService);
-
+  private rating: number | undefined;
   readonly showLocationModal = signal(false);
+  readonly appliedFilters = signal<DiscoveryFilters>({
+    distance:2,
+    availabilityFilter:undefined
+  })
+  private selectedLocation: SelectedLocation | null = null;
+
+  private distance = 2
+
+  private availabilityFilter: | TaskerAvailabilityFilter | undefined
 
   ngOnInit(): void {
     const location = this.locationContext.location();
 
     if (location) {
+      this.selectedLocation = location
       this.searchTaskers(location);
     } else {
       this.showLocationModal.set(true);
@@ -51,11 +62,67 @@ export class Discovery implements OnInit {
 
   onLocationSelected(location: SelectedLocation): void {
     this.showLocationModal.set(false);
+    this.selectedLocation = location;
     this.searchTaskers(location);
+  }
+
+  onFiltersChange(filters:DiscoveryFilters):void {
+    this.distance = filters.distance
+    this.rating = filters.rating;
+    this.availabilityFilter = filters.availabilityFilter
+    this.appliedFilters.set(filters)
+    if(this.selectedLocation) {
+      this.searchTaskers(this.selectedLocation)
+    }
+  }
+
+  removeDistanceFilter(): void {
+  this.distance = 2;
+
+  this.appliedFilters.update((filters) => ({
+    ...filters,
+    distance: 2,
+  }));
+
+  if (this.selectedLocation) {
+    this.searchTaskers(this.selectedLocation);
+  }
+}
+
+removeAvailabilityFilter(): void {
+  this.availabilityFilter = undefined;
+
+  this.appliedFilters.update((filters) => ({
+    ...filters,
+    availabilityFilter: undefined,
+  }));
+
+  if (this.selectedLocation) {
+    this.searchTaskers(this.selectedLocation);
+  }
+}
+
+  onAvailabilityChange(
+    availabilityFilter: TaskerAvailabilityFilter | undefined
+  ): void {
+    this.availabilityFilter = availabilityFilter;
+
+    if (this.selectedLocation) {
+      this.searchTaskers(this.selectedLocation);
+    }
   }
 
   closeLocationModal(): void {
     this.showLocationModal.set(false);
+  }
+
+  removeRatingFilter():void {
+    this.rating = undefined
+    this.appliedFilters.update((filter)=>({
+      ...filter,
+      rating:undefined
+    }))
+    if(this.selectedLocation) this.searchTaskers(this.selectedLocation)
   }
 
   private searchTaskers(location: SelectedLocation): void {
@@ -65,8 +132,10 @@ export class Discovery implements OnInit {
       ...(location.addressId
         ? { addressId: location.addressId }
         : {}),
-      distance: 5,
+      distance: this.distance,
+      rating: this.rating,
       sortBy: 'recommended',
+      availabilityFilter: this.availabilityFilter,
       page: 1,
     });
   }

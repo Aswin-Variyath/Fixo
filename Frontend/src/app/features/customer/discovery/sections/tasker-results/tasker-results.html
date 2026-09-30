@@ -6,86 +6,146 @@
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <div>
-        <h2 class="text-xl font-semibold text-on-surface">
-          Electricians near Kozhikode
-        </h2>
 
-        <p class="text-sm text-on-surface-variant mt-1">
-          {{ taskerSearch.taskers().length }} Taskers found
-        </p>
-      </div>
+<div>
+  <h2 class="text-xl font-semibold text-on-surface">
+    Taskers near you
+  </h2>
 
-      <div class="flex items-center gap-3">
-        <div
-          class="relative glass-input rounded-lg flex items-center px-3 py-2"
-        >
-          <span class="text-sm text-on-surface-variant mr-2">
-            Sort by:
-          </span>
+  <p class="text-sm text-on-surface-variant mt-1">
+    {{ taskerSearch.taskers().length }} Taskers found
+  </p>
+</div>
 
-          <select
-            class="bg-transparent border-none text-on-surface focus:ring-0 p-0 text-sm cursor-pointer pr-8"
-          >
-            <option class="bg-surface">Recommended</option>
-            <option class="bg-surface">Highest Rated</option>
-            <option class="bg-surface">Nearest</option>
-            <option class="bg-surface">Lowest Price</option>
-          </select>
-        </div>
+<div class="flex items-center gap-3">
+  <div
+    class="relative glass-input rounded-lg flex items-center px-3 py-2"
+  >
+    <span class="text-sm text-on-surface-variant mr-2">
+      Sort by:
+    </span>
 
-        <button
-          class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg text-sm"
-        >
-          <span class="material-symbols-outlined text-[18px]">
-            map
-          </span>
-
-          <span class="hidden sm:inline">
-            View Map
-          </span>
-        </button>
-      </div>
+    <select
+      class="bg-transparent border-none text-on-surface focus:ring-0 p-0 text-sm cursor-pointer pr-8"
+    >
+      <option class="bg-surface">Recommended</option>
+      <option class="bg-surface">Highest Rated</option>
+      <option class="bg-surface">Nearest</option>
+      <option class="bg-surface">Lowest Price</option>
+    </select>
+  </div>
+</div>
+     
     </div>
 
     <!-- Active Chips -->
-    <div class="flex flex-wrap gap-2">
-      <span
-        class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
-      >
-        Electrician
+<div class="flex flex-wrap gap-2">
+  <span
+    class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+  >
+    Within {{ appliedFilters()?.distance ?? 2 }} km
 
-        <button class="hover:text-error transition-colors">
-          <span class="material-symbols-outlined text-[14px]">
-            close
-          </span>
-        </button>
+    <button
+      type="button"
+      class="hover:text-error transition-colors"
+      (click)="removeDistance.emit()"
+    >
+      <span class="material-symbols-outlined text-[14px]">
+        close
       </span>
+    </button>
+  </span>
 
-      <span
-        class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+  @if (appliedFilters()?.availabilityFilter === 'today') {
+    <span
+      class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+    >
+      Available Today
+
+      <button
+        type="button"
+        class="hover:text-error transition-colors"
+        (click)="removeAvailability.emit()"
       >
-        Within 5 km
+        <span class="material-symbols-outlined text-[14px]">
+          close
+        </span>
+      </button>
+    </span>
+  }
 
-        <button class="hover:text-error transition-colors">
-          <span class="material-symbols-outlined text-[14px]">
-            close
-          </span>
-        </button>
-      </span>
+  @if (appliedFilters()?.availabilityFilter === 'tomorrow') {
+    <span
+      class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+    >
+      Available Tomorrow
 
-      <span
-        class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+      <button
+        type="button"
+        class="hover:text-error transition-colors"
+        (click)="removeAvailability.emit()"
       >
-        Verified
+        <span class="material-symbols-outlined text-[14px]">
+          close
+        </span>
+      </button>
+    </span>
+  }
 
-        <button class="hover:text-error transition-colors">
-          <span class="material-symbols-outlined text-[14px]">
-            close
-          </span>
-        </button>
+  @if (appliedFilters()?.availabilityFilter === 'thisWeek') {
+    <span
+      class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+    >
+      Available This Week
+
+      <button
+        type="button"
+        class="hover:text-error transition-colors"
+        (click)="removeAvailability.emit()"
+      >
+        <span class="material-symbols-outlined text-[14px]">
+          close
+        </span>
+      </button>
+    </span>
+  }
+
+  @if (appliedFilters()?.rating === 4.5) {
+  <span
+    class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+  >
+    4.5+ Rating
+
+    <button
+      type="button"
+      class="hover:text-error transition-colors"
+      (click)="removeRating.emit()"
+    >
+      <span class="material-symbols-outlined text-[14px]">
+        close
       </span>
-    </div>
+    </button>
+  </span>
+}
+
+@if (appliedFilters()?.rating === 4) {
+  <span
+    class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+  >
+    4.0+ Rating
+
+    <button
+      type="button"
+      class="hover:text-error transition-colors"
+      (click)="removeRating.emit()"
+    >
+      <span class="material-symbols-outlined text-[14px]">
+        close
+      </span>
+    </button>
+  </span>
+}
+</div>
   </div>
 
   <!-- Tasker Grid -->

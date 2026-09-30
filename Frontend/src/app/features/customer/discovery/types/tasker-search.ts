@@ -4,17 +4,41 @@ export type TaskerSearchSort =
   | 'highestRated'
   | 'lowestPrice';
 
+export type TaskerAvailabilityFilter =
+  | 'today'
+  | 'tomorrow'
+  | 'thisWeek';
+
 export interface TaskerSearchParams {
   serviceId?: string;
   addressId?: string;
   latitude?: number;
   longitude?: number;
   distance: number;
+  rating?: number;
   requestedDate?: string;
   requestedTime?: string;
+  availabilityFilter?: TaskerAvailabilityFilter;
   searchId?: string;
   page?: number;
   sortBy?: TaskerSearchSort;
+}
+
+export interface TaskerSearchAvailabilityWindow {
+  startTime: string;
+  endTime: string;
+}
+
+export interface TaskerSearchAvailabilityDay {
+  date: string;
+  windows: TaskerSearchAvailabilityWindow[];
+}
+
+export interface TaskerSearchAvailability {
+  available: boolean;
+  nextAvailableStartTime: string | null;
+  windows: TaskerSearchAvailabilityWindow[];
+  days?: TaskerSearchAvailabilityDay[];
 }
 
 export interface TaskerSearchItem {
@@ -29,7 +53,7 @@ export interface TaskerSearchItem {
   dailyRate: number;
   distanceKm: number;
   durationMinutes: number;
-  availability: TaskerAvailability;
+  availability: TaskerSearchAvailability | null;
 }
 
 export interface TaskerSearchResponse {
@@ -49,13 +73,4 @@ export interface TaskerSearchApiResponse {
 export interface TaskerSearchPaginationParams {
   searchId: string;
   page: number;
-}
-
-export interface TaskerAvailabilityWindow {
-  startTime: string;
-  endTime: string;
-}
-
-export interface TaskerAvailability {
-  today: TaskerAvailabilityWindow[];
 }

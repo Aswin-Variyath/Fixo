@@ -4,10 +4,13 @@ import {
   Component,
   ElementRef,
   inject,
+  input,
+  output,
   ViewChild,
 } from '@angular/core';
 
 import { TaskerSearch } from '../../services/tasker-search';
+import { DiscoveryFilters } from '../filters/filters';
 
 @Component({
   selector: 'app-tasker-results',
@@ -17,7 +20,10 @@ import { TaskerSearch } from '../../services/tasker-search';
 })
 export class TaskerResults implements AfterViewInit {
   readonly taskerSearch = inject(TaskerSearch);
-
+  readonly appliedFilters = input<DiscoveryFilters>();
+  readonly removeDistance = output<void>();
+readonly removeAvailability = output<void>();
+readonly removeRating = output<void>();
   @ViewChild('scrollSentinel')
   private readonly scrollSentinel!: ElementRef<HTMLDivElement>;
 
