@@ -46,6 +46,11 @@ export const nearbyTaskerSchema = z.object({
             addressId: z
                 .uuid("Address ID must be a valid UUID")
                 .optional(),
+                rating: z.coerce
+    .number()
+    .min(0, "Rating cannot be less than 0")
+    .max(5, "Rating cannot be greater than 5")
+    .optional(),
 
             latitude: z.coerce
                 .number()
@@ -70,6 +75,7 @@ export const nearbyTaskerSchema = z.object({
                 data.serviceId !== undefined ||
                 data.distance !== undefined ||
                 data.sortBy !== undefined ||
+                data.rating !== undefined ||
                 data.requestedDate !== undefined ||
                 data.requestedTime !== undefined ||
                 data.availabilityFilter !== undefined ||

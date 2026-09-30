@@ -14,7 +14,8 @@ export class TaskerRepository implements ITaskerRepositoy {
         serviceId: string,
         latitude: number,
         longitude: number,
-        distanceKm: number
+        distanceKm: number,
+        rating?: number
     ): Promise<NearbyTasker[]> {
 
         const distanceMeters = distanceKm * 1000;
@@ -69,6 +70,8 @@ export class TaskerRepository implements ITaskerRepositoy {
 
                 AND tp."profileStatus" = 'COMPLETE'
 
+                AND (${rating === undefined} OR tp."averageRating" >= ${rating})
+
                 AND ST_DWithin(
                     tl."location",
                     ST_SetSRID(
@@ -88,7 +91,8 @@ export class TaskerRepository implements ITaskerRepositoy {
     async findTaskerForDiscovery(
         latitude: number,
         longitude: number,
-        distanceKm: number
+        distanceKm: number,
+        rating?: number
     ): Promise<NearbyTasker[]> {
 
         const distanceMeters = distanceKm * 1000;
@@ -140,6 +144,8 @@ export class TaskerRepository implements ITaskerRepositoy {
                 tso.status = 'ACTIVE'
 
                 AND tp."profileStatus" = 'COMPLETE'
+
+                AND (${rating === undefined} OR tp."averageRating" >= ${rating})
 
                 AND ST_DWithin(
                     tl."location",

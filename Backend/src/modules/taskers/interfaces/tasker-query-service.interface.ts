@@ -17,6 +17,7 @@ export interface TaskerSearchCriteria {
     serviceId?: string;
     location: NearbyTaskerLocation;
     distanceKm: number;
+    rating?: number;
     requestedDate?: Date;
     requestedTime?: string;
     availabilityFilter?: TaskerAvailabilityFilter;

@@ -1,4 +1,4 @@
-import { NearbyTaskerResponseDto } from "./nearby-tasker-response.dto";
+import { NearbyTaskerEmptyState, NearbyTaskerResponseDto } from "./nearby-tasker-response.dto";
 
 export interface NearbyTaskerSearchResponseDto {
     searchId: string;
@@ -6,4 +6,5 @@ export interface NearbyTaskerSearchResponseDto {
     limit: number;
     hasMore: boolean;
     taskers: NearbyTaskerResponseDto[];
+    emptyState?: NearbyTaskerEmptyState
 }
