@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DiscoveryLocation } from '../../services/discovery-location';
@@ -6,6 +6,7 @@ import {
   DiscoveryLocationFeature,
   SelectedDiscoveryLocation,
 } from '../../types/discovery-location.types';
+import { LocationContextService } from '../../../location/services/location-context-service';
 
 @Component({
   selector: 'app-discovery-header',
@@ -13,14 +14,35 @@ import {
   templateUrl: './discovery-header.html',
   styleUrl: './discovery-header.css',
 })
-export class DiscoveryHeader {
+export class DiscoveryHeader implements OnInit{
   private readonly discoveryLocation = inject(DiscoveryLocation);
-
+  private readonly locationContext = inject(LocationContextService)
   locationText = signal('');
   suggestions = signal<DiscoveryLocationFeature[]>([]);
   selectedLocation = signal<SelectedDiscoveryLocation | null>(null);
   isLoading = signal(false);
   locationError = signal('')
+
+  ngOnInit(): void {
+    const location = this.locationContext.location()
+    if(!location) return
+    this.discoveryLocation
+    .reverseGeocode(location.latitude, location.longitude)
+    .subscribe({
+      next:(response)=>{
+        const result = response.results[0]
+        if(result) {
+          this.locationText.set(result.formatted)
+        }else {
+          this.locationText.set('Current Location')
+        }
+      },
+      error:(error)=>{
+        console.error('Reverse geocoding saved location failed:',error);
+        this.locationText.set('Current Location')
+      }
+    })
+  }
 
   onLocationInput(value: string): void {
     this.locationText.set(value);

@@ -37,6 +37,7 @@ import { TaskerAvailabilityFilter, TaskerSearchSort } from './types/tasker-searc
 export class Discovery implements OnInit {
   private readonly taskerSearch = inject(TaskerSearch);
   private readonly locationContext = inject(LocationContextService);
+  private readonly discoveryLocation = inject(DiscoveryLocation)
   readonly emptyState = this.taskerSearch.emptyState;
   private rating: number | undefined;
   private minHourlyRate: number | undefined;
@@ -58,6 +59,11 @@ private sortBy: TaskerSearchSort = 'recommended';
 
     if (location) {
       this.selectedLocation = location
+      this.discoveryLocation.reverseGeocode(location.latitude,location.longitude)
+      .subscribe((response)=>{
+        console.log('Reverse geocoded location:', response);
+        
+      })
       this.searchTaskers(location);
     } else {
       this.showLocationModal.set(true);
