@@ -15,7 +15,9 @@ export class TaskerRepository implements ITaskerRepositoy {
         latitude: number,
         longitude: number,
         distanceKm: number,
-        rating?: number
+        rating?: number,
+        minHourlyRate?:number,
+        maxHourlyRate?:number,
     ): Promise<NearbyTasker[]> {
 
         const distanceMeters = distanceKm * 1000;
@@ -71,6 +73,15 @@ export class TaskerRepository implements ITaskerRepositoy {
                 AND tp."profileStatus" = 'COMPLETE'
 
                 AND (${rating === undefined} OR tp."averageRating" >= ${rating})
+
+                AND (
+    ${minHourlyRate === undefined}
+    OR tso."hourlyRate" >= ${minHourlyRate}
+)
+AND (
+    ${maxHourlyRate === undefined}
+    OR tso."hourlyRate" <= ${maxHourlyRate}
+)
 
                 AND ST_DWithin(
                     tl."location",

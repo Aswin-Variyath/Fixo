@@ -26,13 +26,25 @@
     </span>
 
     <select
-      class="bg-transparent border-none text-on-surface focus:ring-0 p-0 text-sm cursor-pointer pr-8"
-    >
-      <option class="bg-surface">Recommended</option>
-      <option class="bg-surface">Highest Rated</option>
-      <option class="bg-surface">Nearest</option>
-      <option class="bg-surface">Lowest Price</option>
-    </select>
+  class="bg-transparent border-none text-on-surface focus:ring-0 p-0 text-sm cursor-pointer pr-8"
+  (change)="onSortChange($any($event.target).value)"
+>
+  <option value="recommended" class="bg-surface">
+    Recommended
+  </option>
+
+  <option value="highestRated" class="bg-surface">
+    Highest Rated
+  </option>
+
+  <option value="nearest" class="bg-surface">
+    Nearest
+  </option>
+
+  <option value="lowestPrice" class="bg-surface">
+    Lowest Price
+  </option>
+</select>
   </div>
 </div>
      
@@ -110,6 +122,24 @@
     </span>
   }
 
+  @if (appliedFilters()?.maxHourlyRate !== undefined) {
+  <span
+    class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+  >
+    Up to ₹{{ appliedFilters()?.maxHourlyRate }}
+
+    <button
+      type="button"
+      class="hover:text-error transition-colors"
+      (click)="removePrice.emit()"
+    >
+      <span class="material-symbols-outlined text-[14px]">
+        close
+      </span>
+    </button>
+  </span>
+}
+
   @if (appliedFilters()?.rating === 4.5) {
   <span
     class="font-label-sm text-label-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
@@ -147,6 +177,9 @@
 }
 </div>
   </div>
+
+<!-- Tasker Results / Empty State -->
+@if (taskerSearch.taskers().length > 0) {
 
   <!-- Tasker Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-stack-md">
@@ -249,6 +282,29 @@
       </article>
     }
   </div>
+
+} @else if (emptyState()) {
+
+  <!-- Empty State -->
+  <div
+    class="glass-panel min-h-80 flex flex-col items-center justify-center text-center px-6 py-12"
+  >
+    <span
+      class="material-symbols-outlined text-5xl text-on-surface-variant mb-4"
+    >
+      search_off
+    </span>
+
+    <h3 class="text-lg font-semibold text-on-surface">
+      No Taskers Available
+    </h3>
+
+    <p class="text-sm text-on-surface-variant mt-2 max-w-md">
+      {{ emptyState()?.message }}
+    </p>
+  </div>
+
+}
 
   <!-- Infinite Scroll Loading -->
   @if (taskerSearch.loading() && taskerSearch.taskers().length > 0) {

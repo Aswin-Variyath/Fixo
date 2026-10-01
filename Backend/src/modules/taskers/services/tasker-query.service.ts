@@ -170,6 +170,8 @@ export class TaskerQueryService implements ITaskerQueryService {
             location: criteria.location,
             distanceKm: criteria.distanceKm,
             rating: criteria.rating,
+            minHourlyRate: criteria.minHourlyRate,
+            maxHourlyRate: criteria.maxHourlyRate,
             requestedDate: criteria.requestedDate,
             requestedTime: criteria.requestedTime,
             availabilityFilter: criteria.availabilityFilter,
@@ -228,6 +230,8 @@ export class TaskerQueryService implements ITaskerQueryService {
                     longitude,
                     criteria.distanceKm,
                     criteria.rating,
+                    criteria.minHourlyRate,
+        criteria.maxHourlyRate,
                 );
         }
 

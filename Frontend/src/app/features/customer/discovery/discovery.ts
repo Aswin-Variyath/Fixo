@@ -13,7 +13,7 @@ import { TaskerSearchApi } from './api/tasker-search-api';
 import { LocationModal } from '../location/components/location-modal/location-modal';
 import { LocationContextService } from '../location/services/location-context-service';
 import { SelectedLocation } from '../location/types/location.types';
-import { TaskerAvailabilityFilter } from './types/tasker-search';
+import { TaskerAvailabilityFilter, TaskerSearchSort } from './types/tasker-search';
 
 @Component({
   selector: 'app-discovery',
@@ -37,11 +37,15 @@ import { TaskerAvailabilityFilter } from './types/tasker-search';
 export class Discovery implements OnInit {
   private readonly taskerSearch = inject(TaskerSearch);
   private readonly locationContext = inject(LocationContextService);
+  readonly emptyState = this.taskerSearch.emptyState;
   private rating: number | undefined;
+  private minHourlyRate: number | undefined;
+private maxHourlyRate: number | undefined;
+private sortBy: TaskerSearchSort = 'recommended';
   readonly showLocationModal = signal(false);
   readonly appliedFilters = signal<DiscoveryFilters>({
     distance:2,
-    availabilityFilter:undefined
+    availabilityFilter:undefined,
   })
   private selectedLocation: SelectedLocation | null = null;
 
@@ -66,10 +70,19 @@ export class Discovery implements OnInit {
     this.searchTaskers(location);
   }
 
+  onSortChange(sortBy:TaskerSearchSort):void {
+    this.sortBy = sortBy
+    if(this.selectedLocation) {
+      this.searchTaskers(this.selectedLocation)
+    }
+  }
+
   onFiltersChange(filters:DiscoveryFilters):void {
     this.distance = filters.distance
     this.rating = filters.rating;
-    this.availabilityFilter = filters.availabilityFilter
+    this.minHourlyRate = filters.minHourlyRate;
+  this.maxHourlyRate = filters.maxHourlyRate;
+  this.availabilityFilter = filters.availabilityFilter;
     this.appliedFilters.set(filters)
     if(this.selectedLocation) {
       this.searchTaskers(this.selectedLocation)
@@ -125,6 +138,21 @@ removeAvailabilityFilter(): void {
     if(this.selectedLocation) this.searchTaskers(this.selectedLocation)
   }
 
+  onPriceRemove(): void {
+  this.appliedFilters.update((filters) => ({
+    ...filters,
+    minHourlyRate: undefined,
+    maxHourlyRate: undefined,
+  }));
+
+  this.minHourlyRate = undefined;
+  this.maxHourlyRate = undefined;
+
+  if (this.selectedLocation) {
+    this.searchTaskers(this.selectedLocation);
+  }
+}
+
   private searchTaskers(location: SelectedLocation): void {
     this.taskerSearch.search({
       latitude: location.latitude,
@@ -134,7 +162,9 @@ removeAvailabilityFilter(): void {
         : {}),
       distance: this.distance,
       rating: this.rating,
-      sortBy: 'recommended',
+      minHourlyRate: this.minHourlyRate,
+  maxHourlyRate: this.maxHourlyRate,
+      sortBy: this.sortBy,
       availabilityFilter: this.availabilityFilter,
       page: 1,
     });

@@ -18,6 +18,8 @@ export interface TaskerSearchCriteria {
     location: NearbyTaskerLocation;
     distanceKm: number;
     rating?: number;
+    minHourlyRate?: number;
+    maxHourlyRate?: number;
     requestedDate?: Date;
     requestedTime?: string;
     availabilityFilter?: TaskerAvailabilityFilter;

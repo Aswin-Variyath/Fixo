@@ -10,6 +10,10 @@ import {
 } from '@angular/core';
 
 import { TaskerSearch } from '../../services/tasker-search';
+import {
+  TaskerSearchEmptyState,
+  TaskerSearchSort,
+} from '../../types/tasker-search';
 import { DiscoveryFilters } from '../filters/filters';
 
 @Component({
@@ -20,10 +24,16 @@ import { DiscoveryFilters } from '../filters/filters';
 })
 export class TaskerResults implements AfterViewInit {
   readonly taskerSearch = inject(TaskerSearch);
+
   readonly appliedFilters = input<DiscoveryFilters>();
+  readonly emptyState = input<TaskerSearchEmptyState | null>(null);
+
   readonly removeDistance = output<void>();
-readonly removeAvailability = output<void>();
-readonly removeRating = output<void>();
+  readonly removeAvailability = output<void>();
+  readonly removeRating = output<void>();
+  readonly removePrice = output<void>();
+  readonly sortChange = output<TaskerSearchSort>();
+
   @ViewChild('scrollSentinel')
   private readonly scrollSentinel!: ElementRef<HTMLDivElement>;
 
@@ -53,5 +63,9 @@ readonly removeRating = output<void>();
     observer.observe(this.scrollSentinel.nativeElement);
 
     console.log('9. Observer attached');
+  }
+
+  onSortChange(sortBy: TaskerSearchSort): void {
+    this.sortChange.emit(sortBy);
   }
 }

@@ -23,6 +23,9 @@
   (removeDistance)="removeDistanceFilter()"
   (removeAvailability)="removeAvailabilityFilter()"
   (removeRating)="removeRatingFilter()"
+  [emptyState]="emptyState()"\
+  (removePrice)="onPriceRemove()"
+  (sortChange)="onSortChange($event)"
 ></app-tasker-results>
     </div>
   </section>

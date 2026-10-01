@@ -8,6 +8,8 @@ export interface NearbyTaskerSearchSession {
     requestedDate?: Date;
     requestedTime?: string;
     rating?:number
+    minHourlyRate?: number;
+    maxHourlyRate?: number;
     availabilityFilter?: | "today" | "tomorrow" | "thisWeek"
     sortBy: TaskerDiscoverySort;
 }

@@ -1,3 +1,15 @@
+export type TaskerSearchEmptyStateReason =
+  | 'NO_TASKERS_NEARBY'
+  | 'NO_TASKERS_AVAILABLE_NOW'
+  | 'NO_TASKERS_AVAILABLE_TOMORROW'
+  | 'NO_TASKERS_AVAILABLE_THIS_WEEK'
+  | 'NO_TASKERS_MATCH_FILTER';
+
+export interface TaskerSearchEmptyState {
+  reason: TaskerSearchEmptyStateReason;
+  message: string;
+}
+
 export type TaskerSearchSort =
   | 'recommended'
   | 'nearest'
@@ -16,6 +28,8 @@ export interface TaskerSearchParams {
   longitude?: number;
   distance: number;
   rating?: number;
+  minHourlyRate?: number;
+  maxHourlyRate?: number;
   requestedDate?: string;
   requestedTime?: string;
   availabilityFilter?: TaskerAvailabilityFilter;
@@ -62,6 +76,7 @@ export interface TaskerSearchResponse {
   limit: number;
   hasMore: boolean;
   taskers: TaskerSearchItem[];
+  emptyState?: TaskerSearchEmptyState
 }
 
 export interface TaskerSearchApiResponse {

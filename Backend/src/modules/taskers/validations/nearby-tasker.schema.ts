@@ -37,6 +37,20 @@ export const nearbyTaskerSchema = z.object({
                 )
                 .optional(),
 
+            minHourlyRate: z.coerce
+                .number()
+                .nonnegative(
+                    "Minimum hourly rate cannot be negative",
+                )
+                .optional(),
+
+            maxHourlyRate: z.coerce
+                .number()
+                .nonnegative(
+                    "Maximum hourly rate cannot be negative",
+                )
+                .optional(),
+
             page: z.coerce
                 .number()
                 .int("Page must be a whole number")
@@ -46,20 +60,22 @@ export const nearbyTaskerSchema = z.object({
             addressId: z
                 .uuid("Address ID must be a valid UUID")
                 .optional(),
-                rating: z.coerce
-    .number()
-    .min(0, "Rating cannot be less than 0")
-    .max(5, "Rating cannot be greater than 5")
-    .optional(),
+
+            rating: z.coerce
+                .number()
+                .min(0, "Rating cannot be less than 0")
+                .max(5, "Rating cannot be greater than 5")
+                .optional(),
 
             latitude: z.coerce
                 .number()
                 .min(-90, "Latitude must be between -90 and 90")
                 .max(90, "Latitude must be between -90 and 90")
                 .optional(),
-                availabilityFilter: z
-    .enum(["today", "tomorrow", "thisWeek"])
-    .optional(),
+
+            availabilityFilter: z
+                .enum(["today", "tomorrow", "thisWeek"])
+                .optional(),
 
             longitude: z.coerce
                 .number()
@@ -77,6 +93,8 @@ export const nearbyTaskerSchema = z.object({
                 data.sortBy !== undefined ||
                 data.rating !== undefined ||
                 data.requestedDate !== undefined ||
+                data.minHourlyRate !== undefined ||
+                data.maxHourlyRate !== undefined ||
                 data.requestedTime !== undefined ||
                 data.availabilityFilter !== undefined ||
                 data.addressId !== undefined ||
@@ -156,6 +174,22 @@ export const nearbyTaskerSchema = z.object({
                     message:
                         "requestedDate and requestedTime must be provided together",
                     path: ["requestedDate"],
+                });
+            }
+
+            /*
+             * Price validation
+             */
+            if (
+                data.minHourlyRate !== undefined &&
+                data.maxHourlyRate !== undefined &&
+                data.minHourlyRate > data.maxHourlyRate
+            ) {
+                ctx.addIssue({
+                    code: "custom",
+                    message:
+                        "Minimum hourly rate cannot be greater than maximum hourly rate",
+                    path: ["minHourlyRate"],
                 });
             }
         }),

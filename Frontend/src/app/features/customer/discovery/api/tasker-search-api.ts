@@ -49,6 +49,20 @@ export class TaskerSearchApi {
         if (params.rating !== undefined) {
   httpParams = httpParams.set('rating', params.rating);
 }
+
+if (params.minHourlyRate !== undefined) {
+    httpParams = httpParams.set(
+        'minHourlyRate',
+        params.minHourlyRate
+    );
+}
+
+if (params.maxHourlyRate !== undefined) {
+    httpParams = httpParams.set(
+        'maxHourlyRate',
+        params.maxHourlyRate
+    );
+}
         return this.http.get<TaskerSearchApiResponse>(this.taskerSearchUrl,{params:httpParams})
         .pipe(map((response)=>response.data))
 

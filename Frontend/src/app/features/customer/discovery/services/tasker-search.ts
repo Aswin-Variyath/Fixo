@@ -1,12 +1,13 @@
 import { inject, Service, signal } from '@angular/core';
 import { TaskerSearchApi } from '../api/tasker-search-api';
-import { TaskerSearchItem, TaskerSearchParams } from '../types/tasker-search';
+import { TaskerSearchEmptyState, TaskerSearchItem, TaskerSearchParams } from '../types/tasker-search';
 
 @Service()
 export class TaskerSearch {
      private readonly taskerSearchApi = inject(TaskerSearchApi)
 
      readonly taskers = signal<TaskerSearchItem[]>([])
+     readonly emptyState = signal<TaskerSearchEmptyState | null>(null)
      readonly loading = signal(false)
      readonly hasMore = signal(false)
      readonly searchId = signal<string | null>(null)
@@ -18,6 +19,7 @@ export class TaskerSearch {
         this.loading.set(true)
         this.currentParams = params;
     this.currentPage.set(1);
+    this.emptyState.set(null)
 
         this.taskerSearchApi.searchTaskers(params).subscribe({
             next:(response) => {
@@ -25,6 +27,7 @@ export class TaskerSearch {
                 this.taskers.set(response.taskers)
                 this.searchId.set(response.searchId)
                 this.hasMore.set(response.hasMore)
+                this.emptyState.set(response.emptyState ?? null)
                 this.loading.set(false)
             },
             error:(error)=>{
@@ -70,6 +73,7 @@ loadNextPage(): void {
       this.searchId.set(response.searchId);
       this.hasMore.set(response.hasMore);
       this.currentPage.set(response.page);
+      this.emptyState.set(response.emptyState ?? null);
       this.loading.set(false);
     },
     error: (error) => {
