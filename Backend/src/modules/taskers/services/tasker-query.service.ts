@@ -21,7 +21,7 @@ import { TASKER_SEARCH_PAGE_SIZE } from "../constants/tasker.constants";
 import { NearbyTaskerSearchResponseDto } from "../dtos/nearby-tasker-search-response.dto";
 import { NearbyTaskerSearchSession } from "../types/nearby-tasker-search-session.type";
 import { TaskerDiscoverySort } from "../types/nearby-tasker.type";
-import { ITaskerAvailabilityService } from "../interfaces/tasker-availability-service.interface";
+import { ITaskerAvailabilityService } from "../interfaces/tasker-availability-query-service.interface";
 
 interface TaskerSearchBuildResult {
     taskers: NearbyTaskerResponseDto[];

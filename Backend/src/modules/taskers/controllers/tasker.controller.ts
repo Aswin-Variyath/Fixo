@@ -7,10 +7,14 @@ import { successResponse } from "../../../shared/utils/response.util";
 import { HttpResponse } from "../../../shared/constants";
 import { AppError } from "../../../shared/errors/app.error";
 import { NearbyTaskerInput } from "../validations/nearby-tasker.schema";
+import { TaskerSearchSuggestionService } from "../services/tasker-search-suggestion-query.service";
 
 @injectable()
 export class TaskerController {
-    constructor(@inject(TYPES.TaskerQueryService) private readonly taskerQueryService:ITaskerQueryService) {}
+    constructor(
+        @inject(TYPES.TaskerQueryService) private readonly taskerQueryService:ITaskerQueryService,
+        @inject(TYPES.TaskerSearchSuggestionQueryService) private readonly TaskerSearchSuggestionQueryService: TaskerSearchSuggestionService
+    ) {}
     searchTaskers = async(req:Request, res:Response):Promise<void> => {
         if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
         const {serviceId,addressId,rating,latitude,longitude,distance, minHourlyRate, maxHourlyRate,requestedDate,requestedTime,availabilityFilter,searchId,page,sortBy}:NearbyTaskerInput = req.query as unknown as NearbyTaskerInput
@@ -34,5 +38,12 @@ export class TaskerController {
         }
         const result = await this.taskerQueryService.searchTaskers(req.user.userId,criteria,searchId as string | undefined, page !== undefined ? Number(page) : undefined)
         res.status(StatusCodes.OK).json(successResponse(HttpResponse.TASKER.NEARBY,result))
+    }
+
+    searchSuggestions = async(req:Request,res:Response):Promise<void> => {
+        if(!req.user) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        const query = req.query.query as string
+        const result = await this.TaskerSearchSuggestionQueryService.getSuggestions(query)
+        res.status(StatusCodes.OK).json(successResponse(HttpResponse.TASKER.SEARCH_SUGGESTIONS,result))
     }
 }

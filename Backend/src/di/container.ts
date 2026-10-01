@@ -62,8 +62,10 @@ import { NearbyTaskerSearchStore } from "../modules/taskers/stores/nearby-tasker
 import { ICustomerAddressQueryService } from "../modules/customer-addresses/interfaces/customer-address-query-service.interface";
 import { CustomerAddressQueryService } from "../modules/customer-addresses/services/customer-address-query.service";
 import { CustomerAddressController } from "../modules/customer-addresses/controllers/customer-address.controller";
-import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-availability.service";
-import { ITaskerAvailabilityService } from "../modules/taskers/interfaces/tasker-availability-service.interface";
+import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-availability-query.service.ts";
+import { ITaskerAvailabilityService } from "../modules/taskers/interfaces/tasker-availability-query-service.interface";
+import { ITaskerSearchSuggestionService } from "../modules/taskers/interfaces/tasker-search-suggestion-query-service.interface";
+import { TaskerSearchSuggestionService } from "../modules/taskers/services/tasker-search-suggestion-query.service";
 
 export const container = new Container()
 
@@ -95,6 +97,7 @@ container.bind<IserviceQueryService>(TYPES.ServiceQueryService).to(ServiceQueryS
 container.bind<ServiceController>(TYPES.ServiceController).to(ServiceController).inSingletonScope()
 container.bind<ITaskerRepositoy>(TYPES.TaskerRepository).to(TaskerRepository).inSingletonScope()
 container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryService).inSingletonScope()
+container.bind<ITaskerSearchSuggestionService>(TYPES.TaskerSearchSuggestionQueryService).to(TaskerSearchSuggestionService).inSingletonScope()
 container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
 container.bind<INearbyTaskerSearchStore>(TYPES.NearbyTaskerSearchStore).to(NearbyTaskerSearchStore).inSingletonScope()
 container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(CustomerAddressRepository).inSingletonScope()

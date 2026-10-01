@@ -3,7 +3,7 @@ import {
     ITaskerAvailabilityService,
     TaskerAvailabilityResult,
     TaskerAvailabilityWindow,
-} from "../interfaces/tasker-availability-service.interface";
+} from "../interfaces/tasker-availability-query-service.interface";
 import { ITaskerRepositoy } from "../interfaces/tasker-repository.interface";
 import { TYPES } from "../../../di";
 

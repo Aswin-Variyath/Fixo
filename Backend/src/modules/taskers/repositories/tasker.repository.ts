@@ -7,6 +7,7 @@ import {
     TaskerBlackoutRecord,
     TaskerBookingRecord,
 } from "../types/tasker-availability.type";
+import { TaskerSearchSuggestion } from "../types/tasker-search-suggestion.type";
 
 @injectable()
 export class TaskerRepository implements ITaskerRepositoy {
@@ -261,5 +262,33 @@ async findTaskerAvailability(
                 startTime:'asc'
             }
         })
+    }
+
+    async findTaskerSearchSuggestions(search: string, limit?: number): Promise<TaskerSearchSuggestion[]> {
+        const searchTerm = search.trim();
+
+    if (!searchTerm) {
+        return [];
+    }
+
+    return await prisma.$queryRaw<TaskerSearchSuggestion[]>`
+        SELECT
+            tp.id AS "id",
+            CONCAT_WS(' ', u."firstName", u."lastName") AS "name"
+        FROM "TaskerProfile" tp
+        INNER JOIN "users" u
+            ON u.id = tp."userId"
+        WHERE tp."profileStatus" = 'COMPLETE'
+          AND (
+              u."firstName" ILIKE ${`%${searchTerm}%`}
+              OR u."lastName" ILIKE ${`%${searchTerm}%`}
+              OR CONCAT_WS(' ', u."firstName", u."lastName")
+                    ILIKE ${`%${searchTerm}%`}
+          )
+        ORDER BY
+            u."firstName" ASC,
+            u."lastName" ASC
+        LIMIT ${limit};
+    `;
     }
 }
