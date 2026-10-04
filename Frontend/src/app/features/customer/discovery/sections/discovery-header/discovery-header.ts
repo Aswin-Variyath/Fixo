@@ -7,16 +7,24 @@ import {
   SelectedDiscoveryLocation,
 } from '../../types/discovery-location.types';
 import { LocationContextService } from '../../../location/services/location-context-service';
+import { SearchSuggestion } from '../../services/search-suggestion';
+import { SearchSuggestionData, SearchSuggestionResponse } from '../../types/search-suggestion';
+import { DiscoveryLocationApi } from '../../api/discovery-location-api';
+import { TaskerSearch } from '../../services/tasker-search';
+import { TaskerSearchApi } from '../../api/tasker-search-api';
+import { SearchSuggestionApi } from '../../api/search-suggestion-api';
 
 @Component({
   selector: 'app-discovery-header',
   imports: [FormsModule],
+  providers:[DiscoveryLocation, DiscoveryLocationApi, TaskerSearch, TaskerSearchApi, SearchSuggestion, SearchSuggestionApi],
   templateUrl: './discovery-header.html',
   styleUrl: './discovery-header.css',
 })
 export class DiscoveryHeader implements OnInit{
   private readonly discoveryLocation = inject(DiscoveryLocation);
   private readonly locationContext = inject(LocationContextService)
+  private readonly searchSuggestion = inject(SearchSuggestion);
   locationText = signal('');
   suggestions = signal<DiscoveryLocationFeature[]>([]);
   selectedLocation = signal<SelectedDiscoveryLocation | null>(null);
@@ -43,6 +51,41 @@ export class DiscoveryHeader implements OnInit{
       }
     })
   }
+
+  searchSuggestions = signal<SearchSuggestionData>({
+  taskers: [],
+  services: [],
+});
+
+onSearchInput(value: string): void {
+  if (value.trim().length < 2) {
+    this.searchSuggestions.set({
+      taskers: [],
+      services: [],
+    });
+
+    return;
+  }
+
+  this.searchSuggestion
+    .search(value.trim())
+    .subscribe({
+      next: (response) => {
+        this.searchSuggestions.set(response);
+      },
+      error: (error) => {
+        console.error(
+          'Search suggestions failed:',
+          error
+        );
+
+        this.searchSuggestions.set({
+          taskers: [],
+          services: [],
+        });
+      },
+    });
+}
 
   onLocationInput(value: string): void {
     this.locationText.set(value);
