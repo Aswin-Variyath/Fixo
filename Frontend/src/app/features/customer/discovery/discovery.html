@@ -10,7 +10,9 @@
 <main
   class="w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 pb-section-gap"
 >
-  <app-discovery-header></app-discovery-header>
+  <app-discovery-header
+  (searchSubmitted)="onSearchSubmitted($event)"
+  ></app-discovery-header>
 
   <section class="mt-10 flex flex-col lg:flex-row items-start gap-10">
     <div class="w-full lg:w-80 lg:flex-shrink-0">

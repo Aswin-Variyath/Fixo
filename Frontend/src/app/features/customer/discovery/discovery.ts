@@ -13,7 +13,10 @@ import { TaskerSearchApi } from './api/tasker-search-api';
 import { LocationModal } from '../location/components/location-modal/location-modal';
 import { LocationContextService } from '../location/services/location-context-service';
 import { SelectedLocation } from '../location/types/location.types';
-import { TaskerAvailabilityFilter, TaskerSearchSort } from './types/tasker-search';
+import {
+  TaskerAvailabilityFilter,
+  TaskerSearchSort,
+} from './types/tasker-search';
 
 @Component({
   selector: 'app-discovery',
@@ -37,33 +40,51 @@ import { TaskerAvailabilityFilter, TaskerSearchSort } from './types/tasker-searc
 export class Discovery implements OnInit {
   private readonly taskerSearch = inject(TaskerSearch);
   private readonly locationContext = inject(LocationContextService);
-  private readonly discoveryLocation = inject(DiscoveryLocation)
+  private readonly discoveryLocation = inject(DiscoveryLocation);
+
   readonly emptyState = this.taskerSearch.emptyState;
+
   private rating: number | undefined;
   private minHourlyRate: number | undefined;
-private maxHourlyRate: number | undefined;
-private sortBy: TaskerSearchSort = 'recommended';
+  private maxHourlyRate: number | undefined;
+
+  private sortBy: TaskerSearchSort = 'recommended';
+
   readonly showLocationModal = signal(false);
+
   readonly appliedFilters = signal<DiscoveryFilters>({
-    distance:2,
-    availabilityFilter:undefined,
-  })
+    distance: 2,
+    availabilityFilter: undefined,
+  });
+
   private selectedLocation: SelectedLocation | null = null;
 
-  private distance = 2
+  private distance = 2;
 
-  private availabilityFilter: | TaskerAvailabilityFilter | undefined
+  private availabilityFilter:
+    | TaskerAvailabilityFilter
+    | undefined;
+
+  private selectedServiceId: string | undefined;
 
   ngOnInit(): void {
     const location = this.locationContext.location();
 
     if (location) {
-      this.selectedLocation = location
-      this.discoveryLocation.reverseGeocode(location.latitude,location.longitude)
-      .subscribe((response)=>{
-        console.log('Reverse geocoded location:', response);
-        
-      })
+      this.selectedLocation = location;
+
+      this.discoveryLocation
+        .reverseGeocode(
+          location.latitude,
+          location.longitude
+        )
+        .subscribe((response) => {
+          console.log(
+            'Reverse geocoded location:',
+            response
+          );
+        });
+
       this.searchTaskers(location);
     } else {
       this.showLocationModal.set(true);
@@ -73,61 +94,105 @@ private sortBy: TaskerSearchSort = 'recommended';
   onLocationSelected(location: SelectedLocation): void {
     this.showLocationModal.set(false);
     this.selectedLocation = location;
+
     this.searchTaskers(location);
   }
 
-  onSortChange(sortBy:TaskerSearchSort):void {
-    this.sortBy = sortBy
-    if(this.selectedLocation) {
-      this.searchTaskers(this.selectedLocation)
+  onSearchSubmitted(selection: {
+    id: string;
+    name: string;
+    type: 'tasker' | 'service';
+  }): void {
+    if (selection.type === 'service') {
+      this.selectedServiceId = selection.id;
+
+      if (this.selectedLocation) {
+        this.searchTaskers(
+          this.selectedLocation
+        );
+      }
     }
   }
 
-  onFiltersChange(filters:DiscoveryFilters):void {
-    this.distance = filters.distance
+  onSortChange(
+    sortBy: TaskerSearchSort
+  ): void {
+    this.sortBy = sortBy;
+
+    if (this.selectedLocation) {
+      this.searchTaskers(
+        this.selectedLocation
+      );
+    }
+  }
+
+  onFiltersChange(
+    filters: DiscoveryFilters
+  ): void {
+    this.distance = filters.distance;
     this.rating = filters.rating;
-    this.minHourlyRate = filters.minHourlyRate;
-  this.maxHourlyRate = filters.maxHourlyRate;
-  this.availabilityFilter = filters.availabilityFilter;
-    this.appliedFilters.set(filters)
-    if(this.selectedLocation) {
-      this.searchTaskers(this.selectedLocation)
+    this.minHourlyRate =
+      filters.minHourlyRate;
+    this.maxHourlyRate =
+      filters.maxHourlyRate;
+    this.availabilityFilter =
+      filters.availabilityFilter;
+
+    this.appliedFilters.set(filters);
+
+    if (this.selectedLocation) {
+      this.searchTaskers(
+        this.selectedLocation
+      );
     }
   }
 
   removeDistanceFilter(): void {
-  this.distance = 2;
+    this.distance = 2;
 
-  this.appliedFilters.update((filters) => ({
-    ...filters,
-    distance: 2,
-  }));
-
-  if (this.selectedLocation) {
-    this.searchTaskers(this.selectedLocation);
-  }
-}
-
-removeAvailabilityFilter(): void {
-  this.availabilityFilter = undefined;
-
-  this.appliedFilters.update((filters) => ({
-    ...filters,
-    availabilityFilter: undefined,
-  }));
-
-  if (this.selectedLocation) {
-    this.searchTaskers(this.selectedLocation);
-  }
-}
-
-  onAvailabilityChange(
-    availabilityFilter: TaskerAvailabilityFilter | undefined
-  ): void {
-    this.availabilityFilter = availabilityFilter;
+    this.appliedFilters.update(
+      (filters) => ({
+        ...filters,
+        distance: 2,
+      })
+    );
 
     if (this.selectedLocation) {
-      this.searchTaskers(this.selectedLocation);
+      this.searchTaskers(
+        this.selectedLocation
+      );
+    }
+  }
+
+  removeAvailabilityFilter(): void {
+    this.availabilityFilter = undefined;
+
+    this.appliedFilters.update(
+      (filters) => ({
+        ...filters,
+        availabilityFilter: undefined,
+      })
+    );
+
+    if (this.selectedLocation) {
+      this.searchTaskers(
+        this.selectedLocation
+      );
+    }
+  }
+
+  onAvailabilityChange(
+    availabilityFilter:
+      | TaskerAvailabilityFilter
+      | undefined
+  ): void {
+    this.availabilityFilter =
+      availabilityFilter;
+
+    if (this.selectedLocation) {
+      this.searchTaskers(
+        this.selectedLocation
+      );
     }
   }
 
@@ -135,43 +200,74 @@ removeAvailabilityFilter(): void {
     this.showLocationModal.set(false);
   }
 
-  removeRatingFilter():void {
-    this.rating = undefined
-    this.appliedFilters.update((filter)=>({
-      ...filter,
-      rating:undefined
-    }))
-    if(this.selectedLocation) this.searchTaskers(this.selectedLocation)
+  removeRatingFilter(): void {
+    this.rating = undefined;
+
+    this.appliedFilters.update(
+      (filter) => ({
+        ...filter,
+        rating: undefined,
+      })
+    );
+
+    if (this.selectedLocation) {
+      this.searchTaskers(
+        this.selectedLocation
+      );
+    }
   }
 
   onPriceRemove(): void {
-  this.appliedFilters.update((filters) => ({
-    ...filters,
-    minHourlyRate: undefined,
-    maxHourlyRate: undefined,
-  }));
+    this.appliedFilters.update(
+      (filters) => ({
+        ...filters,
+        minHourlyRate: undefined,
+        maxHourlyRate: undefined,
+      })
+    );
 
-  this.minHourlyRate = undefined;
-  this.maxHourlyRate = undefined;
+    this.minHourlyRate = undefined;
+    this.maxHourlyRate = undefined;
 
-  if (this.selectedLocation) {
-    this.searchTaskers(this.selectedLocation);
+    if (this.selectedLocation) {
+      this.searchTaskers(
+        this.selectedLocation
+      );
+    }
   }
-}
 
-  private searchTaskers(location: SelectedLocation): void {
+  private searchTaskers(
+    location: SelectedLocation
+  ): void {
     this.taskerSearch.search({
+      ...(this.selectedServiceId
+        ? {
+            serviceId:
+              this.selectedServiceId,
+          }
+        : {}),
+
       latitude: location.latitude,
       longitude: location.longitude,
+
       ...(location.addressId
-        ? { addressId: location.addressId }
+        ? {
+            addressId:
+              location.addressId,
+          }
         : {}),
+
       distance: this.distance,
       rating: this.rating,
-      minHourlyRate: this.minHourlyRate,
-  maxHourlyRate: this.maxHourlyRate,
+      minHourlyRate:
+        this.minHourlyRate,
+      maxHourlyRate:
+        this.maxHourlyRate,
+
       sortBy: this.sortBy,
-      availabilityFilter: this.availabilityFilter,
+      availabilityFilter:
+        this.availabilityFilter,
+
       page: 1,
     });
   }
