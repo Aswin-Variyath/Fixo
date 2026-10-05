@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import {
-    ITaskerQueryService,
-    NearbyTaskerLocation,
-    TaskerSearchCriteria,
+  ITaskerQueryService,
+  NearbyTaskerLocation,
+  TaskerSearchCriteria,
 } from "../interfaces/tasker-query-service.interface";
 import { TYPES } from "../../../di";
 import { ITaskerRepositoy } from "../interfaces/tasker-repository.interface";
@@ -11,8 +11,8 @@ import { AppError } from "../../../shared/errors/app.error";
 import { StatusCodes } from "http-status-codes";
 import { IRoutingService } from "../../../shared/providers/routing/interfaces/routing.service.interface";
 import {
-    NearbyTaskerEmptyState,
-    NearbyTaskerResponseDto,
+  NearbyTaskerEmptyState,
+  NearbyTaskerResponseDto,
 } from "../dtos/nearby-tasker-response.dto";
 import { INearbyTaskerSearchStore } from "../interfaces/nearby-tasker-search-store.interface";
 import { randomUUID } from "node:crypto";
@@ -24,888 +24,724 @@ import { TaskerDiscoverySort } from "../types/nearby-tasker.type";
 import { ITaskerAvailabilityService } from "../interfaces/tasker-availability-query-service.interface";
 
 interface TaskerSearchBuildResult {
-    taskers: NearbyTaskerResponseDto[];
-    emptyState?: NearbyTaskerEmptyState;
+  taskers: NearbyTaskerResponseDto[];
+  emptyState?: NearbyTaskerEmptyState;
 }
 
 @injectable()
 export class TaskerQueryService implements ITaskerQueryService {
-    constructor(
-        @inject(TYPES.TaskerRepository)
-        private readonly taskerRepository: ITaskerRepositoy,
+  constructor(
+    @inject(TYPES.TaskerRepository)
+    private readonly taskerRepository: ITaskerRepositoy,
 
-        @inject(TYPES.CustomerAddressRepository)
-        private readonly customerAddressRepository: ICustomerAddressRepository,
+    @inject(TYPES.CustomerAddressRepository)
+    private readonly customerAddressRepository: ICustomerAddressRepository,
 
-        @inject(TYPES.RoutingService)
-        private readonly routingService: IRoutingService,
+    @inject(TYPES.RoutingService)
+    private readonly routingService: IRoutingService,
 
-        @inject(TYPES.TaskerAvailabilityService)
-        private readonly taskerAvailabilityService: ITaskerAvailabilityService,
+    @inject(TYPES.TaskerAvailabilityService)
+    private readonly taskerAvailabilityService: ITaskerAvailabilityService,
 
-        @inject(TYPES.NearbyTaskerSearchStore)
-        private readonly nearbyTaskerSearchStore: INearbyTaskerSearchStore,
-    ) {}
+    @inject(TYPES.NearbyTaskerSearchStore)
+    private readonly nearbyTaskerSearchStore: INearbyTaskerSearchStore,
+  ) {}
 
-    async searchTaskers(
-        userId: string,
-        criteria: TaskerSearchCriteria,
-        searchId?: string,
-        page: number = 1,
-    ): Promise<NearbyTaskerSearchResponseDto> {
-        /*
-         * Existing search
-         */
-        if (searchId) {
-            const taskers =
-                await this.nearbyTaskerSearchStore.findById(
-                    searchId,
-                );
-
-            /*
-             * Result cache still exists
-             */
-            if (taskers) {
-                /*
-                 * If cached result is empty,
-                 * get the session to determine
-                 * the correct empty-state message.
-                 */
-                if (taskers.length === 0) {
-                    const searchSession =
-                        await this.nearbyTaskerSearchStore.findSessionById(
-                            searchId,
-                        );
-
-                    return this.paginationSearchResults(
-                        searchId,
-                        taskers,
-                        page,
-                        searchSession
-                            ? this.getEmptyState(searchSession)
-                            : undefined,
-                    );
-                }
-
-                return this.paginationSearchResults(
-                    searchId,
-                    taskers,
-                    page,
-                );
-            }
-
-            /*
-             * Result cache expired.
-             * Try to recover the search using metadata.
-             */
-            const searchSession =
-                await this.nearbyTaskerSearchStore.findSessionById(
-                    searchId,
-                );
-
-            /*
-             * Both result cache and metadata expired.
-             */
-            if (!searchSession) {
-                throw new AppError(
-                    StatusCodes.NOT_FOUND,
-                    "Tasker search has expired",
-                    undefined,
-                    "TASKER_SEARCH_EXPIRED",
-                );
-            }
-
-            /*
-             * Rebuild the same search.
-             */
-            const rebuiltResult =
-                await this.buildTaskerResults(
-                    userId,
-                    searchSession,
-                );
-
-            /*
-             * Store rebuilt results using
-             * the SAME searchId.
-             */
-            await this.nearbyTaskerSearchStore.create(
-                searchId,
-                rebuiltResult.taskers,
-                searchSession,
-                ENV.REDIS.NEARBY_TASKER_SEARCH_TTL_SECONDS,
-                ENV.REDIS.NEARBY_TASKER_SEARCH_METADATA_TTL_SECONDS,
-            );
-
-            return this.paginationSearchResults(
-                searchId,
-                rebuiltResult.taskers,
-                page,
-                rebuiltResult.emptyState,
-            );
-        }
-
-        /*
-         * New search
-         */
-        if (
-            !criteria.location ||
-            criteria.distanceKm === undefined
-        ) {
-            throw new AppError(
-                StatusCodes.BAD_REQUEST,
-                "Location and distance are required",
-            );
-        }
-
-        const result =
-            await this.buildTaskerResults(
-                userId,
-                criteria,
-            );
-
-        const newSearchId = randomUUID();
-
-        const searchSession: NearbyTaskerSearchSession = {
-            serviceId: criteria.serviceId,
-            location: criteria.location,
-            distanceKm: criteria.distanceKm,
-            rating: criteria.rating,
-            minHourlyRate: criteria.minHourlyRate,
-            maxHourlyRate: criteria.maxHourlyRate,
-            requestedDate: criteria.requestedDate,
-            requestedTime: criteria.requestedTime,
-            availabilityFilter: criteria.availabilityFilter,
-            sortBy: criteria.sortBy,
-        };
-
-        await this.nearbyTaskerSearchStore.create(
-            newSearchId,
-            result.taskers,
-            searchSession,
-            ENV.REDIS.NEARBY_TASKER_SEARCH_TTL_SECONDS,
-            ENV.REDIS.NEARBY_TASKER_SEARCH_METADATA_TTL_SECONDS,
-        );
-
-        return this.paginationSearchResults(
-            newSearchId,
-            result.taskers,
-            1,
-            result.emptyState,
-        );
-    }
-
+  async searchTaskers(
+    userId: string,
+    criteria: TaskerSearchCriteria,
+    searchId?: string,
+    page: number = 1,
+  ): Promise<NearbyTaskerSearchResponseDto> {
     /*
-     * Common tasker search pipeline.
-     *
-     * serviceId present:
-     *     Service-specific nearby taskers
-     *
-     * serviceId absent:
-     *     General tasker discovery
+     * Existing search
      */
-    private async buildTaskerResults(
-        userId: string,
-        criteria:
-            | TaskerSearchCriteria
-            | NearbyTaskerSearchSession,
-    ): Promise<TaskerSearchBuildResult> {
-        const {
-            latitude,
-            longitude,
-        } = await this.resolveCustomerLocation(
-            userId,
-            criteria.location,
-        );
+    if (searchId) {
+      const taskers = await this.nearbyTaskerSearchStore.findById(searchId);
 
-        let candidates;
-
+      /*
+       * Result cache still exists
+       */
+      if (taskers) {
         /*
-         * Service-specific search
+         * If cached result is empty,
+         * get the session to determine
+         * the correct empty-state message.
          */
-        if (criteria.serviceId) {
-            candidates =
-                await this.taskerRepository.findNearbyTasker(
-                    criteria.serviceId,
-                    latitude,
-                    longitude,
-                    criteria.distanceKm,
-                    criteria.rating,
-                    criteria.minHourlyRate,
-        criteria.maxHourlyRate,
-                );
-        }
+        if (taskers.length === 0) {
+          const searchSession =
+            await this.nearbyTaskerSearchStore.findSessionById(searchId);
 
-        /*
-         * General tasker discovery
-         */
-        else {
-            candidates =
-                await this.taskerRepository.findTaskerForDiscovery(
-                    latitude,
-                    longitude,
-                    criteria.distanceKm,
-                    criteria.rating,
-                );
-        }
-
-        /*
-         * No candidates found from
-         * database search.
-         */
-        if (candidates.length === 0) {
-            return {
-                taskers: [],
-                emptyState:
-                    this.getCandidateEmptyState(criteria),
-            };
-        }
-
-        /*
-         * OSRM road distance calculation.
-         */
-        const routingResults =
-            await this.routingService.getRoadDistances(
-                {
-                    latitude,
-                    longitude,
-                },
-                candidates.map((tasker) => ({
-                    latitude: tasker.latitude,
-                    longitude: tasker.longitude,
-                })),
-            );
-
-        /*
-         * Road-distance eligibility.
-         */
-        const distanceEligibleTaskers = candidates
-            .map((tasker, index) => ({
-                tasker,
-                routing: routingResults[index],
-            }))
-            .filter(
-                ({ tasker, routing }) =>
-                    routing.distanceKm <=
-                        criteria.distanceKm &&
-                    routing.distanceKm <=
-                        tasker.maximumRoadDistanceKm,
-            )
-            .map(({ tasker, routing }) => ({
-                taskerProfileId:
-                    tasker.taskerProfileId,
-                userId: tasker.userId,
-                firstName: tasker.firstName,
-                lastName: tasker.lastName,
-                profileImageUrl:
-                    tasker.profileImageUrl,
-                averageRating:
-                    tasker.averageRating,
-                totalReviews:
-                    tasker.totalReviews,
-                hourlyRate:
-                    tasker.hourlyRate,
-                dailyRate:
-                    tasker.dailyRate,
-                distanceKm:
-                    routing.distanceKm,
-                durationMinutes:
-                    routing.durationMinutes,
-                availability: null,
-            }));
-
-        /*
-         * No taskers passed road-distance
-         * eligibility.
-         */
-        if (distanceEligibleTaskers.length === 0) {
-            return {
-                taskers: [],
-                emptyState: {
-                    reason: "NO_TASKERS_NEARBY",
-                    message:
-                        "No taskers found nearby — Try increasing your search distance.",
-                },
-            };
-        }
-
-        /*
-         * Explicit requested date and time.
-         *
-         * Only return taskers who have a
-         * bookable availability window at or
-         * after the requested time.
-         */
-        if (
-            criteria.requestedDate &&
-            criteria.requestedTime
-        ) {
-            const availabilityResults =
-                await Promise.all(
-                    distanceEligibleTaskers.map(
-                        async (tasker) => {
-                            const availability =
-                                await this.taskerAvailabilityService
-                                    .getNextAvailableStartTime(
-                                        tasker.taskerProfileId,
-                                        criteria.requestedDate!,
-                                        criteria.requestedTime!,
-                                    );
-
-                            return {
-                                tasker,
-                                availability,
-                            };
-                        },
-                    ),
-                );
-
-            const taskers = this.sortTaskers(
-                availabilityResults
-                    .filter(
-                        ({ availability }) =>
-                            availability.available,
-                    )
-                    .map(
-                        ({
-                            tasker,
-                            availability,
-                        }) => ({
-                            ...tasker,
-                            availability,
-                        }),
-                    ),
-                criteria.sortBy,
-            );
-
-            return {
-                taskers,
-                emptyState:
-                    taskers.length === 0
-                        ? {
-                              reason:
-                                  "NO_TASKERS_MATCH_FILTER",
-                              message:
-                                  "No taskers are available at the selected time — Try another date or time.",
-                          }
-                        : undefined,
-            };
-        }
-
-        /*
-         * Availability filter.
-         *
-         * Today:
-         *     Today + current time
-         *
-         * Tomorrow:
-         *     Tomorrow + 00:00
-         *
-         * This week:
-         *     Today → next 6 days
-         */
-        if (criteria.availabilityFilter) {
-            /*
-             * This week requires availability
-             * calculation across multiple days.
-             */
-            if (
-                criteria.availabilityFilter ===
-                "thisWeek"
-            ) {
-                const availabilityResults =
-                    await Promise.all(
-                        distanceEligibleTaskers.map(
-                            async (tasker) => {
-                                const availability =
-                                    await this.taskerAvailabilityService
-                                        .getWeeklyAvailability(
-                                            tasker.taskerProfileId,
-                                            new Date(),
-                                        );
-
-                                return {
-                                    tasker,
-                                    availability,
-                                };
-                            },
-                        ),
-                    );
-
-                const taskers = this.sortTaskers(
-                    availabilityResults
-                        .filter(
-                            ({ availability }) =>
-                                availability.available,
-                        )
-                        .map(
-                            ({
-                                tasker,
-                                availability,
-                            }) => ({
-                                ...tasker,
-                                availability: {
-                                    available:
-                                        availability.available,
-                                    nextAvailableStartTime:
-                                        availability.nextAvailableStartTime,
-                                    windows: [],
-                                    days:
-                                        availability.days,
-                                },
-                            }),
-                        ),
-                    criteria.sortBy,
-                );
-
-                return {
-                    taskers,
-                    emptyState:
-                        taskers.length === 0
-                            ? {
-                                  reason:
-                                      "NO_TASKERS_AVAILABLE_THIS_WEEK",
-                                  message:
-                                      "No taskers are available this week — Try another distance or date.",
-                              }
-                            : undefined,
-                };
-            }
-
-            /*
-             * Today / Tomorrow
-             */
-            const availabilityDate =
-                this.getAvailabilityFilterDate(
-                    criteria.availabilityFilter,
-                );
-
-            const requestedTime =
-                criteria.availabilityFilter ===
-                "today"
-                    ? this.getCurrentTime()
-                    : "00:00";
-
-            const availabilityResults =
-                await Promise.all(
-                    distanceEligibleTaskers.map(
-                        async (tasker) => {
-                            const availability =
-                                await this.taskerAvailabilityService
-                                    .getNextAvailableStartTime(
-                                        tasker.taskerProfileId,
-                                        availabilityDate,
-                                        requestedTime,
-                                    );
-
-                            return {
-                                tasker,
-                                availability,
-                            };
-                        },
-                    ),
-                );
-
-            const taskers = this.sortTaskers(
-                availabilityResults
-                    .filter(
-                        ({ availability }) =>
-                            availability.available,
-                    )
-                    .map(
-                        ({
-                            tasker,
-                            availability,
-                        }) => ({
-                            ...tasker,
-                            availability,
-                        }),
-                    ),
-                criteria.sortBy,
-            );
-
-            return {
-                taskers,
-                emptyState:
-                    taskers.length === 0
-                        ? criteria.availabilityFilter ===
-                          "today"
-                            ? {
-                                  reason:
-                                      "NO_TASKERS_AVAILABLE_NOW",
-                                  message:
-                                      "No taskers are available right now — Try checking tomorrow’s availability.",
-                              }
-                            : {
-                                  reason:
-                                      "NO_TASKERS_AVAILABLE_TOMORROW",
-                                  message:
-                                      "No taskers are available tomorrow — Try another day or expand your distance.",
-                              }
-                        : undefined,
-            };
-        }
-
-        /*
-         * Default discovery.
-         *
-         * Use today's availability starting from
-         * the current server time.
-         *
-         * Only taskers with remaining availability
-         * today are returned.
-         */
-        const today = new Date();
-
-        const availabilityResults =
-            await Promise.all(
-                distanceEligibleTaskers.map(
-                    async (tasker) => {
-                        const availability =
-                            await this.taskerAvailabilityService
-                                .getNextAvailableStartTime(
-                                    tasker.taskerProfileId,
-                                    today,
-                                    this.getCurrentTime(),
-                                );
-
-                        return {
-                            tasker,
-                            availability,
-                        };
-                    },
-                ),
-            );
-
-        const taskers = this.sortTaskers(
-            availabilityResults
-                .filter(
-                    ({ availability }) =>
-                        availability.available,
-                )
-                .map(
-                    ({
-                        tasker,
-                        availability,
-                    }) => ({
-                        ...tasker,
-                        availability,
-                    }),
-                ),
-            criteria.sortBy,
-        );
-
-        return {
+          return this.paginationSearchResults(
+            searchId,
             taskers,
-            emptyState:
-                taskers.length === 0
-                    ? {
-                          reason:
-                              "NO_TASKERS_AVAILABLE_NOW",
-                          message:
-                              "No taskers are available right now — Try checking tomorrow’s availability.",
-                      }
-                    : undefined,
-        };
-    }
-
-    /*
-     * Determine the empty state when the
-     * initial database candidate search
-     * returns no taskers.
-     */
-    private getCandidateEmptyState(
-        criteria:
-            | TaskerSearchCriteria
-            | NearbyTaskerSearchSession,
-    ): NearbyTaskerEmptyState {
-        if (criteria.rating !== undefined) {
-            return {
-                reason: "NO_TASKERS_MATCH_FILTER",
-                message:
-                    "No taskers match your rating filter — Try lowering the rating filter.",
-            };
+            page,
+            searchSession ? this.getEmptyState(searchSession) : undefined,
+          );
         }
 
-        if (criteria.serviceId) {
-            return {
-                reason: "NO_TASKERS_MATCH_FILTER",
-                message:
-                    "No taskers match your current search — Try another service or increase your search distance.",
-            };
-        }
+        return this.paginationSearchResults(searchId, taskers, page);
+      }
 
-        return {
-            reason: "NO_TASKERS_NEARBY",
-            message:
-                "No taskers found nearby — Try increasing your search distance.",
-        };
-    }
+      /*
+       * Result cache expired.
+       * Try to recover the search using metadata.
+       */
+      const searchSession =
+        await this.nearbyTaskerSearchStore.findSessionById(searchId);
 
-    /*
-     * Determine the empty state for an
-     * already cached search.
-     */
-    private getEmptyState(
-        criteria:
-            | TaskerSearchCriteria
-            | NearbyTaskerSearchSession,
-    ): NearbyTaskerEmptyState {
-        if (
-            criteria.requestedDate &&
-            criteria.requestedTime
-        ) {
-            return {
-                reason: "NO_TASKERS_MATCH_FILTER",
-                message:
-                    "No taskers are available at the selected time — Try another date or time.",
-            };
-        }
-
-        if (
-            criteria.availabilityFilter ===
-            "today"
-        ) {
-            return {
-                reason: "NO_TASKERS_AVAILABLE_NOW",
-                message:
-                    "No taskers are available right now — Try checking tomorrow’s availability.",
-            };
-        }
-
-        if (
-            criteria.availabilityFilter ===
-            "tomorrow"
-        ) {
-            return {
-                reason:
-                    "NO_TASKERS_AVAILABLE_TOMORROW",
-                message:
-                    "No taskers are available tomorrow — Try another day or expand your distance.",
-            };
-        }
-
-        if (
-            criteria.availabilityFilter ===
-            "thisWeek"
-        ) {
-            return {
-                reason:
-                    "NO_TASKERS_AVAILABLE_THIS_WEEK",
-                message:
-                    "No taskers are available this week — Try another distance or date.",
-            };
-        }
-
-        return {
-            reason: "NO_TASKERS_AVAILABLE_NOW",
-            message:
-                "No taskers are available right now — Try checking tomorrow’s availability.",
-        };
-    }
-
-    /*
-     * Get the date for an availability filter.
-     */
-    private getAvailabilityFilterDate(
-        filter:
-            | "today"
-            | "tomorrow"
-            | "thisWeek",
-    ): Date {
-        const date = new Date();
-
-        if (filter === "tomorrow") {
-            date.setDate(
-                date.getDate() + 1,
-            );
-        }
-
-        return date;
-    }
-
-    /*
-     * Get current time in HH:mm format.
-     */
-    private getCurrentTime(): string {
-        const now = new Date();
-
-        const hours = now
-            .getHours()
-            .toString()
-            .padStart(2, "0");
-
-        const minutes = now
-            .getMinutes()
-            .toString()
-            .padStart(2, "0");
-
-        return `${hours}:${minutes}`;
-    }
-
-    /*
-     * Resolve customer address or GPS location.
-     */
-    private async resolveCustomerLocation(
-        userId: string,
-        location: NearbyTaskerLocation,
-    ): Promise<{
-        latitude: number;
-        longitude: number;
-    }> {
-        if (location.addressId) {
-            const address =
-                await this.customerAddressRepository.findLocationByIdAndUserId(
-                    location.addressId,
-                    userId,
-                );
-
-            if (!address) {
-                throw new AppError(
-                    StatusCodes.NOT_FOUND,
-                    "Customer address not found",
-                );
-            }
-
-            return {
-                latitude: address.latitude,
-                longitude: address.longitude,
-            };
-        }
-
-        if (
-            location.latitude === undefined ||
-            location.longitude === undefined
-        ) {
-            throw new AppError(
-                StatusCodes.BAD_REQUEST,
-                "Customer location is required",
-            );
-        }
-
-        return {
-            latitude: location.latitude,
-            longitude: location.longitude,
-        };
-    }
-
-    /*
-     * Common sorting for nearby and discovery searches.
-     */
-    private sortTaskers(
-        taskers: NearbyTaskerResponseDto[],
-        sortBy: TaskerDiscoverySort,
-    ): NearbyTaskerResponseDto[] {
-        switch (sortBy) {
-            case "nearest":
-                return taskers.sort(
-                    (a, b) =>
-                        a.distanceKm -
-                        b.distanceKm,
-                );
-
-            case "highestRated":
-                return taskers.sort(
-                    (a, b) =>
-                        b.averageRating -
-                        a.averageRating,
-                );
-
-            case "lowestPrice":
-                return taskers.sort((a, b) => {
-                    const priceA =
-                        a.hourlyRate ??
-                        a.dailyRate ??
-                        Number.MAX_SAFE_INTEGER;
-
-                    const priceB =
-                        b.hourlyRate ??
-                        b.dailyRate ??
-                        Number.MAX_SAFE_INTEGER;
-
-                    return priceA - priceB;
-                });
-
-            case "recommended":
-            default:
-                return taskers.sort((a, b) => {
-                    const scoreA =
-                        this.calculateRecommendationScore(
-                            a,
-                        );
-
-                    const scoreB =
-                        this.calculateRecommendationScore(
-                            b,
-                        );
-
-                    return scoreB - scoreA;
-                });
-        }
-    }
-
-    /*
-     * Recommendation score.
-     */
-    private calculateRecommendationScore(
-        tasker: NearbyTaskerResponseDto,
-    ): number {
-        const distanceScore = Math.max(
-            0,
-            1 - tasker.distanceKm / 20,
+      /*
+       * Both result cache and metadata expired.
+       */
+      if (!searchSession) {
+        throw new AppError(
+          StatusCodes.NOT_FOUND,
+          "Tasker search has expired",
+          undefined,
+          "TASKER_SEARCH_EXPIRED",
         );
+      }
 
-        const ratingScore =
-            tasker.averageRating / 5;
+      /*
+       * Rebuild the same search.
+       */
+      const rebuiltResult = await this.buildTaskerResults(
+        userId,
+        searchSession,
+      );
 
-        const reviewScore =
-            Math.min(
-                tasker.totalReviews / 100,
-                1,
-            );
+      /*
+       * Store rebuilt results using
+       * the SAME searchId.
+       */
+      await this.nearbyTaskerSearchStore.create(
+        searchId,
+        rebuiltResult.taskers,
+        searchSession,
+        ENV.REDIS.NEARBY_TASKER_SEARCH_TTL_SECONDS,
+        ENV.REDIS.NEARBY_TASKER_SEARCH_METADATA_TTL_SECONDS,
+      );
+
+      return this.paginationSearchResults(
+        searchId,
+        rebuiltResult.taskers,
+        page,
+        rebuiltResult.emptyState,
+      );
+    }
+
+    /*
+     * New search
+     */
+    if (!criteria.location || criteria.distanceKm === undefined) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        "Location and distance are required",
+      );
+    }
+
+    const result = await this.buildTaskerResults(userId, criteria);
+
+    const newSearchId = randomUUID();
+
+    const searchSession: NearbyTaskerSearchSession = {
+      serviceId: criteria.serviceId,
+      search: criteria.search,
+      taskerProfileId: criteria.taskerProfileId,
+      location: criteria.location,
+      distanceKm: criteria.distanceKm,
+      rating: criteria.rating,
+      minHourlyRate: criteria.minHourlyRate,
+      maxHourlyRate: criteria.maxHourlyRate,
+      requestedDate: criteria.requestedDate,
+      requestedTime: criteria.requestedTime,
+      availabilityFilter: criteria.availabilityFilter,
+      sortBy: criteria.sortBy,
+    };
+
+    await this.nearbyTaskerSearchStore.create(
+      newSearchId,
+      result.taskers,
+      searchSession,
+      ENV.REDIS.NEARBY_TASKER_SEARCH_TTL_SECONDS,
+      ENV.REDIS.NEARBY_TASKER_SEARCH_METADATA_TTL_SECONDS,
+    );
+
+    return this.paginationSearchResults(
+      newSearchId,
+      result.taskers,
+      1,
+      result.emptyState,
+    );
+  }
+
+  /*
+   * Common tasker search pipeline.
+   *
+   * serviceId present:
+   *     Service-specific nearby taskers
+   *
+   * serviceId absent:
+   *     General tasker discovery
+   */
+  private async buildTaskerResults(
+    userId: string,
+    criteria: TaskerSearchCriteria | NearbyTaskerSearchSession,
+  ): Promise<TaskerSearchBuildResult> {
+    const { latitude, longitude } = await this.resolveCustomerLocation(
+      userId,
+      criteria.location,
+    );
+
+    let candidates;
+
+    /*
+     * Service-specific search
+     */
+    if (criteria.taskerProfileId) {
+      const tasker = await this.taskerRepository.findTaskerById(
+        criteria.taskerProfileId,
+        latitude,
+        longitude,
+      );
+
+      candidates = tasker ? [tasker] : [];
+    } else if (criteria.serviceId) {
+      candidates = await this.taskerRepository.findNearbyTasker(
+        criteria.serviceId,
+        latitude,
+        longitude,
+        criteria.distanceKm,
+        criteria.rating,
+        criteria.minHourlyRate,
+        criteria.maxHourlyRate,
+      );
+    } else if (criteria.search) {
+      candidates = await this.taskerRepository.findTaskersBySearch(
+        criteria.search,
+        latitude,
+        longitude,
+        criteria.distanceKm,
+        criteria.rating,
+        criteria.minHourlyRate,
+        criteria.maxHourlyRate,
+      );
+    } else {
+      candidates = await this.taskerRepository.findTaskerForDiscovery(
+        latitude,
+        longitude,
+        criteria.distanceKm,
+        criteria.rating,
+      );
+    }
+
+    /*
+     * No candidates found from
+     * database search.
+     */
+    if (candidates.length === 0) {
+      return {
+        taskers: [],
+        emptyState: this.getCandidateEmptyState(criteria),
+      };
+    }
+
+    /*
+     * OSRM road distance calculation.
+     */
+    const routingResults = await this.routingService.getRoadDistances(
+      {
+        latitude,
+        longitude,
+      },
+      candidates.map((tasker) => ({
+        latitude: tasker.latitude,
+        longitude: tasker.longitude,
+      })),
+    );
+
+    /*
+     * Road-distance eligibility.
+     */
+    const distanceEligibleTaskers = candidates
+      .map((tasker, index) => ({
+        tasker,
+        routing: routingResults[index],
+      }))
+      .filter(({ tasker, routing }) => {
+        if (criteria.taskerProfileId) {
+          return true;
+        }
 
         return (
-            distanceScore * 0.4 +
-            ratingScore * 0.4 +
-            reviewScore * 0.2
+          routing.distanceKm <= criteria.distanceKm &&
+          routing.distanceKm <= tasker.maximumRoadDistanceKm
         );
+      })
+      .map(({ tasker, routing }) => ({
+        taskerProfileId: tasker.taskerProfileId,
+        userId: tasker.userId,
+        firstName: tasker.firstName,
+        lastName: tasker.lastName,
+        profileImageUrl: tasker.profileImageUrl,
+        averageRating: tasker.averageRating,
+        totalReviews: tasker.totalReviews,
+        hourlyRate: tasker.hourlyRate,
+        dailyRate: tasker.dailyRate,
+        distanceKm: routing.distanceKm,
+        durationMinutes: routing.durationMinutes,
+        services: tasker.services,
+        availability: null,
+      }));
+
+    /*
+     * No taskers passed road-distance
+     * eligibility.
+     */
+    if (distanceEligibleTaskers.length === 0) {
+      return {
+        taskers: [],
+        emptyState: {
+          reason: "NO_TASKERS_NEARBY",
+          message:
+            "No taskers found nearby — Try increasing your search distance.",
+        },
+      };
     }
 
     /*
-     * Pagination for all tasker searches.
+     * Explicit requested date and time.
+     *
+     * Only return taskers who have a
+     * bookable availability window at or
+     * after the requested time.
      */
-    private paginationSearchResults(
-        searchId: string,
-        taskers: NearbyTaskerResponseDto[],
-        page: number,
-        emptyState?: NearbyTaskerEmptyState,
-    ): NearbyTaskerSearchResponseDto {
-        const startIndex =
-            (page - 1) *
-            TASKER_SEARCH_PAGE_SIZE;
-
-        const endIndex =
-            startIndex +
-            TASKER_SEARCH_PAGE_SIZE;
-
-        const results =
-            taskers.slice(
-                startIndex,
-                endIndex,
+    if (criteria.requestedDate && criteria.requestedTime) {
+      const availabilityResults = await Promise.all(
+        distanceEligibleTaskers.map(async (tasker) => {
+          const availability =
+            await this.taskerAvailabilityService.getNextAvailableStartTime(
+              tasker.taskerProfileId,
+              criteria.requestedDate!,
+              criteria.requestedTime!,
             );
 
-        const hasMore =
-            endIndex < taskers.length;
+          return {
+            tasker,
+            availability,
+          };
+        }),
+      );
+
+      const taskers = this.sortTaskers(
+        availabilityResults
+          .filter(({ availability }) => availability.available)
+          .map(({ tasker, availability }) => ({
+            ...tasker,
+            availability,
+          })),
+        criteria.sortBy,
+      );
+
+      return {
+        taskers,
+        emptyState:
+          taskers.length === 0
+            ? {
+                reason: "NO_TASKERS_MATCH_FILTER",
+                message:
+                  "No taskers are available at the selected time — Try another date or time.",
+              }
+            : undefined,
+      };
+    }
+
+    /*
+     * Availability filter.
+     *
+     * Today:
+     *     Today + current time
+     *
+     * Tomorrow:
+     *     Tomorrow + 00:00
+     *
+     * This week:
+     *     Today → next 6 days
+     */
+    if (criteria.availabilityFilter) {
+      /*
+       * This week requires availability
+       * calculation across multiple days.
+       */
+      if (criteria.availabilityFilter === "thisWeek") {
+        const availabilityResults = await Promise.all(
+          distanceEligibleTaskers.map(async (tasker) => {
+            const availability =
+              await this.taskerAvailabilityService.getWeeklyAvailability(
+                tasker.taskerProfileId,
+                new Date(),
+              );
+
+            return {
+              tasker,
+              availability,
+            };
+          }),
+        );
+
+        const taskers = this.sortTaskers(
+          availabilityResults
+            .filter(({ availability }) => availability.available)
+            .map(({ tasker, availability }) => ({
+              ...tasker,
+              availability: {
+                available: availability.available,
+                nextAvailableStartTime: availability.nextAvailableStartTime,
+                windows: [],
+                days: availability.days,
+              },
+            })),
+          criteria.sortBy,
+        );
 
         return {
-            searchId,
-            page,
-            limit: TASKER_SEARCH_PAGE_SIZE,
-            hasMore,
-            taskers: results,
-            ...(results.length === 0 &&
-            emptyState
-                ? { emptyState }
-                : {}),
+          taskers,
+          emptyState:
+            taskers.length === 0
+              ? {
+                  reason: "NO_TASKERS_AVAILABLE_THIS_WEEK",
+                  message:
+                    "No taskers are available this week — Try another distance or date.",
+                }
+              : undefined,
         };
+      }
+
+      /*
+       * Today / Tomorrow
+       */
+      const availabilityDate = this.getAvailabilityFilterDate(
+        criteria.availabilityFilter,
+      );
+
+      const requestedTime =
+        criteria.availabilityFilter === "today"
+          ? this.getCurrentTime()
+          : "00:00";
+
+      const availabilityResults = await Promise.all(
+        distanceEligibleTaskers.map(async (tasker) => {
+          const availability =
+            await this.taskerAvailabilityService.getNextAvailableStartTime(
+              tasker.taskerProfileId,
+              availabilityDate,
+              requestedTime,
+            );
+
+          return {
+            tasker,
+            availability,
+          };
+        }),
+      );
+
+      const taskers = this.sortTaskers(
+        availabilityResults
+          .filter(({ availability }) => availability.available)
+          .map(({ tasker, availability }) => ({
+            ...tasker,
+            availability,
+          })),
+        criteria.sortBy,
+      );
+
+      return {
+        taskers,
+        emptyState:
+          taskers.length === 0
+            ? criteria.availabilityFilter === "today"
+              ? {
+                  reason: "NO_TASKERS_AVAILABLE_NOW",
+                  message:
+                    "No taskers are available right now — Try checking tomorrow’s availability.",
+                }
+              : {
+                  reason: "NO_TASKERS_AVAILABLE_TOMORROW",
+                  message:
+                    "No taskers are available tomorrow — Try another day or expand your distance.",
+                }
+            : undefined,
+      };
     }
+
+    /*
+     * Default discovery.
+     *
+     * Use today's availability starting from
+     * the current server time.
+     *
+     * Only taskers with remaining availability
+     * today are returned.
+     */
+    const today = new Date();
+
+    const availabilityResults = await Promise.all(
+      distanceEligibleTaskers.map(async (tasker) => {
+        const availability =
+          await this.taskerAvailabilityService.getNextAvailableStartTime(
+            tasker.taskerProfileId,
+            today,
+            this.getCurrentTime(),
+          );
+
+        return {
+          tasker,
+          availability,
+        };
+      }),
+    );
+
+    const taskers = this.sortTaskers(
+      availabilityResults
+        .filter(({ availability }) => availability.available)
+        .map(({ tasker, availability }) => ({
+          ...tasker,
+          availability,
+        })),
+      criteria.sortBy,
+    );
+
+    return {
+      taskers,
+      emptyState:
+        taskers.length === 0
+          ? {
+              reason: "NO_TASKERS_AVAILABLE_NOW",
+              message:
+                "No taskers are available right now — Try checking tomorrow’s availability.",
+            }
+          : undefined,
+    };
+  }
+
+  /*
+   * Determine the empty state when the
+   * initial database candidate search
+   * returns no taskers.
+   */
+  private getCandidateEmptyState(
+    criteria: TaskerSearchCriteria | NearbyTaskerSearchSession,
+  ): NearbyTaskerEmptyState {
+    if (criteria.rating !== undefined) {
+      return {
+        reason: "NO_TASKERS_MATCH_FILTER",
+        message:
+          "No taskers match your rating filter — Try lowering the rating filter.",
+      };
+    }
+
+    if (criteria.serviceId) {
+      return {
+        reason: "NO_TASKERS_MATCH_FILTER",
+        message:
+          "No taskers match your current search — Try another service or increase your search distance.",
+      };
+    }
+
+    return {
+      reason: "NO_TASKERS_NEARBY",
+      message: "No taskers found nearby — Try increasing your search distance.",
+    };
+  }
+
+  /*
+   * Determine the empty state for an
+   * already cached search.
+   */
+  private getEmptyState(
+    criteria: TaskerSearchCriteria | NearbyTaskerSearchSession,
+  ): NearbyTaskerEmptyState {
+    if (criteria.requestedDate && criteria.requestedTime) {
+      return {
+        reason: "NO_TASKERS_MATCH_FILTER",
+        message:
+          "No taskers are available at the selected time — Try another date or time.",
+      };
+    }
+
+    if (criteria.availabilityFilter === "today") {
+      return {
+        reason: "NO_TASKERS_AVAILABLE_NOW",
+        message:
+          "No taskers are available right now — Try checking tomorrow’s availability.",
+      };
+    }
+
+    if (criteria.availabilityFilter === "tomorrow") {
+      return {
+        reason: "NO_TASKERS_AVAILABLE_TOMORROW",
+        message:
+          "No taskers are available tomorrow — Try another day or expand your distance.",
+      };
+    }
+
+    if (criteria.availabilityFilter === "thisWeek") {
+      return {
+        reason: "NO_TASKERS_AVAILABLE_THIS_WEEK",
+        message:
+          "No taskers are available this week — Try another distance or date.",
+      };
+    }
+
+    return {
+      reason: "NO_TASKERS_AVAILABLE_NOW",
+      message:
+        "No taskers are available right now — Try checking tomorrow’s availability.",
+    };
+  }
+
+  /*
+   * Get the date for an availability filter.
+   */
+  private getAvailabilityFilterDate(
+    filter: "today" | "tomorrow" | "thisWeek",
+  ): Date {
+    const date = new Date();
+
+    if (filter === "tomorrow") {
+      date.setDate(date.getDate() + 1);
+    }
+
+    return date;
+  }
+
+  /*
+   * Get current time in HH:mm format.
+   */
+  private getCurrentTime(): string {
+    const now = new Date();
+
+    const hours = now.getHours().toString().padStart(2, "0");
+
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  }
+
+  /*
+   * Resolve customer address or GPS location.
+   */
+  private async resolveCustomerLocation(
+    userId: string,
+    location: NearbyTaskerLocation,
+  ): Promise<{
+    latitude: number;
+    longitude: number;
+  }> {
+    if (location.addressId) {
+      const address =
+        await this.customerAddressRepository.findLocationByIdAndUserId(
+          location.addressId,
+          userId,
+        );
+
+      if (!address) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Customer address not found");
+      }
+
+      return {
+        latitude: address.latitude,
+        longitude: address.longitude,
+      };
+    }
+
+    if (location.latitude === undefined || location.longitude === undefined) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        "Customer location is required",
+      );
+    }
+
+    return {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    };
+  }
+
+  /*
+   * Common sorting for nearby and discovery searches.
+   */
+  private sortTaskers(
+    taskers: NearbyTaskerResponseDto[],
+    sortBy: TaskerDiscoverySort,
+  ): NearbyTaskerResponseDto[] {
+    switch (sortBy) {
+      case "nearest":
+        return taskers.sort((a, b) => a.distanceKm - b.distanceKm);
+
+      case "highestRated":
+        return taskers.sort((a, b) => b.averageRating - a.averageRating);
+
+      case "lowestPrice":
+        return taskers.sort((a, b) => {
+          const priceA = a.hourlyRate ?? a.dailyRate ?? Number.MAX_SAFE_INTEGER;
+
+          const priceB = b.hourlyRate ?? b.dailyRate ?? Number.MAX_SAFE_INTEGER;
+
+          return priceA - priceB;
+        });
+
+      case "recommended":
+      default:
+        return taskers.sort((a, b) => {
+          const scoreA = this.calculateRecommendationScore(a);
+
+          const scoreB = this.calculateRecommendationScore(b);
+
+          return scoreB - scoreA;
+        });
+    }
+  }
+
+  /*
+   * Recommendation score.
+   */
+  private calculateRecommendationScore(
+    tasker: NearbyTaskerResponseDto,
+  ): number {
+    const distanceScore = Math.max(0, 1 - tasker.distanceKm / 20);
+
+    const ratingScore = tasker.averageRating / 5;
+
+    const reviewScore = Math.min(tasker.totalReviews / 100, 1);
+
+    return distanceScore * 0.4 + ratingScore * 0.4 + reviewScore * 0.2;
+  }
+
+  /*
+   * Pagination for all tasker searches.
+   */
+  private paginationSearchResults(
+    searchId: string,
+    taskers: NearbyTaskerResponseDto[],
+    page: number,
+    emptyState?: NearbyTaskerEmptyState,
+  ): NearbyTaskerSearchResponseDto {
+    const startIndex = (page - 1) * TASKER_SEARCH_PAGE_SIZE;
+
+    const endIndex = startIndex + TASKER_SEARCH_PAGE_SIZE;
+
+    const results = taskers.slice(startIndex, endIndex);
+
+    const hasMore = endIndex < taskers.length;
+
+    return {
+      searchId,
+      page,
+      limit: TASKER_SEARCH_PAGE_SIZE,
+      hasMore,
+      taskers: results,
+      ...(results.length === 0 && emptyState ? { emptyState } : {}),
+    };
+  }
 }

@@ -4,6 +4,13 @@ export type TaskerDiscoverySort =
     | "highestRated"
     | "lowestPrice";
 
+export interface NearbyTaskerService {
+    id: string;
+    name: string;
+    hourlyRate: number | null;
+    dailyRate: number | null;
+}
+
 export interface NearbyTasker {
     taskerProfileId: string;
     userId: string;
@@ -19,4 +26,5 @@ export interface NearbyTasker {
     maximumRoadDistanceKm: number;
     distanceKm: number;
     durationMinutes: number;
+    services: NearbyTaskerService[];
 }

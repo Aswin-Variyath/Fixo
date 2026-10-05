@@ -23,6 +23,8 @@ export type TaskerAvailabilityFilter =
 
 export interface TaskerSearchParams {
   serviceId?: string;
+  search?: string;
+  taskerProfileId?: string;
   addressId?: string;
   latitude?: number;
   longitude?: number;

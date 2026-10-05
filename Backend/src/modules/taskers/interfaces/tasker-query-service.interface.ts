@@ -15,6 +15,8 @@ export type TaskerAvailabilityFilter =
 
 export interface TaskerSearchCriteria {
     serviceId?: string;
+    search?: string;
+    taskerProfileId?: string;
     location: NearbyTaskerLocation;
     distanceKm: number;
     rating?: number;

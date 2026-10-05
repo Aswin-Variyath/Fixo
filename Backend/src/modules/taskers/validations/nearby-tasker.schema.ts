@@ -72,6 +72,15 @@ export const nearbyTaskerSchema = z.object({
                 .min(-90, "Latitude must be between -90 and 90")
                 .max(90, "Latitude must be between -90 and 90")
                 .optional(),
+                search: z
+    .string()
+    .trim()
+    .min(2, "Search must be at least 2 characters")
+    .max(50, "Search cannot exceed 50 characters")
+    .optional(),
+    taskerProfileId: z
+    .uuid("Tasker profile ID must be a valid UUID")
+    .optional(),
 
             availabilityFilter: z
                 .enum(["today", "tomorrow", "thisWeek"])
@@ -92,6 +101,8 @@ export const nearbyTaskerSchema = z.object({
                 data.distance !== undefined ||
                 data.sortBy !== undefined ||
                 data.rating !== undefined ||
+                data.search !== undefined ||
+                data.taskerProfileId !== undefined ||
                 data.requestedDate !== undefined ||
                 data.minHourlyRate !== undefined ||
                 data.maxHourlyRate !== undefined ||

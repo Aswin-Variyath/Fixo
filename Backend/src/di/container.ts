@@ -62,7 +62,7 @@ import { NearbyTaskerSearchStore } from "../modules/taskers/stores/nearby-tasker
 import { ICustomerAddressQueryService } from "../modules/customer-addresses/interfaces/customer-address-query-service.interface";
 import { CustomerAddressQueryService } from "../modules/customer-addresses/services/customer-address-query.service";
 import { CustomerAddressController } from "../modules/customer-addresses/controllers/customer-address.controller";
-import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-availability-query.service.ts";
+import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-availability-query.service";
 import { ITaskerAvailabilityService } from "../modules/taskers/interfaces/tasker-availability-query-service.interface";
 import { ITaskerSearchSuggestionService } from "../modules/taskers/interfaces/tasker-search-suggestion-query-service.interface";
 import { TaskerSearchSuggestionService } from "../modules/taskers/services/tasker-search-suggestion-query.service";

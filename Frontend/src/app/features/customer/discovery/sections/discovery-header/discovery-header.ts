@@ -42,7 +42,7 @@ export class DiscoveryHeader implements OnInit {
   searchSubmitted = output<{
   id: string;
   name: string;
-  type: 'tasker' | 'service';
+  type: 'tasker' | 'service' | 'search';
 }>();
 
   locationText = signal('');
@@ -97,14 +97,25 @@ export class DiscoveryHeader implements OnInit {
       });
   }
 
-  onSearchSubmit(): void {
+onSearchSubmit(): void {
   const selected = this.selectedSuggestion();
-    console.log('Search submitted:', selected);
-  if (!selected) {
+
+  if (selected) {
+    this.searchSubmitted.emit(selected);
     return;
   }
 
-  this.searchSubmitted.emit(selected);
+  const search = this.searchInput().trim();
+
+  if (search.length < 2) {
+    return;
+  }
+
+  this.searchSubmitted.emit({
+    id: '',
+    name: search,
+    type: 'search',
+  });
 }
 
   onSearchInput(value: string): void {

@@ -23,6 +23,13 @@ export interface NearbyTaskerResponseDto {
     distanceKm: number;
     durationMinutes: number;
 
+    services: {
+        id: string;
+        name: string;
+        hourlyRate: number | null;
+        dailyRate: number | null;
+    }[];
+
     availability: {
         available: boolean;
         nextAvailableStartTime: string | null;

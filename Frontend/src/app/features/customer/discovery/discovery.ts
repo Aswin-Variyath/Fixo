@@ -66,6 +66,8 @@ export class Discovery implements OnInit {
     | undefined;
 
   private selectedServiceId: string | undefined;
+  private selectedTaskerProfileId: string | undefined;
+  private searchTerm: string | undefined;
 
   ngOnInit(): void {
     const location = this.locationContext.location();
@@ -98,21 +100,33 @@ export class Discovery implements OnInit {
     this.searchTaskers(location);
   }
 
-  onSearchSubmitted(selection: {
-    id: string;
-    name: string;
-    type: 'tasker' | 'service';
-  }): void {
-    if (selection.type === 'service') {
-      this.selectedServiceId = selection.id;
-
-      if (this.selectedLocation) {
-        this.searchTaskers(
-          this.selectedLocation
-        );
-      }
-    }
+onSearchSubmitted(selection: {
+  id: string;
+  name: string;
+  type: 'tasker' | 'service' | 'search';
+}): void {
+  if (selection.type === 'tasker') {
+    this.selectedTaskerProfileId = selection.id;
+    this.selectedServiceId = undefined;
+    this.searchTerm = undefined;
   }
+
+  if (selection.type === 'service') {
+    this.selectedServiceId = selection.id;
+    this.selectedTaskerProfileId = undefined;
+    this.searchTerm = undefined;
+  }
+
+  if (selection.type === 'search') {
+    this.searchTerm = selection.name;
+    this.selectedServiceId = undefined;
+    this.selectedTaskerProfileId = undefined;
+  }
+
+  if (this.selectedLocation) {
+    this.searchTaskers(this.selectedLocation);
+  }
+}
 
   onSortChange(
     sortBy: TaskerSearchSort
@@ -246,6 +260,17 @@ export class Discovery implements OnInit {
               this.selectedServiceId,
           }
         : {}),
+         ...(this.selectedTaskerProfileId
+    ? {
+        taskerProfileId:
+          this.selectedTaskerProfileId,
+      }
+    : {}),
+         ...(this.searchTerm
+    ? {
+        search: this.searchTerm,
+      }
+    : {}),
 
       latitude: location.latitude,
       longitude: location.longitude,
