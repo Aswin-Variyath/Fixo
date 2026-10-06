@@ -8,7 +8,7 @@
 <app-navbar></app-navbar>
 
 <main
-  class="w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 pb-section-gap"
+  class="w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-28 md:pt-32 pb-section-gap"
 >
   <app-discovery-header
   (searchSubmitted)="onSearchSubmitted($event)"
@@ -22,6 +22,8 @@
     <div class="w-full lg:flex-1 min-w-0">
       <app-tasker-results
   [appliedFilters]="appliedFilters()"
+  [selectedServiceId]="selectedServiceId"
+  [selectedServiceName]="selectedServiceName"
   (removeDistance)="removeDistanceFilter()"
   (removeAvailability)="removeAvailabilityFilter()"
   (removeRating)="removeRatingFilter()"

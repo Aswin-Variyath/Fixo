@@ -266,6 +266,95 @@
           </div>
         </div>
 
+        @if (tasker.services.length > 0) {
+          <div class="flex flex-col gap-2">
+            <span class="text-sm text-on-surface-variant">Services</span>
+
+            <div class="flex flex-wrap gap-2">
+              @for (service of displayedServices(tasker); track service.id) {
+                <span
+                  class="font-label-sm text-label-sm inline-flex items-center px-3 py-1.5 rounded-full bg-surface-variant text-on-surface border border-glass-stroke"
+                >
+                  {{ service.name }}
+                </span>
+              }
+
+              @if (hiddenServiceCount(tasker) > 0) {
+                <span
+                  class="font-label-sm text-label-sm inline-flex items-center px-3 py-1.5 rounded-full bg-surface-variant text-on-surface-variant border border-glass-stroke"
+                >
+                  +{{ hiddenServiceCount(tasker) }} more
+                </span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (appliedFilters()?.availabilityFilter === 'today' && tasker.availability?.windows?.length) {
+          <div class="flex flex-col gap-1 text-sm">
+            <span class="text-on-surface-variant">Available Today</span>
+
+            @for (window of tasker.availability?.windows ?? []; track window.startTime + window.endTime) {
+              <span class="font-medium">
+                {{ formatTime(window.startTime) }} – {{ formatTime(window.endTime) }}
+              </span>
+            }
+          </div>
+        }
+
+        @if (appliedFilters()?.availabilityFilter === 'tomorrow' && tasker.availability?.windows?.length) {
+          <div class="flex flex-col gap-1 text-sm">
+            <span class="text-on-surface-variant">Available Tomorrow</span>
+
+            @for (window of tasker.availability?.windows ?? []; track window.startTime + window.endTime) {
+              <span class="font-medium">
+                {{ formatTime(window.startTime) }} – {{ formatTime(window.endTime) }}
+              </span>
+            }
+          </div>
+        }
+
+        @if (appliedFilters()?.availabilityFilter === 'thisWeek' && tasker.availability?.days?.length) {
+          <div class="border-t border-glass-stroke pt-3">
+            <button
+              type="button"
+              class="flex w-full items-center justify-between gap-3 text-left text-sm"
+              [attr.aria-expanded]="expandedTaskerId() === tasker.taskerProfileId"
+              (click)="toggleWeeklyAvailability(tasker.taskerProfileId)"
+            >
+              <span class="flex flex-col gap-1">
+                <span class="text-on-surface-variant">Available This Week</span>
+                <span class="font-medium text-on-surface">
+                  {{ availableDayCount(tasker) }} available days
+                </span>
+              </span>
+
+              <span
+                class="material-symbols-outlined text-on-surface-variant"
+                [class.rotate-180]="expandedTaskerId() === tasker.taskerProfileId"
+              >
+                expand_more
+              </span>
+            </button>
+
+            @if (expandedTaskerId() === tasker.taskerProfileId) {
+              <div class="mt-3 flex flex-col gap-3 border-t border-glass-stroke pt-3">
+                @for (day of tasker.availability?.days ?? []; track day.date) {
+                  <div class="flex flex-col gap-1 text-sm">
+                    <span class="font-medium">{{ formatDate(day.date) }}</span>
+
+                    @for (window of day.windows; track window.startTime + window.endTime) {
+                      <span class="text-on-surface-variant">
+                        {{ formatTime(window.startTime) }} – {{ formatTime(window.endTime) }}
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
         <div class="flex gap-3 mt-auto pt-2">
           <button
             class="btn-secondary flex-1 py-2 rounded-lg font-medium text-sm"

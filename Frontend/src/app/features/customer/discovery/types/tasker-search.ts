@@ -57,6 +57,13 @@ export interface TaskerSearchAvailability {
   days?: TaskerSearchAvailabilityDay[];
 }
 
+export interface TaskerSearchService {
+  id: string;
+  name: string;
+  hourlyRate: number;
+  dailyRate: number;
+}
+
 export interface TaskerSearchItem {
   taskerProfileId: string;
   userId: string;
@@ -69,6 +76,7 @@ export interface TaskerSearchItem {
   dailyRate: number;
   distanceKm: number;
   durationMinutes: number;
+  services: TaskerSearchService[];
   availability: TaskerSearchAvailability | null;
 }
 

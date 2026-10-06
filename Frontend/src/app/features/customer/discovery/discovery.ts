@@ -65,7 +65,8 @@ export class Discovery implements OnInit {
     | TaskerAvailabilityFilter
     | undefined;
 
-  private selectedServiceId: string | undefined;
+  selectedServiceId: string | undefined;
+  selectedServiceName: string | undefined;
   private selectedTaskerProfileId: string | undefined;
   private searchTerm: string | undefined;
 
@@ -109,10 +110,12 @@ onSearchSubmitted(selection: {
     this.selectedTaskerProfileId = selection.id;
     this.selectedServiceId = undefined;
     this.searchTerm = undefined;
+    this.selectedServiceName = undefined;
   }
 
   if (selection.type === 'service') {
     this.selectedServiceId = selection.id;
+    this.selectedServiceName = selection.name;
     this.selectedTaskerProfileId = undefined;
     this.searchTerm = undefined;
   }
@@ -121,6 +124,7 @@ onSearchSubmitted(selection: {
     this.searchTerm = selection.name;
     this.selectedServiceId = undefined;
     this.selectedTaskerProfileId = undefined;
+    this.selectedServiceName = selection.name;
   }
 
   if (this.selectedLocation) {
