@@ -1,0 +1,18 @@
+model TaskerAvailabilityOverride {
+  id              String @id @default(uuid())
+  taskerProfileId String
+
+  date      DateTime @db.Date
+  startTime String
+  endTime   String
+
+  status TaskerAvailabilityOverrideStatus
+  source TaskerAvailabilityOverrideSource
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  taskerProfile TaskerProfile @relation(fields: [taskerProfileId], references: [id])
+
+  @@index([taskerProfileId, date, status])
+}

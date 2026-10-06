@@ -1,15 +1,22 @@
 model TaskerProfile {
-  id               String                  @id @default(uuid())
-  userId           String                  @unique
-  bio              String?
-  profileImageUrl  String?
-  experienceYears  Int?
-  averageRating    Float                   @default(0)
-  totalReviews     Int                     @default(0)
-  profileStatus    TaskerProfileStatus     @default(INCOMPLETE)
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @updatedAt
-  availability     TaskerAvailability[]
+  id              String              @id @default(uuid())
+  userId          String              @unique
+  bio             String?
+  profileImageUrl String?
+  experienceYears Int?
+  averageRating   Float               @default(0)
+  totalReviews    Int                 @default(0)
+  profileStatus   TaskerProfileStatus @default(INCOMPLETE)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  bookings              Booking[]
+  availabilitySchedules TaskerAvailabilitySchedule[]
+  weeklyAvailability    TaskerWeeklyAvailability[]
+  blackouts             TaskerBlackout[]
+  availabilityOverrides TaskerAvailabilityOverride[]
+  availabilityReminders TaskerAvailabilityReminder[]
+
   kyc              TaskerKyc?
   location         TaskerLocation?
   user             User                    @relation(fields: [userId], references: [id])

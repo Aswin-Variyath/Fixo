@@ -1,3 +1,4 @@
+import prisma from "../database/prisma/prisma";
 import { Container } from "inversify";
 import { IUserRepository } from "../modules/users/interfaces/user-repository.interface";
 import { TYPES } from "./identifiers";
@@ -27,7 +28,6 @@ import { AuthMiddleware } from "../shared/middlewares/auth.middleware";
 import { IAuthorizationMiddleware } from "../modules/auth/interfaces/authoriazation-middleware.interface";
 import { AuthorizationMiddleware } from "../shared/middlewares/authorization.middleware";
 import { PrismaClient } from "@prisma/client/extension";
-import prisma from "../database/prisma/prisma";
 import { IPasswordResetRepository } from "../modules/auth/interfaces/password-reset.repository.interface";
 import { PasswordResetRepository } from "../modules/auth/repositories/password-reset.repository";
 import { IRateLimitStore } from "../modules/auth/interfaces/rate-limit-store.interface";
@@ -62,6 +62,10 @@ import { NearbyTaskerSearchStore } from "../modules/taskers/stores/nearby-tasker
 import { ICustomerAddressQueryService } from "../modules/customer-addresses/interfaces/customer-address-query-service.interface";
 import { CustomerAddressQueryService } from "../modules/customer-addresses/services/customer-address-query.service";
 import { CustomerAddressController } from "../modules/customer-addresses/controllers/customer-address.controller";
+import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-availability-query.service";
+import { ITaskerAvailabilityService } from "../modules/taskers/interfaces/tasker-availability-query-service.interface";
+import { ITaskerSearchSuggestionService } from "../modules/taskers/interfaces/tasker-search-suggestion-query-service.interface";
+import { TaskerSearchSuggestionService } from "../modules/taskers/services/tasker-search-suggestion-query.service";
 
 export const container = new Container()
 
@@ -93,9 +97,11 @@ container.bind<IserviceQueryService>(TYPES.ServiceQueryService).to(ServiceQueryS
 container.bind<ServiceController>(TYPES.ServiceController).to(ServiceController).inSingletonScope()
 container.bind<ITaskerRepositoy>(TYPES.TaskerRepository).to(TaskerRepository).inSingletonScope()
 container.bind<ITaskerQueryService>(TYPES.TaskerQueryService).to(TaskerQueryService).inSingletonScope()
+container.bind<ITaskerSearchSuggestionService>(TYPES.TaskerSearchSuggestionQueryService).to(TaskerSearchSuggestionService).inSingletonScope()
 container.bind<TaskerController>(TYPES.TaskerController).to(TaskerController).inSingletonScope()
 container.bind<INearbyTaskerSearchStore>(TYPES.NearbyTaskerSearchStore).to(NearbyTaskerSearchStore).inSingletonScope()
 container.bind<ICustomerAddressRepository>(TYPES.CustomerAddressRepository).to(CustomerAddressRepository).inSingletonScope()
 container.bind<ICustomerAddressQueryService>(TYPES.CustomerAddressQueryService).to(CustomerAddressQueryService).inSingletonScope()
 container.bind<CustomerAddressController>(TYPES.CustomerAddressController).to(CustomerAddressController).inSingletonScope()
 container.bind<IRoutingService>(TYPES.RoutingService).to(OsrmRoutingService).inSingletonScope()
+container.bind<ITaskerAvailabilityService>(TYPES.TaskerAvailabilityService).to(TaskerAvailabilityService).inSingletonScope()

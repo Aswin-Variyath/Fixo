@@ -1,0 +1,4 @@
+enum TaskerAvailabilityReminderType {
+  EXPIRING_SOON
+  EXPIRED
+}

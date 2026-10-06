@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Service()
 export class HomeNearbyTaskerApi {
     private readonly http = inject(HttpClient)
-    private readonly taskerUrl = `${ENV.API_URL}/taskers/discover`
+    private readonly taskerUrl = `${ENV.API_URL}/taskers/nearby`
     createSearch(criteria:HomeNearbyTaskerSearchCriteria):Observable<HomeNearbyTaskerSearchApiResponse> {
         let params = new HttpParams()
         .set('distance',criteria.distance)

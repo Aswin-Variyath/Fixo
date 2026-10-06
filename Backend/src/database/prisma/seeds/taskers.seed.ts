@@ -156,7 +156,7 @@ const taskers = [
   },
 ];
 
-const availability: {
+const weeklyAvailability: {
   dayOfWeek: DayOfWeek;
   startTime: string;
   endTime: string;
@@ -192,6 +192,51 @@ const availability: {
     endTime: "18:00",
   },
 ];
+
+const testBookingSlots = [
+  {
+    taskerIndex: 0,
+    startTime: "11:00",
+  },
+  {
+    taskerIndex: 1,
+    startTime: "14:00",
+  },
+];
+
+function getDayOfWeek(date: Date): DayOfWeek {
+  const days: DayOfWeek[] = [
+    DayOfWeek.SUNDAY,
+    DayOfWeek.MONDAY,
+    DayOfWeek.TUESDAY,
+    DayOfWeek.WEDNESDAY,
+    DayOfWeek.THURSDAY,
+    DayOfWeek.FRIDAY,
+    DayOfWeek.SATURDAY,
+  ];
+
+  return days[date.getUTCDay()];
+}
+
+function createDateOnly(date: Date): Date {
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
+}
+
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+
+  result.setUTCDate(result.getUTCDate() + days);
+
+  return new Date(
+    Date.UTC(
+      result.getUTCFullYear(),
+      result.getUTCMonth(),
+      result.getUTCDate(),
+    ),
+  );
+}
 
 async function findOrCreateUser(data: {
   firstName: string;
@@ -406,6 +451,15 @@ export async function seedTaskers() {
    * ---------------------------------------------------------
    */
 
+  const seededTaskerProfiles: {
+    profileId: string;
+    serviceId: string;
+  }[] = [];
+
+  const today = createDateOnly(new Date());
+  const validFrom = today;
+  const validUntil = addDays(today, 6);
+
   for (let index = 0; index < taskers.length; index++) {
     const tasker = taskers[index];
 
@@ -454,32 +508,56 @@ export async function seedTaskers() {
       },
     });
 
-    await prisma.taskerLocation.upsert({
-      where: {
-        taskerProfileId: profile.id,
-      },
-      update: {
-        addressLine: tasker.addressLine,
-        city: "Kozhikode",
-        state: "Kerala",
-        postalCode: "673001",
-        country: "India",
-        latitude: tasker.latitude,
-        longitude: tasker.longitude,
-        serviceRadiusKm: "10.00",
-      },
-      create: {
-        taskerProfileId: profile.id,
-        addressLine: tasker.addressLine,
-        city: "Kozhikode",
-        state: "Kerala",
-        postalCode: "673001",
-        country: "India",
-        latitude: tasker.latitude,
-        longitude: tasker.longitude,
-        serviceRadiusKm: "10.00",
-      },
-    });
+    await prisma.$executeRaw`
+      INSERT INTO "TaskerLocation" (
+        "id",
+        "taskerProfileId",
+        "addressLine",
+        "city",
+        "state",
+        "postalCode",
+        "country",
+        "latitude",
+        "longitude",
+        "maximumRoadDistanceKm",
+        "location",
+        "createdAt",
+        "updatedAt"
+      )
+      VALUES (
+        gen_random_uuid(),
+        ${profile.id},
+        ${tasker.addressLine},
+        ${"Kozhikode"},
+        ${"Kerala"},
+        ${"673001"},
+        ${"India"},
+        ${tasker.latitude},
+        ${tasker.longitude},
+        ${"10.00"},
+        ST_SetSRID(
+          ST_MakePoint(
+            ${tasker.longitude}::double precision,
+            ${tasker.latitude}::double precision
+          ),
+          4326
+        )::geography,
+        NOW(),
+        NOW()
+      )
+      ON CONFLICT ("taskerProfileId")
+      DO UPDATE SET
+        "addressLine" = EXCLUDED."addressLine",
+        "city" = EXCLUDED."city",
+        "state" = EXCLUDED."state",
+        "postalCode" = EXCLUDED."postalCode",
+        "country" = EXCLUDED."country",
+        "latitude" = EXCLUDED."latitude",
+        "longitude" = EXCLUDED."longitude",
+        "maximumRoadDistanceKm" = EXCLUDED."maximumRoadDistanceKm",
+        "location" = EXCLUDED."location",
+        "updatedAt" = NOW();
+    `;
 
     const additionalServices =
       index % 4 === 0
@@ -515,8 +593,19 @@ export async function seedTaskers() {
       });
     }
 
-    for (const slot of availability) {
-      await prisma.taskerAvailability.upsert({
+    seededTaskerProfiles.push({
+      profileId: profile.id,
+      serviceId: pipeLeakageRepair.id,
+    });
+
+    /*
+     * ---------------------------------------------------------
+     * Weekly availability
+     * ---------------------------------------------------------
+     */
+
+    for (const slot of weeklyAvailability) {
+      await prisma.taskerWeeklyAvailability.upsert({
         where: {
           taskerProfileId_dayOfWeek_startTime_endTime: {
             taskerProfileId: profile.id,
@@ -537,10 +626,290 @@ export async function seedTaskers() {
         },
       });
     }
+
+    /*
+     * ---------------------------------------------------------
+     * Published 7-day availability schedule
+     * ---------------------------------------------------------
+     */
+
+    const existingSchedule = await prisma.taskerAvailabilitySchedule.findFirst({
+      where: {
+        taskerProfileId: profile.id,
+        validFrom,
+        validUntil,
+      },
+      orderBy: {
+        version: "desc",
+      },
+    });
+
+    let schedule;
+
+    if (existingSchedule) {
+      await prisma.taskerAvailabilitySchedule.updateMany({
+        where: {
+          taskerProfileId: profile.id,
+          status: "ACTIVE",
+          id: {
+            not: existingSchedule.id,
+          },
+        },
+        data: {
+          status: "SUPERSEDED",
+          supersededAt: new Date(),
+        },
+      });
+
+      schedule = await prisma.taskerAvailabilitySchedule.update({
+        where: {
+          id: existingSchedule.id,
+        },
+        data: {
+          publishedAt: new Date(),
+          status: "ACTIVE",
+          supersededAt: null,
+        },
+      });
+    } else {
+      await prisma.taskerAvailabilitySchedule.updateMany({
+        where: {
+          taskerProfileId: profile.id,
+          status: "ACTIVE",
+        },
+        data: {
+          status: "SUPERSEDED",
+          supersededAt: new Date(),
+        },
+      });
+
+      const latestSchedule = await prisma.taskerAvailabilitySchedule.findFirst({
+        where: {
+          taskerProfileId: profile.id,
+        },
+        orderBy: {
+          version: "desc",
+        },
+        select: {
+          version: true,
+        },
+      });
+
+      const nextVersion = (latestSchedule?.version ?? 0) + 1;
+
+      schedule = await prisma.taskerAvailabilitySchedule.create({
+        data: {
+          taskerProfileId: profile.id,
+          version: nextVersion,
+          validFrom,
+          validUntil,
+          publishedAt: new Date(),
+          status: "ACTIVE",
+        },
+      });
+    }
+
+    /*
+     * Remove existing availability windows for this
+     * particular published schedule before recreating them.
+     *
+     * This keeps the seed idempotent.
+     */
+    await prisma.taskerAvailability.deleteMany({
+      where: {
+        scheduleId: schedule.id,
+      },
+    });
+
+    /*
+     * ---------------------------------------------------------
+     * Create actual date-specific availability
+     * ---------------------------------------------------------
+     *
+     * Normal case:
+     * 09:00 - 18:00
+     *
+     * A few taskers intentionally get different windows
+     * so we can test the discovery availability UI.
+     */
+
+    for (let day = 0; day < 7; day++) {
+      const date = addDays(validFrom, day);
+      const dayOfWeek = getDayOfWeek(date);
+
+      const normalSlot = weeklyAvailability.find(
+        (slot) => slot.dayOfWeek === dayOfWeek,
+      );
+
+      if (!normalSlot) {
+        continue;
+      }
+
+      let windows = [
+        {
+          startTime: normalSlot.startTime,
+          endTime: normalSlot.endTime,
+        },
+      ];
+
+      /*
+       * Tasker 0:
+       * Normal 09:00 - 18:00
+       *
+       * Tasker 1:
+       * Split availability on the second day.
+       *
+       * Tasker 2:
+       * Shorter availability on the third day.
+       *
+       * These variations help test the UI.
+       */
+      if (index === 1 && day === 1) {
+        windows = [
+          {
+            startTime: "09:00",
+            endTime: "12:00",
+          },
+          {
+            startTime: "14:00",
+            endTime: "18:00",
+          },
+        ];
+      }
+
+      if (index === 2 && day === 2) {
+        windows = [
+          {
+            startTime: "10:00",
+            endTime: "16:00",
+          },
+        ];
+      }
+
+      for (const window of windows) {
+        await prisma.taskerAvailability.create({
+          data: {
+            scheduleId: schedule.id,
+            date,
+            startTime: window.startTime,
+            endTime: window.endTime,
+            status: "ACTIVE",
+          },
+        });
+      }
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * Test blackout
+     * ---------------------------------------------------------
+     *
+     * Tasker 2:
+     * Tomorrow from 13:00 to 15:00 is unavailable.
+     */
+
+    if (index === 2) {
+      const blackoutDate = addDays(today, 1);
+
+      const existingBlackout = await prisma.taskerBlackout.findFirst({
+        where: {
+          taskerProfileId: profile.id,
+          date: blackoutDate,
+          startTime: "13:00",
+          endTime: "15:00",
+        },
+      });
+
+      if (existingBlackout) {
+        await prisma.taskerBlackout.update({
+          where: {
+            id: existingBlackout.id,
+          },
+          data: {
+            reason: "Test blackout",
+            status: "ACTIVE",
+          },
+        });
+      } else {
+        await prisma.taskerBlackout.create({
+          data: {
+            taskerProfileId: profile.id,
+            date: blackoutDate,
+            startTime: "13:00",
+            endTime: "15:00",
+            reason: "Test blackout",
+            status: "ACTIVE",
+          },
+        });
+      }
+    }
   }
+
+  /*
+   * ---------------------------------------------------------
+   * Seed temporary bookings for availability testing
+   * ---------------------------------------------------------
+   *
+   * Booking has no predicted end time.
+   * Only requestedStartTime is stored.
+   */
+
+  const TEST_BOOKING_DAYS = 6;
+
+  for (let day = 1; day <= TEST_BOOKING_DAYS; day++) {
+    const bookingDate = addDays(today, day);
+
+    for (const booking of testBookingSlots) {
+      const tasker = seededTaskerProfiles[booking.taskerIndex];
+
+      const existingBooking = await prisma.booking.findFirst({
+        where: {
+          customerId: customer.id,
+          taskerProfileId: tasker.profileId,
+          serviceId: tasker.serviceId,
+          bookingDate,
+          requestedStartTime: booking.startTime,
+        },
+      });
+
+      if (existingBooking) {
+        await prisma.booking.update({
+          where: {
+            id: existingBooking.id,
+          },
+          data: {
+            status: "CONFIRMED",
+          },
+        });
+      } else {
+        await prisma.booking.create({
+          data: {
+            customerId: customer.id,
+            taskerProfileId: tasker.profileId,
+            serviceId: tasker.serviceId,
+            bookingDate,
+            requestedStartTime: booking.startTime,
+            status: "CONFIRMED",
+          },
+        });
+      }
+    }
+  }
+
+  console.log(
+    `Published 7-day availability schedules seeded for ${taskers.length} taskers.`,
+  );
+
+  console.log(
+    `Temporary availability bookings seeded for the next ${TEST_BOOKING_DAYS} days.`,
+  );
 
   console.log("Customer and taskers seeded successfully.");
   console.log("Customer: test.customer@fixo.dev");
   console.log(`Test password: ${TEST_PASSWORD}`);
   console.log(`Taskers seeded: ${taskers.length}`);
+  console.log("Weekly availability seeded successfully.");
+  console.log("Published availability schedules seeded successfully.");
+  console.log("Test blackout seeded for tasker 3.");
+  console.log("Temporary availability bookings seeded successfully.");
 }

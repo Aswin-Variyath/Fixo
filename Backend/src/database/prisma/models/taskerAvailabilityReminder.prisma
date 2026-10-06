@@ -1,0 +1,15 @@
+model TaskerAvailabilityReminder {
+  id              String @id @default(uuid())
+  taskerProfileId String
+  scheduleId      String
+
+  reminderType TaskerAvailabilityReminderType
+  sentAt       DateTime
+  createdAt    DateTime                       @default(now())
+
+  taskerProfile TaskerProfile              @relation(fields: [taskerProfileId], references: [id])
+  schedule      TaskerAvailabilitySchedule @relation(fields: [scheduleId], references: [id])
+
+  @@unique([scheduleId, reminderType])
+  @@index([taskerProfileId, sentAt])
+}

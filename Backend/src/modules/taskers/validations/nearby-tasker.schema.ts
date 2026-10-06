@@ -1,130 +1,210 @@
 import { z } from "zod";
 
-const locationSchema = z
-  .object({
-    addressId: z.uuid("Address ID must be a valid UUID").optional(),
-
-    latitude: z.coerce
-      .number()
-      .min(-90, "Latitude must be between -90 and 90")
-      .max(90, "Latitude must be between -90 and 90")
-      .optional(),
-
-    longitude: z.coerce
-      .number()
-      .min(-180, "Longitude must be between -180 and 180")
-      .max(180, "Longitude must be between -180 and 180")
-      .optional(),
-  })
-  .refine(
-    (data) => {
-      const hasAddress = data.addressId !== undefined;
-
-      const hasCurrentLocation =
-        data.latitude !== undefined && data.longitude !== undefined;
-
-      return hasAddress !== hasCurrentLocation;
-    },
-    {
-      message: "Provide either addressId or both latitude and longitude",
-    },
-  );
-
 export const nearbyTaskerSchema = z.object({
-  query: z
-    .object({
-      serviceId: z.uuid("Service ID must be a valid UUID").optional(),
+    query: z
+        .object({
+            serviceId: z
+                .uuid("Service ID must be a valid UUID")
+                .optional(),
 
-      distance: z.coerce
-        .number()
-        .positive("Distance must be greater than 0")
-        .optional(),
+            distance: z.coerce
+                .number()
+                .positive("Distance must be greater than 0")
+                .optional(),
 
-      searchId: z.uuid("Search ID must be a valid UUID").optional(),
-      sortBy: z.enum(["recommended", "nearest"]).optional(),
+            searchId: z
+                .uuid("Search ID must be a valid UUID")
+                .optional(),
 
-      page: z.coerce
-        .number()
-        .int("Page must be a whole number")
-        .positive("Page must be greater than 0")
-        .optional(),
+            sortBy: z
+                .enum([
+                    "recommended",
+                    "nearest",
+                    "highestRated",
+                    "lowestPrice",
+                ])
+                .optional(),
 
-      addressId: z.uuid("Address ID must be a valid UUID").optional(),
+            requestedDate: z.coerce
+                .date()
+                .optional(),
 
-      latitude: z.coerce
-        .number()
-        .min(-90, "Latitude must be between -90 and 90")
-        .max(90, "Latitude must be between -90 and 90")
-        .optional(),
+            requestedTime: z
+                .string()
+                .regex(
+                    /^([01]\d|2[0-3]):([0-5]\d)$/,
+                    "Requested time must be in HH:mm format",
+                )
+                .optional(),
 
-      longitude: z.coerce
-        .number()
-        .min(-180, "Longitude must be between -180 and 180")
-        .max(180, "Longitude must be between -180 and 180")
-        .optional(),
-    })
-    .superRefine((data, ctx) => {
-      const isExistingSearch = data.searchId !== undefined;
+            minHourlyRate: z.coerce
+                .number()
+                .nonnegative(
+                    "Minimum hourly rate cannot be negative",
+                )
+                .optional(),
 
-      const isNewSearch =
-        data.serviceId !== undefined ||
-        data.distance !== undefined ||
-        data.sortBy !== undefined ||
-        data.addressId !== undefined ||
-        data.latitude !== undefined ||
-        data.longitude !== undefined;
+            maxHourlyRate: z.coerce
+                .number()
+                .nonnegative(
+                    "Maximum hourly rate cannot be negative",
+                )
+                .optional(),
 
-      if (isExistingSearch && isNewSearch) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Do not provide searchId with new search parameters",
-          path: ["searchId"],
-        });
+            page: z.coerce
+                .number()
+                .int("Page must be a whole number")
+                .positive("Page must be greater than 0")
+                .optional(),
 
-        return;
-      }
+            addressId: z
+                .uuid("Address ID must be a valid UUID")
+                .optional(),
 
-      if (!isExistingSearch) {
-        if (!data.serviceId) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Service ID is required",
-            path: ["serviceId"],
-          });
-        }
+            rating: z.coerce
+                .number()
+                .min(0, "Rating cannot be less than 0")
+                .max(5, "Rating cannot be greater than 5")
+                .optional(),
 
-        if (data.distance === undefined) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Distance is required",
-            path: ["distance"],
-          });
-        }
+            latitude: z.coerce
+                .number()
+                .min(-90, "Latitude must be between -90 and 90")
+                .max(90, "Latitude must be between -90 and 90")
+                .optional(),
+                search: z
+    .string()
+    .trim()
+    .min(2, "Search must be at least 2 characters")
+    .max(50, "Search cannot exceed 50 characters")
+    .optional(),
+    taskerProfileId: z
+    .uuid("Tasker profile ID must be a valid UUID")
+    .optional(),
 
-        const hasAddress = data.addressId !== undefined;
+            availabilityFilter: z
+                .enum(["today", "tomorrow", "thisWeek"])
+                .optional(),
 
-        const hasCurrentLocation =
-          data.latitude !== undefined && data.longitude !== undefined;
+            longitude: z.coerce
+                .number()
+                .min(-180, "Longitude must be between -180 and 180")
+                .max(180, "Longitude must be between -180 and 180")
+                .optional(),
+        })
+        .superRefine((data, ctx) => {
+            const isExistingSearch =
+                data.searchId !== undefined;
 
-        if (hasAddress === hasCurrentLocation) {
-          ctx.addIssue({
-            code: "custom",
-            message: "Provide either addressId or both latitude and longitude",
-            path: ["addressId"],
-          });
-        }
-      }
+            const hasNewSearchParameters =
+                data.serviceId !== undefined ||
+                data.distance !== undefined ||
+                data.sortBy !== undefined ||
+                data.rating !== undefined ||
+                data.search !== undefined ||
+                data.taskerProfileId !== undefined ||
+                data.requestedDate !== undefined ||
+                data.minHourlyRate !== undefined ||
+                data.maxHourlyRate !== undefined ||
+                data.requestedTime !== undefined ||
+                data.availabilityFilter !== undefined ||
+                data.addressId !== undefined ||
+                data.latitude !== undefined ||
+                data.longitude !== undefined;
 
-      if (isExistingSearch && data.page === undefined) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Page is required when using searchId",
-          path: ["page"],
-        });
-      }
-    }),
+            /*
+             * Existing search
+             */
+            if (isExistingSearch) {
+                if (hasNewSearchParameters) {
+                    ctx.addIssue({
+                        code: "custom",
+                        message:
+                            "Do not provide searchId with new search parameters",
+                        path: ["searchId"],
+                    });
+                }
+
+                if (data.page === undefined) {
+                    ctx.addIssue({
+                        code: "custom",
+                        message:
+                            "Page is required when using searchId",
+                        path: ["page"],
+                    });
+                }
+
+                return;
+            }
+
+            /*
+             * New search
+             */
+            if (data.distance === undefined) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: "Distance is required",
+                    path: ["distance"],
+                });
+            }
+
+            /*
+             * Location validation
+             */
+            const hasAddress =
+                data.addressId !== undefined;
+
+            const hasCoordinates =
+                data.latitude !== undefined &&
+                data.longitude !== undefined;
+
+            if (hasAddress === hasCoordinates) {
+                ctx.addIssue({
+                    code: "custom",
+                    message:
+                        "Provide either addressId or both latitude and longitude",
+                    path: ["addressId"],
+                });
+            }
+
+            /*
+             * requestedDate and requestedTime
+             * must be provided together.
+             */
+            const hasRequestedDate =
+                data.requestedDate !== undefined;
+
+            const hasRequestedTime =
+                data.requestedTime !== undefined;
+
+            if (
+                hasRequestedDate !== hasRequestedTime
+            ) {
+                ctx.addIssue({
+                    code: "custom",
+                    message:
+                        "requestedDate and requestedTime must be provided together",
+                    path: ["requestedDate"],
+                });
+            }
+
+            /*
+             * Price validation
+             */
+            if (
+                data.minHourlyRate !== undefined &&
+                data.maxHourlyRate !== undefined &&
+                data.minHourlyRate > data.maxHourlyRate
+            ) {
+                ctx.addIssue({
+                    code: "custom",
+                    message:
+                        "Minimum hourly rate cannot be greater than maximum hourly rate",
+                    path: ["minHourlyRate"],
+                });
+            }
+        }),
 });
 
-export type NearbyTaskerInput = z.infer<typeof nearbyTaskerSchema>["query"];
-
-
+export type NearbyTaskerInput =
+    z.infer<typeof nearbyTaskerSchema>["query"];

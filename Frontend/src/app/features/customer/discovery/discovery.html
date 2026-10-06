@@ -1,28 +1,38 @@
-<!-- Navbar -->
+@if (showLocationModal()) {
+  <app-location-modal
+    (locationSelected)="onLocationSelected($event)"
+    (closed)="closeLocationModal()"
+  />
+}
+
 <app-navbar></app-navbar>
 
-<!-- Main Discovery Page -->
 <main
-  class="w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 pb-section-gap"
+  class="w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-28 md:pt-32 pb-section-gap"
 >
-  <!-- Discovery Header -->
-  <app-discovery-header></app-discovery-header>
+  <app-discovery-header
+  (searchSubmitted)="onSearchSubmitted($event)"
+  ></app-discovery-header>
 
-  <!-- Discovery Content -->
-  <section
-    class="mt-10 flex flex-col lg:flex-row items-start gap-10"
-  >
-    <!-- Filters -->
+  <section class="mt-10 flex flex-col lg:flex-row items-start gap-10">
     <div class="w-full lg:w-80 lg:flex-shrink-0">
-      <app-filters></app-filters>
+      <app-filters (filtersChange)="onFiltersChange($event)"></app-filters>
     </div>
 
-    <!-- Tasker Results -->
     <div class="w-full lg:flex-1 min-w-0">
-      <app-tasker-results></app-tasker-results>
+      <app-tasker-results
+  [appliedFilters]="appliedFilters()"
+  [selectedServiceId]="selectedServiceId"
+  [selectedServiceName]="selectedServiceName"
+  (removeDistance)="removeDistanceFilter()"
+  (removeAvailability)="removeAvailabilityFilter()"
+  (removeRating)="removeRatingFilter()"
+  [emptyState]="emptyState()"
+  (removePrice)="onPriceRemove()"
+  (sortChange)="onSortChange($event)"
+></app-tasker-results>
     </div>
   </section>
 </main>
 
-<!-- Footer -->
 <app-footer></app-footer>
