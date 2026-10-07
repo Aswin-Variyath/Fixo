@@ -6,6 +6,7 @@ export const TYPES = {
     UserAuthRepository: Symbol.for("UserAuthRepository"),
     AuthCommandService: Symbol.for("AuthCommandService"),
     AuthController:Symbol.for("AuthController"),
+    GoogleOAuthService: Symbol.for("GoogleOAuthService"),
     // Auth token and session infrasture
     AccessTokenService:Symbol.for("AccessTokenService"),
     OpaqueTokenService:Symbol.for("OpaqueTokenService"),

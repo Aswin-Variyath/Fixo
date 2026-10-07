@@ -66,6 +66,8 @@ import { TaskerAvailabilityService } from "../modules/taskers/services/tasker-av
 import { ITaskerAvailabilityService } from "../modules/taskers/interfaces/tasker-availability-query-service.interface";
 import { ITaskerSearchSuggestionService } from "../modules/taskers/interfaces/tasker-search-suggestion-query-service.interface";
 import { TaskerSearchSuggestionService } from "../modules/taskers/services/tasker-search-suggestion-query.service";
+import { IGoogleOAuthService } from "../shared/providers/google/interfaces/google-oauth.service.interface";
+import { GoogleOAuthService } from "../shared/providers/google/services/google-oauth.service";
 
 export const container = new Container()
 
@@ -105,3 +107,4 @@ container.bind<ICustomerAddressQueryService>(TYPES.CustomerAddressQueryService).
 container.bind<CustomerAddressController>(TYPES.CustomerAddressController).to(CustomerAddressController).inSingletonScope()
 container.bind<IRoutingService>(TYPES.RoutingService).to(OsrmRoutingService).inSingletonScope()
 container.bind<ITaskerAvailabilityService>(TYPES.TaskerAvailabilityService).to(TaskerAvailabilityService).inSingletonScope()
+container.bind<IGoogleOAuthService>(TYPES.GoogleOAuthService).to(GoogleOAuthService).inSingletonScope()

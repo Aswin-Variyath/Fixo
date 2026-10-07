@@ -5,6 +5,7 @@ model User {
   email               String               @unique @db.VarChar(255)
   phone               String               @unique @db.VarChar(20)
   password            String
+  googleId            String?              @unique
   profileImage        String?
   languageId          String
   lastLogin           DateTime?
