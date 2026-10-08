@@ -7,6 +7,7 @@ export interface GoogleUserProfile {
 }
 
 export interface IGoogleOAuthService {
-    getAuthorizationUrl(): string;
+    getAuthorizationUrl(): Promise<string>;
+    verifyState(state: string): Promise<boolean>;
     verifyCode(code: string): Promise<GoogleUserProfile>;
 }

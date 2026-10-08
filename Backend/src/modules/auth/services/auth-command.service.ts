@@ -25,6 +25,8 @@ import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { SwitchRoleResult } from "../dto/switch-role.dto";
 import { IAdminOtpStore } from "../interfaces/admin-otp-store.interface";
 import { AdminLoginDto } from "../dto/admin-login.dto";
+import { IGoogleOAuthService } from "../../../shared/providers/google/interfaces/google-oauth.service.interface";
+import { GoogleAuthResult } from "../dto/google-auth.dto";
 
 @injectable()
 export class AuthCommandService implements IAuthCommandService {
@@ -41,6 +43,7 @@ export class AuthCommandService implements IAuthCommandService {
     @inject(TYPES.RateLimitStore) private readonly rateLimitStore: IRateLimitStore,
     @inject(TYPES.SessionIndexStore) private readonly sessionIndexStore: IsessionIndexStore,
     @inject(TYPES.AdminOtpStore) private readonly adminOtpStore: IAdminOtpStore,
+    @inject(TYPES.GoogleOAuthService) private readonly googleOAuthService: IGoogleOAuthService,
 ) {}
     
     
@@ -92,6 +95,7 @@ export class AuthCommandService implements IAuthCommandService {
     async login(data: LoginDto): Promise<LoginResult> {
         const user = await this.userAuthRepository.findForLogin(data.email)
         if(!user) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
+        if(!user.passwordHash) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
         const passwordMatches = await this.passwordService.verify(user.passwordHash,data.password)
         if(!passwordMatches) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
         const requestedRole = user.roles.find((role)=>role.type === data.role)
@@ -438,7 +442,8 @@ export class AuthCommandService implements IAuthCommandService {
     if (!admin.status.isActive) throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
     if (!admin.adminRole.isSuperAdmin)throw new AppError(StatusCodes.FORBIDDEN,"You do not have admin access")
     if (!admin.adminRole.isActive) throw new AppError(StatusCodes.FORBIDDEN,"Admin role is inactive")
-        
+    
+    if(!admin.passwordHash) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
     const isPasswordValid = await this.passwordService.verify(admin.passwordHash, data.password)
     if (!isPasswordValid) throw new AppError(StatusCodes.UNAUTHORIZED,"Invalid email or password")
     const cooldownKey = `auth:admin-otp-cooldown:${admin.id}`
@@ -507,4 +512,42 @@ export class AuthCommandService implements IAuthCommandService {
         }
     }
 
+    async googleLogin(code: string): Promise<GoogleAuthResult> {
+        const googleUser = await this.googleOAuthService.verifyCode(code)
+        let user = await this.userAuthRepository.findByGoogleId(googleUser.googleId)
+        if(!user) {
+            user = await this.userAuthRepository.findByEmail(googleUser.email)
+            if(user) {
+                await this.userAuthRepository.linkGoogleId(user.id, googleUser.googleId)
+            }
+            if(!user) {
+                const customerRole = await this.userAuthRepository.findByRoleByType("customer")
+                const defaultLanguage = await this.userAuthRepository.findLanguageById('en')
+                const activeStatus = await this.userAuthRepository.findStatusById('active')
+                if(!customerRole || !defaultLanguage || !activeStatus) {
+                    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Required Google signup reference data is missing")
+                }
+                user = await this.userAuthRepository.createGoogleUser({
+                    firstName: googleUser.firstName,
+                    lastName: googleUser.lastName,
+                    email: googleUser.email,
+                    googleId: googleUser.googleId,
+                    profileImage: googleUser.profileImage,
+                    roleId: customerRole.id,
+                    languageId: defaultLanguage.id,
+                    statusId: activeStatus.id,
+                })
+            }
+            if(user?.deletedAt) {
+                throw new AppError(StatusCodes.FORBIDDEN,"Account access is not allowed")
+            }
+        }
+        const { accessToken, refreshToken } = await this.createAuthenticationSession(user,'customer')
+        return {accessToken,refreshToken,accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS}
+        
+    }
+
+    async getGoogleAuthorizationUrl(): Promise<string> {
+        return await this.googleOAuthService.getAuthorizationUrl()
+    }
 }

@@ -41,7 +41,7 @@ export interface AdminLoginUserRecord {
     firstName:string
     lastName:string
     email:string
-    passwordHash:string;
+    passwordHash:string | null;
     deletedAt: Date | null
     status:{
         type:string;
@@ -54,6 +54,17 @@ export interface AdminLoginUserRecord {
         isSuperAdmin:boolean
         isActive:boolean
     }
+}
+
+export interface CreateGoogleUserData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    googleId: string;
+    profileImage: string | null;
+    roleId: string;
+    languageId: string;
+    statusId: string;
 }
 
 export interface IUserAuthRespository {
@@ -74,6 +85,9 @@ export interface IUserAuthRespository {
     findUserRoleByType(userId:string,roleType:ActiveRole):Promise<userRoleRecord | null>
     findForAdminLogin(email: string): Promise<AdminLoginUserRecord | null>
     findForAdminLoginById(userId: string): Promise<AdminLoginUserRecord | null>
+    findByGoogleId(googleId:string):Promise<User | null>
+    linkGoogleId(userId:string, googleId:string):Promise<void>
+    createGoogleUser(data:CreateGoogleUserData):Promise<User>
 }
 
 export interface LoginUserRecord {
@@ -81,8 +95,8 @@ export interface LoginUserRecord {
     firstName:string
     lastName:string
     email:string
-    phone:string
-    passwordHash:string
+    phone:string | null
+    passwordHash:string | null
     profileImage:string | null
     deletedAt: Date | null
 

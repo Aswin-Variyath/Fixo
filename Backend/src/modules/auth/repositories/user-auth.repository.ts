@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import prisma from "../../../database/prisma/prisma";
 import { SignupResponseDto } from "../dto/auth-response.dto";
-import { AdminLoginUserRecord, AuthReferenceRecord, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord, userRoleRecord } from "../interfaces/user-auth-repository.interface";
+import { AdminLoginUserRecord, AuthReferenceRecord, CreateGoogleUserData, CreateSignupUserData, IUserAuthRespository, LoginUserRecord, RefreshAuthUserRecord, userRoleRecord } from "../interfaces/user-auth-repository.interface";
 import { TYPES } from "../../../di";
 import { PrismaClient, User } from "../../../database/generated/prisma/client";
 import { email } from "zod";
@@ -427,4 +427,44 @@ export class UserAuthRepository implements IUserAuthRespository {
         adminRole
     }
 }
+    async findByGoogleId(googleId: string): Promise<User | null> {
+        return await this.prisma.user.findUnique({
+            where:{
+                googleId
+            }
+        })
+    }
+
+    async linkGoogleId(userId: string, googleId: string): Promise<void> {
+        await this.prisma.user.update({
+            where:{
+                id:userId
+            },
+            data:{
+                googleId
+            }
+        })
+    }
+
+    async createGoogleUser(data: CreateGoogleUserData): Promise<User> {
+        return await this.prisma.user.create({
+             data: {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                phone: null,
+                password: null,
+                googleId: data.googleId,
+                profileImage: data.profileImage,
+                languageId: data.languageId,
+                statusId: data.statusId,
+
+                userRoles: {
+                    create: {
+                        roleId: data.roleId
+                    }
+                }
+            }
+        })
+    }
 }

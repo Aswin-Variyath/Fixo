@@ -3,7 +3,7 @@ export interface UserFromDatabase {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
+    phone: string | null;
     profileImage: string | null;
 
     roles: {

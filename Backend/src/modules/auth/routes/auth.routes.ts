@@ -34,19 +34,7 @@ router.post("/switch-role",authMiddleware.authenticate,validate(SwitchRoleSchema
 router.post("/admin-login",validate(adminLoginSchema),authController.adminLogin)
 router.post("/verify-otp",validate(verifyAdminOtpSchema),authController.verifyAdminOtp)
 router.post("/admin-resend-otp",validate(resendAdminOtpSchema),authController.resendAdminOtp)
-// test api =======
-router.get("/admin-test",authMiddleware.authenticate,authorizationMiddleware.authorize("admin"),(req,res)=>{
-    res.json({
-        message:"Welcome Admin",
-        user: req.user
-    })
-})
-
-router.get("/costumer-test", authMiddleware.authenticate,authorizationMiddleware.authorize("customer"),(req,res)=>{
-    res.json({
-        message:"Welcome customer",
-        user:req.user
-    })
-})
-// test api =====
+// Google routes
+router.get('/google',authController.google)
+router.get("/google/callback",authController.googleCallback)
 export default router;

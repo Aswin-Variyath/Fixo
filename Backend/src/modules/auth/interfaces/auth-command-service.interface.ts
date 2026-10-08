@@ -1,5 +1,6 @@
 import { AdminLoginDto } from "../dto/admin-login.dto";
 import { ForgotPasswordResult, loginResponseDto, SignupResponseDto, SignupResult } from "../dto/auth-response.dto";
+import { GoogleAuthResult } from "../dto/google-auth.dto";
 import { LoginDto } from "../dto/login.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { SignupDto } from "../dto/signup.dto";
@@ -54,4 +55,6 @@ export interface IAuthCommandService {
     adminLogin(data:AdminLoginDto):Promise<AdminLoginResult>
     verifyAdminOtp(userId:string,otp:string):Promise<AdminVerifyOtpResult>
     resendAdminOtp(challengeId:string):Promise<AdminLoginResult>
+    googleLogin(code:string):Promise<GoogleAuthResult>
+    getGoogleAuthorizationUrl():Promise<string>
 }

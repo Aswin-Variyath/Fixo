@@ -13,10 +13,14 @@ import { HttpResponse } from "../../../shared/constants";
 import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { AdminLoginDto } from "../dto/admin-login.dto";
 import { ResendAdminOtpDto } from "../dto/resend-admin-otp.dto";
+import { IGoogleOAuthService } from "../../../shared/providers/google/interfaces/google-oauth.service.interface";
 
 @injectable()
 export class AuthController {
-    constructor(@inject(TYPES.AuthCommandService) private readonly authCommandService: IAuthCommandService) {}
+    constructor(
+        @inject(TYPES.AuthCommandService) private readonly authCommandService: IAuthCommandService,
+        @inject(TYPES.GoogleOAuthService) private readonly googleOAuthService: IGoogleOAuthService,
+    ) {}
     
     signup = async(req: Request<Record<string,never>,unknown, SignupDto>, res: Response):Promise<void> => {
         const result = await this.authCommandService.signup(req.body)
@@ -203,4 +207,39 @@ export class AuthController {
         const result = await this.authCommandService.resendAdminOtp(req.body.challengeId)
         res.status(StatusCodes.OK).json(successResponse("OTP resend successfully",result))
     }
+
+    google = async(req:Request,res:Response):Promise<void> => {
+        const authorizationUrl = await this.authCommandService.getGoogleAuthorizationUrl()
+        res.redirect(authorizationUrl)
+    }
+
+    googleCallback = async(req:Request,res:Response):Promise<void> => {
+        const code = req.query.code
+        const state = req.query.state
+        if(!code || typeof code != "string") throw new AppError(StatusCodes.BAD_GATEWAY,"Google authorization code is missing")
+        if(!state || typeof state != "string") throw new AppError(StatusCodes.BAD_GATEWAY,"Google authorization code is missing")
+        const isValidState =  await this.googleOAuthService.verifyState(state);
+
+        if (!isValidState) {
+            throw new AppError(
+                StatusCodes.BAD_REQUEST,
+                "Invalid or expired Google OAuth state"
+            );
+        }
+        const result = await this.authCommandService.googleLogin(code)
+        res.cookie("accessToken",result.accessToken, {
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === 'production',
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS * 1000
+        })
+        res.cookie('refreshToken',result.refreshToken, {
+            httpOnly:true,
+            secure:ENV.APP.NODE_ENV === 'production',
+            sameSite:'lax',
+            maxAge:ENV.AUTH.TOKEN.REFRESH_TTL_SECONDS * 1000
+        })
+        res.redirect(ENV.APP.FRONTEND_URL)
+    }
+
 }
