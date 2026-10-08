@@ -1,3 +1,5 @@
+export type GoogleAuthRole = "customer" | "tasker";
+
 export interface GoogleUserProfile {
     googleId: string;
     email: string;
@@ -7,7 +9,7 @@ export interface GoogleUserProfile {
 }
 
 export interface IGoogleOAuthService {
-    getAuthorizationUrl(): Promise<string>;
-    verifyState(state: string): Promise<boolean>;
+    getAuthorizationUrl(role: GoogleAuthRole): Promise<string>;
+    verifyState(state: string): Promise<GoogleAuthRole | null>;
     verifyCode(code: string): Promise<GoogleUserProfile>;
 }

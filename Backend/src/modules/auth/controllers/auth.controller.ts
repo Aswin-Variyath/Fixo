@@ -14,6 +14,7 @@ import { TaskerSignupDto } from "../dto/tasker-signup.dt0";
 import { AdminLoginDto } from "../dto/admin-login.dto";
 import { ResendAdminOtpDto } from "../dto/resend-admin-otp.dto";
 import { IGoogleOAuthService } from "../../../shared/providers/google/interfaces/google-oauth.service.interface";
+import { ro } from "zod/locales";
 
 @injectable()
 export class AuthController {
@@ -209,7 +210,9 @@ export class AuthController {
     }
 
     google = async(req:Request,res:Response):Promise<void> => {
-        const authorizationUrl = await this.authCommandService.getGoogleAuthorizationUrl()
+        const role = req.query.role
+        if(role !== 'customer' && role !== 'tasker') throw new AppError(StatusCodes.BAD_REQUEST, "Invalid Google OAuth role")
+        const authorizationUrl = await this.authCommandService.getGoogleAuthorizationUrl(role)
         res.redirect(authorizationUrl)
     }
 
@@ -218,15 +221,10 @@ export class AuthController {
         const state = req.query.state
         if(!code || typeof code != "string") throw new AppError(StatusCodes.BAD_GATEWAY,"Google authorization code is missing")
         if(!state || typeof state != "string") throw new AppError(StatusCodes.BAD_GATEWAY,"Google authorization code is missing")
-        const isValidState =  await this.googleOAuthService.verifyState(state);
+        const role = await this.googleOAuthService.verifyState(state);
+        if (!role) throw new AppError(StatusCodes.BAD_REQUEST, "Invalid or expired Google OAuth state")
 
-        if (!isValidState) {
-            throw new AppError(
-                StatusCodes.BAD_REQUEST,
-                "Invalid or expired Google OAuth state"
-            );
-        }
-        const result = await this.authCommandService.googleLogin(code)
+        const result = await this.authCommandService.googleLogin(code, role)
         res.cookie("accessToken",result.accessToken, {
             httpOnly:true,
             secure:ENV.APP.NODE_ENV === 'production',

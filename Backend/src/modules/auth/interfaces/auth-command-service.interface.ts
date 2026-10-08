@@ -55,6 +55,6 @@ export interface IAuthCommandService {
     adminLogin(data:AdminLoginDto):Promise<AdminLoginResult>
     verifyAdminOtp(userId:string,otp:string):Promise<AdminVerifyOtpResult>
     resendAdminOtp(challengeId:string):Promise<AdminLoginResult>
-    googleLogin(code:string):Promise<GoogleAuthResult>
-    getGoogleAuthorizationUrl():Promise<string>
+    googleLogin(code:string, role: "customer" | "tasker"):Promise<GoogleAuthResult>
+    getGoogleAuthorizationUrl(role: "customer" | "tasker"):Promise<string>
 }

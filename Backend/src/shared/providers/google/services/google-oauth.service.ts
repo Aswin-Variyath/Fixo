@@ -6,6 +6,7 @@ import { ENV } from "../../../../config/env.config";
 import { redisClient } from "../../../../config/redis.config";
 
 import {
+    GoogleAuthRole,
     GoogleUserProfile,
     IGoogleOAuthService,
 } from "../interfaces/google-oauth.service.interface";
@@ -22,12 +23,14 @@ export class GoogleOAuthService implements IGoogleOAuthService {
         );
     }
 
-    async getAuthorizationUrl(): Promise<string> {
+    async getAuthorizationUrl(
+        role: GoogleAuthRole
+    ): Promise<string> {
         const state = randomBytes(32).toString("hex");
 
         await redisClient.set(
             `google:oauth:state:${state}`,
-            "1",
+            role,
             {
                 EX: ENV.AUTH.GOOGLE.STATE_TTL_SECONDS,
             }
@@ -45,21 +48,29 @@ export class GoogleOAuthService implements IGoogleOAuthService {
         });
     }
 
-    async verifyState(state: string): Promise<boolean> {
+    async verifyState(
+        state: string
+    ): Promise<GoogleAuthRole | null> {
         const key = `google:oauth:state:${state}`;
 
-        const exists = await redisClient.get(key);
+        const role = await redisClient.get(key);
 
-        if (!exists) {
-            return false;
+        if (!role) {
+            return null;
         }
 
         await redisClient.del(key);
 
-        return true;
+        if (role !== "customer" && role !== "tasker") {
+            return null;
+        }
+
+        return role;
     }
 
-    async verifyCode(code: string): Promise<GoogleUserProfile> {
+    async verifyCode(
+        code: string
+    ): Promise<GoogleUserProfile> {
         const { tokens } = await this.client.getToken(code);
 
         if (!tokens.id_token) {
@@ -78,7 +89,9 @@ export class GoogleOAuthService implements IGoogleOAuthService {
         }
 
         if (!payload.sub || !payload.email) {
-            throw new Error("Google account information is incomplete");
+            throw new Error(
+                "Google account information is incomplete"
+            );
         }
 
         return {

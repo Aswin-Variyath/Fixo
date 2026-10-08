@@ -512,42 +512,94 @@ export class AuthCommandService implements IAuthCommandService {
         }
     }
 
-    async googleLogin(code: string): Promise<GoogleAuthResult> {
-        const googleUser = await this.googleOAuthService.verifyCode(code)
-        let user = await this.userAuthRepository.findByGoogleId(googleUser.googleId)
-        if(!user) {
-            user = await this.userAuthRepository.findByEmail(googleUser.email)
-            if(user) {
-                await this.userAuthRepository.linkGoogleId(user.id, googleUser.googleId)
+async googleLogin(
+    code: string,
+    role: "customer" | "tasker"
+): Promise<GoogleAuthResult> {
+    const googleUser =
+        await this.googleOAuthService.verifyCode(code);
+
+    let user =
+        await this.userAuthRepository.findByGoogleId(
+            googleUser.googleId
+        );
+
+    if (!user) {
+        user =
+            await this.userAuthRepository.findByEmail(
+                googleUser.email
+            );
+
+        if (user) {
+            await this.userAuthRepository.linkGoogleId(
+                user.id,
+                googleUser.googleId
+            );
+        }
+
+        if (!user) {
+            const selectedRole =
+                await this.userAuthRepository.findByRoleByType(
+                    role
+                );
+
+            const defaultLanguage =
+                await this.userAuthRepository.findLanguageById(
+                    "en"
+                );
+
+            const activeStatus =
+                await this.userAuthRepository.findStatusById(
+                    "active"
+                );
+
+            if (
+                !selectedRole ||
+                !defaultLanguage ||
+                !activeStatus
+            ) {
+                throw new AppError(
+                    StatusCodes.INTERNAL_SERVER_ERROR,
+                    "Required Google signup reference data is missing"
+                );
             }
-            if(!user) {
-                const customerRole = await this.userAuthRepository.findByRoleByType("customer")
-                const defaultLanguage = await this.userAuthRepository.findLanguageById('en')
-                const activeStatus = await this.userAuthRepository.findStatusById('active')
-                if(!customerRole || !defaultLanguage || !activeStatus) {
-                    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Required Google signup reference data is missing")
-                }
-                user = await this.userAuthRepository.createGoogleUser({
+
+            user =
+                await this.userAuthRepository.createGoogleUser({
                     firstName: googleUser.firstName,
                     lastName: googleUser.lastName,
                     email: googleUser.email,
                     googleId: googleUser.googleId,
                     profileImage: googleUser.profileImage,
-                    roleId: customerRole.id,
+                    roleId: selectedRole.id,
                     languageId: defaultLanguage.id,
                     statusId: activeStatus.id,
-                })
-            }
-            if(user?.deletedAt) {
-                throw new AppError(StatusCodes.FORBIDDEN,"Account access is not allowed")
-            }
+                });
         }
-        const { accessToken, refreshToken } = await this.createAuthenticationSession(user,'customer')
-        return {accessToken,refreshToken,accessTokenExpiresIn:ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS}
-        
     }
 
-    async getGoogleAuthorizationUrl(): Promise<string> {
-        return await this.googleOAuthService.getAuthorizationUrl()
+    if (user.deletedAt) {
+        throw new AppError(
+            StatusCodes.FORBIDDEN,
+            "Account access is not allowed"
+        );
+    }
+
+    const { accessToken, refreshToken } =
+        await this.createAuthenticationSession(
+            user,
+            role
+        );
+
+    return {
+        accessToken,
+        refreshToken,
+        accessTokenExpiresIn:
+            ENV.AUTH.TOKEN.ACCESS_TTL_SECONDS,
+    };
+}
+
+    async getGoogleAuthorizationUrl(role: "customer" | "tasker"): Promise<string> {
+        return await this.googleOAuthService.getAuthorizationUrl(role)
     }
 }
