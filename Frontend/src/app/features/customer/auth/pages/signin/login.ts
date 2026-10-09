@@ -26,6 +26,11 @@ export class Login {
     })
   })
 
+  loginWithGoogle(): void {
+  window.location.href =
+    'http://localhost:3000/auth/google?role=customer';
+}
+
   isSubmitting:boolean = false
   errorMessage:string = ''
 

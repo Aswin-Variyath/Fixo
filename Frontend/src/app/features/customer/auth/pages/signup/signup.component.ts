@@ -68,6 +68,11 @@ export class SignupComponent {
   isSubmitting:boolean = false;
   errorMessage:string = ''
 
+  loginWithGoogle(): void {
+  window.location.href =
+    'http://localhost:3000/auth/google?role=customer';
+}
+
   submit():void {
     console.log("asdfjalsdf",this.signupForm.getRawValue())
     if(this.signupForm.invalid) {

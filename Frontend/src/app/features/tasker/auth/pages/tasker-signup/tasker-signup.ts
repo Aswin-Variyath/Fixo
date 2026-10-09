@@ -87,4 +87,8 @@ export class TaskerSignup {
     })
     
   }
+  loginWithGoogle(): void {
+  window.location.href =
+    'http://localhost:3000/auth/google?role=tasker';
+  }
 }
