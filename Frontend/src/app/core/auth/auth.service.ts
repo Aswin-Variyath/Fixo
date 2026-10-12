@@ -1,7 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { AuthApiService } from './auth-api.service';
 import { AuthStore } from './auth.store';
-import { AdminLoginRequest, ForgotPasswordRequest, LoginRequest, ResendAdminOtpRequest, ResetPasswordRequest, SignupRequest, VerifyAdminOtpRequest } from './auth.types';
+import { ActiveRole, AdminLoginRequest, ForgotPasswordRequest, LoginRequest, ResendAdminOtpRequest, ResetPasswordRequest, SignupRequest, VerifyAdminOtpRequest } from './auth.types';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { AdminOtpStateService } from './admin-otp-state.service';
 
@@ -48,21 +48,35 @@ export class AuthService {
     refresh() {
         return this.authApiService.refresh()
     }
-    signup(request:SignupRequest) {
-        return this.authApiService.signup(request).pipe(
-            tap((response)=>{
-                this.authStore.setAuthenticated(response.data)
-            })
-        )
-    }
+signup(request: SignupRequest) {
+  return this.authApiService.signup(request).pipe(
+    tap((response) => {
+      const user = response.data;
 
-    signupTasker(request: SignupRequest) {
-        return this.authApiService.signupTasker(request).pipe(
-            tap((response) => {
-            this.authStore.setAuthenticated(response.data);
-                })
-            );
-            }
+      this.authStore.setAuthenticated({
+        ...user,
+        profileImage: null,
+        roles: [user.role],
+        activeRole: user.role,
+      });
+    })
+  );
+}
+
+   signupTasker(request: SignupRequest) {
+  return this.authApiService.signupTasker(request).pipe(
+    tap((response) => {
+      const user = response.data;
+
+      this.authStore.setAuthenticated({
+        ...user,
+        profileImage: null,
+        roles: [user.role],
+        activeRole: user.role,
+      });
+    })
+  );
+}
 
     forgotPassword(request:ForgotPasswordRequest) {
         return this.authApiService.forgotPassword(request)
@@ -107,5 +121,30 @@ export class AuthService {
             })
         )
     }
+
+    becomeTasker() {
+        return this.authApiService.becomeTasker();
+    }
+
+    becomeCustomer() {
+        return this.authApiService.becomeCustomer();
+    }
+
+    switchRole(role: ActiveRole) {
+    return this.authApiService.switchRole(role).pipe(
+        tap((response) => {
+            const currentUser = this.authStore.user();
+
+            if (!currentUser) {
+                return;
+            }
+
+            this.authStore.setUser({
+                ...currentUser,
+                activeRole: response.data.activeRole,
+            });
+        })
+    );
+}
 
 }   

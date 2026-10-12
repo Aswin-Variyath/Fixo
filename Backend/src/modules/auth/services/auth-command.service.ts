@@ -54,21 +54,11 @@ export class AuthCommandService implements IAuthCommandService {
        const activeStatus = await this.userAuthRepository.findStatusById("active")
        if(!customerRole || !defaultLanguage || !activeStatus) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Required signup reference data is missing")
         const existingUser = await this.userAuthRepository.findByEmail(data.email)
-       if(existingUser) {
+       if (existingUser) {
         const customerRoleExists = await this.userAuthRepository.findUserRole(existingUser.id,customerRole.id)
-        if(customerRoleExists) throw new AppError(StatusCodes.CONFLICT, "User is already registered as a customer")
-        await this.userAuthRepository.createUserRole(existingUser.id,customerRole.id)
-        const updatedUser = await this.userAuthRepository.findUserWithRoleById(existingUser.id,customerRole.id)
-        if(!updatedUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to retrive user after adding customer role")
-        const authUser = await this.userAuthRepository.findForLoginById(existingUser.id)
-        if(!authUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to initialize authentication session")
-        const {accessToken, refreshToken} = await this.createAuthenticationSession(authUser,"customer")
-        return {
-            user:updatedUser,
-            accessToken,
-            refreshToken
+        if (customerRoleExists) throw new AppError(StatusCodes.CONFLICT,"User is already registered as a customer")
+        throw new AppError(StatusCodes.CONFLICT,"An account with this email already exists. Please sign in to add the customer role.")
         }
-       }
        const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
        if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")
         const passwordHash = await this.passwordService.hash(data.password)
@@ -319,20 +309,24 @@ export class AuthCommandService implements IAuthCommandService {
         const activeStatus = await this.userAuthRepository.findStatusById("active")
         if(!taskerRole || !defaultLanguage || !activeStatus) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Required signup reference data is missing")
         const existingUser = await this.userAuthRepository.findByEmail(data.email)
-        if(existingUser) {
-            const taskerRoleExists = await this.userAuthRepository.findUserRole(existingUser.id,taskerRole.id)
-            if (taskerRoleExists) throw new AppError(StatusCodes.CONFLICT,"User is already registered as a tasker")
-            await this.userAuthRepository.createUserRole(existingUser.id,taskerRole.id)
-            const updatedUser = await this.userAuthRepository.findUserWithRoleById(existingUser.id,taskerRole.id)
-            if(!updatedUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to retrive user after adding tasker role")
-            const authUser = await this.userAuthRepository.findForLoginById(existingUser.id)
-            if(!authUser) throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,"Failed to initilalize authentication session")
-            const {accessToken, refreshToken} = await this.createAuthenticationSession(authUser,"tasker")
-            return {
-                user:updatedUser,
-                accessToken,
-                refreshToken
+        if (existingUser) {
+            const taskerRoleExists =
+                await this.userAuthRepository.findUserRole(
+                    existingUser.id,
+                    taskerRole.id
+                );
+
+            if (taskerRoleExists) {
+                throw new AppError(
+                    StatusCodes.CONFLICT,
+                    "User is already registered as a tasker"
+                );
             }
+
+            throw new AppError(
+                StatusCodes.CONFLICT,
+                "An account with this email already exists. Please sign in to add the tasker role."
+            );
         }
         const phoneExists = await this.userAuthRepository.existsByPhone(data.phone)
         if(phoneExists) throw new AppError(StatusCodes.CONFLICT,"Phone number is already registered")

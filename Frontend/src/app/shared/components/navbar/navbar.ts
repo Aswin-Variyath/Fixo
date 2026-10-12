@@ -26,10 +26,43 @@ export class Navbar {
   }
 
   goToLogin(): void {
-    this.router.navigate(['/login']);
-  }
+  const currentUrl = this.router.url;
+
+  const isTaskerPage =
+    currentUrl.startsWith('/become-tasker') ||
+    currentUrl.startsWith('/become-a-tasker') ||
+    currentUrl.startsWith('/tasker');
+
+    console.log("Current url", currentUrl)
+
+  this.router.navigate([
+    isTaskerPage ? '/tasker/login' : '/login',
+  ]);
+}
+
+  goToSignup(): void {
+  const isTaskerPage =
+    this.router.url.startsWith('/become-tasker') ||
+    this.router.url.startsWith('/tasker');
+
+  this.router.navigate([
+    isTaskerPage ? '/tasker/signup' : '/signup',
+  ]);
+}
 
   goToTaskerSignup(): void {
-    this.router.navigate(['/become-a-tasker']);
+  if (this.isTaskerLandingPage()) {
+    this.router.navigate(['/']);
+    return;
   }
+
+  this.router.navigate(['/become-a-tasker']);
+}
+
+  isTaskerLandingPage(): boolean {
+  return (
+    this.router.url.startsWith('/become-tasker') ||
+    this.router.url.startsWith('/become-a-tasker')
+  );
+}
 }
