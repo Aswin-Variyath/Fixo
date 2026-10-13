@@ -24,6 +24,12 @@ export const ENV = {
       ISSUER: getOptionalEnv("JWT_ISSUER", "fixo_app"),
       AUDIENCE: getOptionalEnv("JWT_AUDIENCE", "fixo_web_app")
     },
+    GOOGLE: {
+      CLIENT_ID: getRequiredEnv("GOOGLE_CLIENT_ID"),
+      CLIENT_SECRET: getRequiredEnv("GOOGLE_CLIENT_SECRET"),
+      CALLBACK_URL: getRequiredEnv("GOOGLE_CALLBACK_URL"),
+      STATE_TTL_SECONDS: Number(getRequiredEnv("GOOGLE_OAUTH_STATE_TTL_SECONDS"))
+    },
     TOKEN: {
       ACCESS_TTL_SECONDS:getNumberEnv("ACCESS_TOKEN_TTL_SECONDS", 900),
       REFRESH_TTL_SECONDS:getNumberEnv("REFRESH_TOKEN_TTL_SECONDS",60 * 60 * 24 * 15),

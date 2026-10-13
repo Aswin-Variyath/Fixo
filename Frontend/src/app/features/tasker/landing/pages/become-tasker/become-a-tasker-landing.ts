@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Navbar } from '../../components/navbar/navbar';
+import { Navbar } from '../../../../../shared/components/navbar/navbar';
 import { Footer } from '../../../../../shared/components/footer/footer';
 import { AboutFixo } from './sections/about-fixo/about-fixo';
 import { Faq } from './sections/faq/faq';

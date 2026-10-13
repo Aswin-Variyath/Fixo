@@ -1,6 +1,6 @@
 import prisma from "../../../database/prisma/prisma";
 import { IUserRepository } from "../interfaces/user-repository.interface";
-import { CurrentUser, UserFromDatabase } from "../types/user.types";
+import { UserFromDatabase } from "../types/user.types";
 export class UserRepository implements IUserRepository {
   async findById(userId: string): Promise<UserFromDatabase | null> {
     const user = await prisma.user.findUnique({

@@ -4,14 +4,12 @@ import { AuthService } from '../auth/auth.service';
 
 export const roleGuard = (allowedRole: string): CanActivateFn => {
   return () => {
-
     const authService = inject(AuthService);
     const router = inject(Router);
 
     const user = authService.user();
 
     if (!user) {
-
       if (allowedRole === 'super_admin') {
         return router.createUrlTree(['/admin/login']);
       }
@@ -19,19 +17,25 @@ export const roleGuard = (allowedRole: string): CanActivateFn => {
       return router.createUrlTree(['/login']);
     }
 
-    if (user.activeRole.type === allowedRole) {
+    const activeRole = user.activeRole?.type;
+
+    if (!activeRole) {
+      return router.createUrlTree(['/']);
+    }
+
+    if (activeRole === allowedRole) {
       return true;
     }
 
-    if (user.activeRole.type === 'customer') {
+    if (activeRole === 'customer') {
       return router.createUrlTree(['/customer/home']);
     }
 
-    if (user.activeRole.type === 'tasker') {
+    if (activeRole === 'tasker') {
       return router.createUrlTree(['/tasker/dashboard']);
     }
 
-    if (user.activeRole.type === 'super_admin') {
+    if (activeRole === 'super_admin') {
       return router.createUrlTree(['/admin/dashboard']);
     }
 

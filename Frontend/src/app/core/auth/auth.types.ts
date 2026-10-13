@@ -67,6 +67,24 @@ export interface SignupRequest {
   password: string;
 }
 
+export interface SignupResponse {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    role: Role;
+    language: {
+        type: string;
+        name: string;
+    };
+    status: {
+        type: string;
+        title: string;
+    };
+    createdAt: string;
+}
+
 export interface ForgotPasswordRequest {
     email: string;
 }

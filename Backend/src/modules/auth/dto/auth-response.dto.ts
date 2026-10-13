@@ -3,7 +3,7 @@ export interface SignupResponseDto {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
+    phone: string | null;
     role: {
         type: string;
         title:string;
@@ -30,7 +30,7 @@ export interface LoginUserResponseDto {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  phone: string | null;
   profileImage: string | null;
 
   roles: {

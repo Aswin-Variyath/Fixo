@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { ENV } from '../../../environments/environments';
-import { AdminLoginRequest, AdminLoginResponse, ApiResponse,  AuthUser, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, RefreshResponse, ResendAdminOtpRequest, ResetPasswordRequest,  ResetPasswordTokenResponse,  SignupRequest, VerifyAdminOtpRequest, VerifyAdminOtpResponse } from './auth.types';
+import { ActiveRole, AdminLoginRequest, AdminLoginResponse, ApiResponse,  AuthUser, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, RefreshResponse, ResendAdminOtpRequest, ResetPasswordRequest,  ResetPasswordTokenResponse,  SignupRequest, SignupResponse, VerifyAdminOtpRequest, VerifyAdminOtpResponse } from './auth.types';
 
 @Service()
 export class AuthApiService {
@@ -27,13 +27,19 @@ export class AuthApiService {
     return this.http.post<ApiResponse<RefreshResponse>>(`${this.authUrl}/refresh`,{},)
    }
 
-   signup(request:SignupRequest) {
-    return this.http.post<ApiResponse<AuthUser>>(`${this.authUrl}/signup`,request)
-   }
+signup(request: SignupRequest) {
+    return this.http.post<ApiResponse<SignupResponse>>(
+        `${this.authUrl}/signup`,
+        request
+    );
+}
 
-   signupTasker(requset:SignupRequest) {
-    return this.http.post<ApiResponse<AuthUser>>(`${this.authUrl}/tasker-signup`,requset)
-   }
+signupTasker(request: SignupRequest) {
+    return this.http.post<ApiResponse<SignupResponse>>(
+        `${this.authUrl}/tasker-signup`,
+        request
+    );
+}
 
    forgotPassword(request:ForgotPasswordRequest) {
     return this.http.post<ApiResponse<ForgotPasswordResponse>>(`${this.authUrl}/forgot-password`,request)
@@ -58,4 +64,29 @@ export class AuthApiService {
    resendAdminOtp(request:ResendAdminOtpRequest) {
     return this.http.post<ApiResponse<AdminLoginResponse>>(`${this.authUrl}/admin-resend-otp`,request)
    }
+
+   becomeTasker() {
+    return this.http.post<ApiResponse<null>>(
+        `${this.authUrl}/become-tasker`,
+        {}
+    );
+    }
+
+    becomeCustomer() {
+        return this.http.post<ApiResponse<null>>(
+            `${this.authUrl}/become-customer`,
+            {}
+        );
+    }
+
+    switchRole(role: ActiveRole) {
+    return this.http.post<
+        ApiResponse<{
+            activeRole: {
+                type: ActiveRole;
+                title: string;
+            };
+        }>
+    >(`${this.authUrl}/switch-role`, { role });
+}
 }
