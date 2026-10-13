@@ -70,7 +70,7 @@ signup(request: SignupRequest) {
 
       this.authStore.setAuthenticated({
         ...user,
-        profileImage: null,
+        profileImage: null, 
         roles: [user.role],
         activeRole: user.role,
       });
