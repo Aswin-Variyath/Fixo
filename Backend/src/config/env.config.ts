@@ -52,5 +52,10 @@ export const ENV = {
   },
   KYC: {
     ENCRYPTION_KEY: getRequiredEnv("KYC_ENCRYPTION_KEY")
+  },
+  CLOUDINARY: {
+    CLOUD_NAME: getRequiredEnv("CLOUDINARY_CLOUD_NAME"),
+    API_KEY: getRequiredEnv("CLOUDINARY_API_KEY"),
+    API_SECRET: getRequiredEnv("CLOUDINARY_API_SECRET"),
   }
 } as const
