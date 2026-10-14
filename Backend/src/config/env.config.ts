@@ -49,5 +49,8 @@ export const ENV = {
   },
   OSRM: {
     BASE_URL:getRequiredEnv("OSRM_BASE_URL")
+  },
+  KYC: {
+    ENCRYPTION_KEY: getRequiredEnv("KYC_ENCRYPTION_KEY")
   }
 } as const
