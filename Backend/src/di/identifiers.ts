@@ -47,4 +47,10 @@ export const TYPES = {
     CustomerAddressController: Symbol.for("CustomerAddressController"),
     // Routing
     RoutingService: Symbol.for("RoutingService"),
+    // KYC 
+    TaskerKycRepository: Symbol.for("TaskerKycRepository"),
+    TaskerKycCommandService: Symbol.for("TaskerKycCommandService"),
+    TaskerKycQueryService: Symbol.for("TaskerKycQueryService"),
+    //Cloudinary
+    CloudinaryStorageService: Symbol.for("CloudinaryStorageService"),
 } as const
