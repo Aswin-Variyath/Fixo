@@ -9,6 +9,7 @@ import { StatusCodes } from "http-status-codes";
 import { successResponse } from "../../../shared/utils/response.util";
 import { UpdateTaskerKycDto } from "../validations/update-tasker-kyc-bank-details.schema";
 import { UploadTaskerKycDocumentDto } from "../validations/upload-tasker-kyc-document.schema";
+import { UpdateKycProgressDto } from "../validations/update-kyc-progress.schema";
 
 @injectable()
 export class TaskerKycController {
@@ -20,14 +21,14 @@ export class TaskerKycController {
     createKyc = async (req:Request<Record<string,never>,unknown, CreateTaskerKycDto['body']>,res:Response):Promise<void> => {
         const userId = req.user?.userId
         if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
-        await this.taskerKycCommandService.createKyc(userId,req.body.bankAccountNumber,req.body.ifscCode)
+        await this.taskerKycCommandService.createKyc(userId,req.body.bankAccountHolderName,req.body.bankAccountNumber,req.body.ifscCode)
         res.status(StatusCodes.CREATED).json(successResponse("KYC record created successfully"))
     }
 
     updateBankDetails = async(req:Request<Record<string, never>, unknown, UpdateTaskerKycDto["body"]>,res:Response):Promise<void> => {
         const userId = req.user?.userId
         if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
-        await this.taskerKycCommandService.updateBankDetails(userId,req.body.bankAccountNumber,req.body.ifscCode)
+        await this.taskerKycCommandService.updateBankDetails(userId,req.body.bankAccountHolderName,req.body.bankAccountNumber,req.body.ifscCode)
         res.status(StatusCodes.OK).json(successResponse("Bank details updated successfully"))
     }
 
@@ -44,5 +45,18 @@ export class TaskerKycController {
         if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED, "Authentication required")
         const result = await this.taskerKycQueryService.getKycDetails(userId)
         res.status(StatusCodes.OK).json(successResponse("KYC details retrieved successfully", result))
+    }
+
+    saveProgress = async( req: Request<Record<string, never>, unknown, UpdateKycProgressDto["body"]>,res:Response):Promise<void> => {
+        const userId = req.user?.userId
+        if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        await this.taskerKycCommandService.saveProgress(userId,req.body.currentStep)
+        res.status(StatusCodes.OK).json(successResponse("KYC progress saved successfully"))
+    }
+    submitKyc = async(req: Request, res: Response):Promise<void> => {
+        const userId = req.user?.userId
+        if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED, "Authentication required")
+        await this.taskerKycCommandService.submitKyc(userId)
+        res.status(StatusCodes.OK).json(successResponse("KYC submitted successfully"))
     }
 }

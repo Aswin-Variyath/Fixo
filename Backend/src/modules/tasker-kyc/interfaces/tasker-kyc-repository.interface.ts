@@ -9,6 +9,7 @@ export interface TaskerKycDocumentRecord {
 export interface TaskerKycRecord {
     id:string
     taskerProfileId:string
+    currentStep: string
     status:TaskerKycStatus
     createdAt:Date
     updatedAt:Date
@@ -19,6 +20,7 @@ export interface TaskerKycProfileRecord {
     id:string
     kyc: {
         id:string
+        currentStep: string
         status:TaskerKycStatus
         updatedAt:Date
         createdAt:Date
@@ -28,12 +30,14 @@ export interface TaskerKycProfileRecord {
 
 export interface CreateTaskerKycData {
     taskerProfileId:string
+    bankAccountHolderName: string
     encryptedBankAccountNumber:string
     ifscCode:string
 }
 
 export interface UpdateTaskerKycBankDetailsData {
     taskerProfileId:string
+    bankAccountHolderName: string
     encryptedBankAccountNumber:string
     ifscCode:string
 }
@@ -44,6 +48,18 @@ export interface CreateTaskerKycDocumentData {
     storageReference: string;
 }
 
+export interface TaskerKycSubmissionRecord {
+    id: string;
+    taskerProfileId: string;
+    bankAccountHolderName: string;
+    bankAccountNumber: string;
+    ifscCode: string;
+    status: TaskerKycStatus;
+    documents: {
+        type: KycDocumentType;
+    }[];
+}
+
 export interface ITaskerKycRepository {
     findTaskerProfileByUserId(userId:string):Promise<TaskerKycProfileRecord | null>
     findKycByTaskerProfileId(taskerProfileId:string):Promise<TaskerKycRecord | null>
@@ -51,4 +67,7 @@ export interface ITaskerKycRepository {
     updateKycBankDetails(data:UpdateTaskerKycBankDetailsData):Promise<void>
     createKycDocument(data:CreateTaskerKycDocumentData):Promise<TaskerKycDocumentRecord>
     updateKycStatus(taskerprofileId:string, status: TaskerKycStatus):Promise<void>
+    updateCurrentStep(taskerProfileId: string,currentStep: string):Promise<void>
+    findKycSubmissionData(taskerProfileId:string):Promise<TaskerKycSubmissionRecord | null>
+    submitKyc(taskerProfileId:string):Promise<boolean>
 }
