@@ -44,3 +44,13 @@ test("rejects tampered encrypted data", () => {
     { message: "Unable to decrypt KYC data" },
   );
 });
+
+export function maskKycAccountNumber(encryptedData: Buffer): string {
+    const accountNumber = decryptKycData(encryptedData).toString("utf8");
+
+    if (accountNumber.length <= 4) {
+        return "*".repeat(accountNumber.length);
+    }
+
+    return `******${accountNumber.slice(-4)}`;
+}

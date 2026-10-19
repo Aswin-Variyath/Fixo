@@ -115,6 +115,9 @@ export class TaskerKycRepository implements ITaskerKycRepository {
                 kyc:{
                     select:{
                         id:true,
+                        bankAccountHolderName: true,
+                        bankAccountNumber: true,
+                        ifscCode: true,
                         currentStep: true,
                         status:true,
                         createdAt:true,

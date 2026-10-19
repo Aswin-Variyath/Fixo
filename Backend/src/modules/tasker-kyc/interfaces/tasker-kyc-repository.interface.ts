@@ -20,6 +20,9 @@ export interface TaskerKycProfileRecord {
     id:string
     kyc: {
         id:string
+        bankAccountHolderName: string;
+        bankAccountNumber: string;
+        ifscCode: string;
         currentStep: string
         status:TaskerKycStatus
         updatedAt:Date

@@ -24,7 +24,7 @@ export class TaskerKycCommandService implements ITaskerKycCommandService {
         if(!kyc) throw new AppError(StatusCodes.NOT_FOUND, "KYC record not found")
         const missingFields:string[] = []
         if(!kyc.bankAccountHolderName?.trim()) missingFields.push("Bank account holder name")
-        if(!kyc.bankAccountHolderName) missingFields.push("Bank account number")
+        if(!kyc.bankAccountNumber) missingFields.push("Bank account number")
         if(!kyc.ifscCode?.trim()) missingFields.push("IFSC code")
         const requiredDocuments: {
             type:KycDocumentType
