@@ -48,6 +48,7 @@ export const TYPES = {
     // Routing
     RoutingService: Symbol.for("RoutingService"),
     // KYC 
+    TaskerKycController: Symbol.for("TaskerKycController"),
     TaskerKycRepository: Symbol.for("TaskerKycRepository"),
     TaskerKycCommandService: Symbol.for("TaskerKycCommandService"),
     TaskerKycQueryService: Symbol.for("TaskerKycQueryService"),

@@ -1,12 +1,14 @@
 model TaskerKyc {
-  id                String            @id @default(uuid())
-  taskerProfileId   String            @unique
-  bankAccountNumber String
-  ifscCode          String
-  status            TaskerKycStatus   @default(NOT_SUBMITTED)
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  documents         KycDocument[]
-  education         TaskerEducation[]
-  taskerProfile     TaskerProfile     @relation(fields: [taskerProfileId], references: [id])
+  id                    String            @id @default(uuid())
+  taskerProfileId       String            @unique
+  bankAccountHolderName String
+  bankAccountNumber     String
+  ifscCode              String
+  currentStep           String            @default("SELFIE")
+  status                TaskerKycStatus   @default(NOT_SUBMITTED)
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  documents             KycDocument[]
+  education             TaskerEducation[]
+  taskerProfile         TaskerProfile     @relation(fields: [taskerProfileId], references: [id])
 }

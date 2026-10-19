@@ -1,0 +1,1 @@
+export { default as taskerKycRoutes } from "./routes/tasker-kyc.routes";

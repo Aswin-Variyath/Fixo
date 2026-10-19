@@ -74,6 +74,7 @@ import { ITaskerKycCommandService } from "../modules/tasker-kyc/interfaces/taske
 import { TaskerKycCommandService } from "../modules/tasker-kyc/services/tasker-kyc-command.service";
 import { TaskerKycQueryService } from "../modules/tasker-kyc/services/tasker-kyc-query.service";
 import { ITaskerKycQueryService } from "../modules/tasker-kyc/interfaces/tasker-kyc-query-service.interface";
+import { TaskerKycController } from "../modules/tasker-kyc/controllers/tasker-kyc.controller";
 
 export const container = new Container()
 
@@ -117,3 +118,4 @@ container.bind<IGoogleOAuthService>(TYPES.GoogleOAuthService).to(GoogleOAuthServ
 container.bind<ITaskerKycRepository>(TYPES.TaskerKycRepository).to(TaskerKycRepository).inSingletonScope()
 container.bind<ITaskerKycCommandService>(TYPES.TaskerKycCommandService).to(TaskerKycCommandService).inSingletonScope()
 container.bind<ITaskerKycQueryService>(TYPES.TaskerKycQueryService).to(TaskerKycQueryService).inSingletonScope()
+container.bind<TaskerKycController>(TYPES.TaskerKycController).to(TaskerKycController).inSingletonScope()

@@ -9,6 +9,7 @@ import { categoryRoutes } from "./modules/categories";
 import { serviceRoutes } from "./modules/services";
 import { taskerRoutes } from "./modules/taskers";
 import { customerAddressRoutes } from "./modules/customer-addresses";
+import { taskerKycRoutes } from "./modules/tasker-kyc";
 
 
 const app = express();
@@ -38,6 +39,7 @@ app.use("/categories",categoryRoutes)
 app.use("/services", serviceRoutes)
 app.use("/taskers", taskerRoutes)
 app.use("/customer-addresses", customerAddressRoutes);
+app.use("/tasker-kyc", taskerKycRoutes);
 app.use(errorMiddleware);
 
 export default app;
