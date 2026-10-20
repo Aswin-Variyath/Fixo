@@ -15,9 +15,9 @@ const taskerKycController = container.get<TaskerKycController>(TYPES.TaskerKycCo
 const authMiddleware = container.get<IAuthMiddleWare>(TYPES.AuthMiddleware)
 
 router.post("/",authMiddleware.authenticate,validate(CreateTaskerKycSchema),taskerKycController.createKyc)
+router.get("/",authMiddleware.authenticate,taskerKycController.getKycDetails)
 router.patch("/bank-details",authMiddleware.authenticate,validate(UpdateTaskerKycSchema),taskerKycController.updateBankDetails)
 router.post("/documents",authMiddleware.authenticate, kycUpload,validate(UploadTaskerKycDocumentSchema),taskerKycController.uploadDocument)
-router.get("/",authMiddleware.authenticate,taskerKycController.getKycDetails)
 router.patch("/progress",authMiddleware.authenticate,validate(UpdateKycProgressSchema),taskerKycController.saveProgress)
 router.post("/submit",authMiddleware.authenticate,taskerKycController.submitKyc)
 

@@ -75,6 +75,7 @@ export class TaskerKycCommandService implements ITaskerKycCommandService {
 
     async createKyc(userId:string,bankAccountHolderName: string,bankAccountNumber:string,ifscCode:string):Promise<void> {
         const profile = await this.taskerKycRepository.findTaskerProfileByUserId(userId)
+        console.log("Authenticated user in command service",profile)
         if(!profile) throw new AppError(StatusCodes.NOT_FOUND,"Tasker profile not found")
         if(profile.kyc) throw new AppError(StatusCodes.CONFLICT,"KYC record already exists")
         const encryptedBankAccountNumber = encryptKycData(Buffer.from(bankAccountNumber,"utf8")).toString('base64')

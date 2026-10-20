@@ -19,6 +19,7 @@ export class TaskerKycController {
     ) {}
 
     createKyc = async (req:Request<Record<string,never>,unknown, CreateTaskerKycDto['body']>,res:Response):Promise<void> => {
+        console.log("Authenticated user ID:", req.user?.userId)
         const userId = req.user?.userId
         if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
         await this.taskerKycCommandService.createKyc(userId,req.body.bankAccountHolderName,req.body.bankAccountNumber,req.body.ifscCode)

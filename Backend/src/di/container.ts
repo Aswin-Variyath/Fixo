@@ -75,6 +75,7 @@ import { TaskerKycCommandService } from "../modules/tasker-kyc/services/tasker-k
 import { TaskerKycQueryService } from "../modules/tasker-kyc/services/tasker-kyc-query.service";
 import { ITaskerKycQueryService } from "../modules/tasker-kyc/interfaces/tasker-kyc-query-service.interface";
 import { TaskerKycController } from "../modules/tasker-kyc/controllers/tasker-kyc.controller";
+import { CloudinaryStorageService } from "../shared/providers/cloudinary/services/cloudinary-storage.service";
 
 export const container = new Container()
 
@@ -119,3 +120,4 @@ container.bind<ITaskerKycRepository>(TYPES.TaskerKycRepository).to(TaskerKycRepo
 container.bind<ITaskerKycCommandService>(TYPES.TaskerKycCommandService).to(TaskerKycCommandService).inSingletonScope()
 container.bind<ITaskerKycQueryService>(TYPES.TaskerKycQueryService).to(TaskerKycQueryService).inSingletonScope()
 container.bind<TaskerKycController>(TYPES.TaskerKycController).to(TaskerKycController).inSingletonScope()
+container.bind<CloudinaryStorageService>(TYPES.CloudinaryStorageService).to(CloudinaryStorageService).inSingletonScope()

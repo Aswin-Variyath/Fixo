@@ -33,74 +33,80 @@ export class UserAuthRepository implements IUserAuthRespository {
         
     }
     async createSignupUser(data: CreateSignupUserData): Promise<SignupResponseDto> {
-        console.log("CREATE USER ROLE ID:", data.roleId);
-        const user = await this.prisma.user.create({
-            data: {
-                firstName: data.firstName,
-                lastName:data.lastName,
-                email:data.email,
-                phone:data.phone,
-                password:data.passwordHash,
+         const role = await this.prisma.role.findUnique({
+                where: { id: data.roleId },
+                select: { type: true },
+            });
 
-                languageId: data.languageId,
-                statusId: data.statusId,
-
-                userRoles:{
-                    create:{
-                        roleId:data.roleId
-                    }
-                },
-
-                
-            },
-            select:{
-                id:true,
-                firstName:true,
-                lastName:true,
-                email:true,
-                phone:true,
-
-                userRoles: {
-                    select:{
-                        role: {
-                            select: {
-                                type:true,
-                                title:true
-                            }
-                        }
-                    }
-                },
-                language: {
-                    select: {
-                        type:true,
-                        name:true
-                    }
-
-                },
-                status: {
-                    select:{
-                        type:true,
-                        title:true
-                    }
-                },
-                createdAt:true
+            if (!role) {
+                throw new Error("Role not found");
             }
-        })
 
+            const user = await this.prisma.user.create({
+                data: {
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    email: data.email,
+                    phone: data.phone,
+                    password: data.passwordHash,
+                    languageId: data.languageId,
+                    statusId: data.statusId,
 
-        return {
-            id:user.id,
-            firstName:user.firstName,
-            lastName:user.lastName,
-            email:user.email,
-            phone:user.phone,
+                    userRoles: {
+                        create: {
+                            roleId: data.roleId,
+                        },
+                    },
 
-            role:user.userRoles[0].role,
+                    ...(role.type === "tasker" && {
+                        taskerProfile: {
+                            create: {},
+                        },
+                    }),
+                },
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    userRoles: {
+                        select: {
+                            role: {
+                                select: {
+                                    type: true,
+                                    title: true,
+                                },
+                            },
+                        },
+                    },
+                    language: {
+                        select: {
+                            type: true,
+                            name: true,
+                        },
+                    },
+                    status: {
+                        select: {
+                            type: true,
+                            title: true,
+                        },
+                    },
+                    createdAt: true,
+                },
+            });
 
-            language:user.language,
-            status:user.status,
-            createdAt:user.createdAt
-        }
+            return {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                phone: user.phone,
+                role: user.userRoles[0].role,
+                language: user.language,
+                status: user.status,
+                createdAt: user.createdAt,
+            };
     }
     
 
@@ -167,12 +173,31 @@ export class UserAuthRepository implements IUserAuthRespository {
     }
 
     async createUserRole(userId: string, roleId: string): Promise<void> {
-        await this.prisma.userRole.create({
-            data:{
-                userId,
-                roleId
+            await this.prisma.$transaction(async (tx) => {
+                const role = await tx.role.findUnique({
+                    where: { id: roleId },
+                    select: { type: true },
+                });
+
+                if (!role) {
+                    throw new Error("Role not found");
+                }
+
+                await tx.userRole.create({
+                    data: {
+                        userId,
+                        roleId,
+                    },
+                });
+
+                if (role.type === "tasker") {
+                    await tx.taskerProfile.upsert({
+                        where: { userId },
+                        update: {},
+                        create: { userId },
+                });
             }
-        })
+        });
     }
 
     async findUserWithRoleById(userId: string,roleId:string): Promise<SignupResponseDto | null> {
@@ -447,24 +472,37 @@ export class UserAuthRepository implements IUserAuthRespository {
     }
 
     async createGoogleUser(data: CreateGoogleUserData): Promise<User> {
-        return await this.prisma.user.create({
-             data: {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                phone: null,
-                password: null,
-                googleId: data.googleId,
-                profileImage: data.profileImage,
-                languageId: data.languageId,
-                statusId: data.statusId,
+        const role = await this.prisma.role.findUnique({
+        where: { id: data.roleId },
+        select: { type: true },
+    });
 
-                userRoles: {
-                    create: {
-                        roleId: data.roleId
-                    }
-                }
-            }
-        })
+    if (!role) {
+        throw new Error("Role not found");
+    }
+
+    return this.prisma.user.create({
+        data: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phone: null,
+            password: null,
+            googleId: data.googleId,
+            profileImage: data.profileImage,
+            languageId: data.languageId,
+            statusId: data.statusId,
+            userRoles: {
+                create: {
+                    roleId: data.roleId,
+                },
+            },
+            ...(role.type === "tasker" && {
+                taskerProfile: {
+                    create: {},
+                },
+            }),
+        },
+    });
     }
 }
