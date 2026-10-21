@@ -57,4 +57,5 @@ export const TYPES = {
     // OCR
     OcrService: Symbol.for("OcrService"),
     PassbookOcrService: Symbol.for("PassbookOcrService"),
+    AadhaarOcrService: Symbol.for("AadhaarOcrService"),
 } as const

@@ -13,6 +13,8 @@ import { UpdateKycProgressDto } from "../validations/update-kyc-progress.schema"
 import { OcrService } from "../../../shared/providers/optical_character_recognition/optical_character_recognition.ocr.service";
 import { IPassbookOcrService } from "../interfaces/passbook-ocr-service.interface";
 import { PassbookOcrResponse } from "../interfaces/passbook-ocr-response.interface";
+import { IAadhaarOcrService } from "../interfaces/aadhaar-ocr-service.interface";
+import { AadhaarOcrResponse } from "../interfaces/aadhaar-ocr-response.interface";
 
 @injectable()
 export class TaskerKycController {
@@ -21,6 +23,7 @@ export class TaskerKycController {
         @inject(TYPES.TaskerKycQueryService) private readonly taskerKycQueryService:ITaskerKycQueryService,
         @inject(TYPES.OcrService) private readonly ocrService:OcrService,
         @inject(TYPES.PassbookOcrService) private readonly passbookOcrService:IPassbookOcrService,
+        @inject(TYPES.AadhaarOcrService) private readonly aadhaarOcrService:IAadhaarOcrService,
     ) {}
 
     createKyc = async (req:Request<Record<string,never>,unknown, CreateTaskerKycDto['body']>,res:Response):Promise<void> => {
@@ -77,5 +80,13 @@ export class TaskerKycController {
             ifscCode: result.ifscCode,
         }
         res.status(StatusCodes.OK).json(successResponse("Passbook details extracted successfully", response))
+    }
+
+    extractAadhaarDetails = async(req:Request,res:Response):Promise<void> => {
+        const userId = req.user?.userId
+        if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        if(!req.file) throw new AppError(StatusCodes.BAD_REQUEST,"Aadhaar image is required")
+        const result:AadhaarOcrResponse  = await this.aadhaarOcrService.extractAadhaarDetails(req.file.buffer)
+        res.status(StatusCodes.OK).json(successResponse("Aadhaar details extracted successfully", result))
     }
 }

@@ -21,5 +21,6 @@ router.post("/documents",authMiddleware.authenticate, kycUpload,validate(UploadT
 router.patch("/progress",authMiddleware.authenticate,validate(UpdateKycProgressSchema),taskerKycController.saveProgress)
 router.post("/submit",authMiddleware.authenticate,taskerKycController.submitKyc)
 router.post("/passbook-ocr",authMiddleware.authenticate,kycUpload,taskerKycController.extractPassbookDetails)
+router.post("/aadhaar-ocr",authMiddleware.authenticate, kycUpload, taskerKycController.extractAadhaarDetails,)
 
 export default router;

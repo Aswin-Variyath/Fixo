@@ -79,6 +79,8 @@ import { CloudinaryStorageService } from "../shared/providers/cloudinary/service
 import { OcrService } from "../shared/providers/optical_character_recognition/optical_character_recognition.ocr.service";
 import { IPassbookOcrService } from "../modules/tasker-kyc/interfaces/passbook-ocr-service.interface";
 import { PassbookOcrService } from "../modules/tasker-kyc/services/passbook-ocr.service";
+import { IAadhaarOcrService } from "../modules/tasker-kyc/interfaces/aadhaar-ocr-service.interface";
+import { AadhaarOcrService } from "../modules/tasker-kyc/services/aadhaar-ocr.service";
 
 export const container = new Container()
 
@@ -126,3 +128,4 @@ container.bind<TaskerKycController>(TYPES.TaskerKycController).to(TaskerKycContr
 container.bind<CloudinaryStorageService>(TYPES.CloudinaryStorageService).to(CloudinaryStorageService).inSingletonScope()
 container.bind<OcrService>(TYPES.OcrService).to(OcrService).inSingletonScope()
 container.bind<IPassbookOcrService>(TYPES.PassbookOcrService).to(PassbookOcrService).inSingletonScope()
+container.bind<IAadhaarOcrService>(TYPES.AadhaarOcrService).to(AadhaarOcrService).inSingletonScope()
