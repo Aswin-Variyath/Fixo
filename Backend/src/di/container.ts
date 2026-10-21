@@ -76,6 +76,9 @@ import { TaskerKycQueryService } from "../modules/tasker-kyc/services/tasker-kyc
 import { ITaskerKycQueryService } from "../modules/tasker-kyc/interfaces/tasker-kyc-query-service.interface";
 import { TaskerKycController } from "../modules/tasker-kyc/controllers/tasker-kyc.controller";
 import { CloudinaryStorageService } from "../shared/providers/cloudinary/services/cloudinary-storage.service";
+import { OcrService } from "../shared/providers/optical_character_recognition/optical_character_recognition.ocr.service";
+import { IPassbookOcrService } from "../modules/tasker-kyc/interfaces/passbook-ocr-service.interface";
+import { PassbookOcrService } from "../modules/tasker-kyc/services/passbook-ocr.service";
 
 export const container = new Container()
 
@@ -121,3 +124,5 @@ container.bind<ITaskerKycCommandService>(TYPES.TaskerKycCommandService).to(Taske
 container.bind<ITaskerKycQueryService>(TYPES.TaskerKycQueryService).to(TaskerKycQueryService).inSingletonScope()
 container.bind<TaskerKycController>(TYPES.TaskerKycController).to(TaskerKycController).inSingletonScope()
 container.bind<CloudinaryStorageService>(TYPES.CloudinaryStorageService).to(CloudinaryStorageService).inSingletonScope()
+container.bind<OcrService>(TYPES.OcrService).to(OcrService).inSingletonScope()
+container.bind<IPassbookOcrService>(TYPES.PassbookOcrService).to(PassbookOcrService).inSingletonScope()

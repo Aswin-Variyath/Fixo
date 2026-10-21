@@ -10,12 +10,17 @@ import { successResponse } from "../../../shared/utils/response.util";
 import { UpdateTaskerKycDto } from "../validations/update-tasker-kyc-bank-details.schema";
 import { UploadTaskerKycDocumentDto } from "../validations/upload-tasker-kyc-document.schema";
 import { UpdateKycProgressDto } from "../validations/update-kyc-progress.schema";
+import { OcrService } from "../../../shared/providers/optical_character_recognition/optical_character_recognition.ocr.service";
+import { IPassbookOcrService } from "../interfaces/passbook-ocr-service.interface";
+import { PassbookOcrResponse } from "../interfaces/passbook-ocr-response.interface";
 
 @injectable()
 export class TaskerKycController {
     constructor(
         @inject(TYPES.TaskerKycCommandService) private readonly taskerKycCommandService:ITaskerKycCommandService,
         @inject(TYPES.TaskerKycQueryService) private readonly taskerKycQueryService:ITaskerKycQueryService,
+        @inject(TYPES.OcrService) private readonly ocrService:OcrService,
+        @inject(TYPES.PassbookOcrService) private readonly passbookOcrService:IPassbookOcrService,
     ) {}
 
     createKyc = async (req:Request<Record<string,never>,unknown, CreateTaskerKycDto['body']>,res:Response):Promise<void> => {
@@ -59,5 +64,18 @@ export class TaskerKycController {
         if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED, "Authentication required")
         await this.taskerKycCommandService.submitKyc(userId)
         res.status(StatusCodes.OK).json(successResponse("KYC submitted successfully"))
+    }
+
+    extractPassbookDetails = async(req:Request,res:Response):Promise<void> => {
+        const userId = req.user?.userId
+        if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
+        if(!req.file) throw new AppError(StatusCodes.BAD_REQUEST,"Passbook image is required",)
+        const result = await this.passbookOcrService.extractPassbookDetails(req.file.buffer)
+        const response: PassbookOcrResponse = {
+            bankAccountHolderName: result.bankAccountHolderName,
+            bankAccountNumber: result.bankAccountNumber,
+            ifscCode: result.ifscCode,
+        }
+        res.status(StatusCodes.OK).json(successResponse("Passbook details extracted successfully", response))
     }
 }

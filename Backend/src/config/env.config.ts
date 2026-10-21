@@ -57,5 +57,9 @@ export const ENV = {
     CLOUD_NAME: getRequiredEnv("CLOUDINARY_CLOUD_NAME"),
     API_KEY: getRequiredEnv("CLOUDINARY_API_KEY"),
     API_SECRET: getRequiredEnv("CLOUDINARY_API_SECRET"),
-  }
+  },
+  OCR_SPACE: {
+    API_KEY: getRequiredEnv("OCR_SPACE_API_KEY"),
+    API_URL: getOptionalEnv("OCR_SPACE_API_URL", "https://api.ocr.space/parse/image"),
+  },
 } as const

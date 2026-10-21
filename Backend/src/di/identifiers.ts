@@ -54,4 +54,7 @@ export const TYPES = {
     TaskerKycQueryService: Symbol.for("TaskerKycQueryService"),
     //Cloudinary
     CloudinaryStorageService: Symbol.for("CloudinaryStorageService"),
+    // OCR
+    OcrService: Symbol.for("OcrService"),
+    PassbookOcrService: Symbol.for("PassbookOcrService"),
 } as const

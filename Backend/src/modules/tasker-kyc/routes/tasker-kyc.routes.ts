@@ -5,7 +5,7 @@ import { IAuthMiddleWare } from "../../auth/interfaces/auth-middleware.interface
 import { validate } from "../../../shared/middlewares/validate.middleware";
 import { CreateTaskerKycSchema } from "../validations/create-tasker-kyc.schema";
 import { UpdateTaskerKycSchema } from "../validations/update-tasker-kyc-bank-details.schema";
-import { kycUpload } from "../../../shared/middlewares/kyc-upload.middleware";
+import { kycUpload } from "../../../shared/middlewares/kyc-upload.multer.middleware";
 import { UploadTaskerKycDocumentSchema } from "../validations/upload-tasker-kyc-document.schema";
 import { UpdateKycProgressSchema } from "../validations/update-kyc-progress.schema";
 
@@ -20,5 +20,6 @@ router.patch("/bank-details",authMiddleware.authenticate,validate(UpdateTaskerKy
 router.post("/documents",authMiddleware.authenticate, kycUpload,validate(UploadTaskerKycDocumentSchema),taskerKycController.uploadDocument)
 router.patch("/progress",authMiddleware.authenticate,validate(UpdateKycProgressSchema),taskerKycController.saveProgress)
 router.post("/submit",authMiddleware.authenticate,taskerKycController.submitKyc)
+router.post("/passbook-ocr",authMiddleware.authenticate,kycUpload,taskerKycController.extractPassbookDetails)
 
 export default router;
