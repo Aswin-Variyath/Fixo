@@ -1,5 +1,5 @@
 import { AadhaarOcrResult } from "./aadhaar-ocr-result.interface";
 
 export interface IAadhaarOcrService {
-    extractAadhaarDetails(imageBuffer: Buffer): Promise<AadhaarOcrResult>;
+    extractAadhaarDetails(frontImageBuffer: Buffer,backImageBuffer: Buffer): Promise<AadhaarOcrResult>;
 }

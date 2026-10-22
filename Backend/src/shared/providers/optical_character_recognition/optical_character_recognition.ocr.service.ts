@@ -1,3 +1,4 @@
+
 import { injectable } from "inversify";
 import { StatusCodes } from "http-status-codes";
 import { PassbookOcrResult } from "../../../modules/tasker-kyc/interfaces/passbook-ocr-result.interface";
@@ -31,7 +32,11 @@ export class OcrService {
 
     const formData = new FormData();
 
-    formData.append("file", new Blob([new Uint8Array(imageBuffer)]), fileName);
+    formData.append(
+      "file",
+      new Blob([new Uint8Array(imageBuffer)]),
+      fileName,
+    );
     formData.append("OCREngine", "2");
     formData.append("language", "eng");
     formData.append("isOverlayRequired", "false");
@@ -95,7 +100,10 @@ export class OcrService {
   async extractPassbookDetails(
     imageBuffer: Buffer,
   ): Promise<PassbookOcrResult> {
-    const rawText = await this.extractText(imageBuffer, "passbook.jpg");
+    const rawText = await this.extractText(
+      imageBuffer,
+      "passbook.jpg",
+    );
 
     this.validatePassbookDocument(rawText);
 
@@ -115,9 +123,13 @@ export class OcrService {
       /\bIFSC\s*(?:Code)?\s*[:\-]?\s*([A-Z]{4}0[A-Z0-9]{6})\b/i,
     );
 
-    const bankAccountNumber = accountMatch?.[1]?.replace(/\s/g, "") ?? null;
+    const bankAccountNumber =
+      accountMatch?.[1]?.replace(/\s/g, "") ?? null;
 
-    if (bankAccountNumber && !/^\d{9,18}$/.test(bankAccountNumber)) {
+    if (
+      bankAccountNumber &&
+      !/^\d{9,18}$/.test(bankAccountNumber)
+    ) {
       throw new AppError(
         StatusCodes.UNPROCESSABLE_ENTITY,
         "Could not reliably extract the bank account number. Please upload a clearer passbook image.",
@@ -132,23 +144,39 @@ export class OcrService {
     };
   }
 
-  async extractAadhaarDetails(imageBuffer: Buffer): Promise<AadhaarOcrResult> {
-    const rawText = await this.extractText(imageBuffer, "aadhaar.jpg");
+  async extractAadhaarDetails(
+    frontImageBuffer: Buffer,
+    backImageBuffer: Buffer,
+  ): Promise<AadhaarOcrResult> {
+    const frontText = await this.extractText(
+      frontImageBuffer,
+      "aadhaar-front.jpg",
+    );
 
-    this.validateAadhaarDocument(rawText);
+    const backText = await this.extractText(
+      backImageBuffer,
+      "aadhaar-back.jpg",
+    );
 
-    const lines = rawText
+    this.validateAadhaarFrontDocument(frontText);
+    this.validateAadhaarBackDocument(backText);
+
+    const lines = frontText
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean);
 
-    const labelledNameMatch = rawText.match(/^\s*Name\s*[:\-]\s*(.+?)\s*$/im);
+    const labelledNameMatch = frontText.match(
+      /^\s*Name\s*[:\-]\s*(.+?)\s*$/im,
+    );
 
     const excludedNameLine =
       /aadhaar|uidai|unique identification|government|authority|india|dob|date of birth|male|female|gender|mobile|phone|address|enrolment|enrollment|issue date|download date|help@|www\.|^\d+$/i;
 
     const nameLine = lines.find((line) => {
-      const candidate = line.replace(/^(?:name)\s*[:\-]\s*/i, "").trim();
+      const candidate = line
+        .replace(/^(?:name)\s*[:\-]\s*/i, "")
+        .trim();
 
       return (
         /^[A-Z][A-Z .'-]{2,50}$/i.test(candidate) &&
@@ -160,7 +188,9 @@ export class OcrService {
 
     const extractedName =
       labelledNameMatch?.[1]?.trim() ??
-      nameLine?.replace(/^(?:name)\s*[:\-]\s*/i, "").trim() ??
+      nameLine
+        ?.replace(/^(?:name)\s*[:\-]\s*/i, "")
+        .trim() ??
       null;
 
     const name =
@@ -168,11 +198,11 @@ export class OcrService {
         ? extractedName
         : null;
 
-    const maskedMatch = rawText.match(
+    const maskedMatch = frontText.match(
       /\b(?:X{4}|[*]{4})[\s-]*(?:X{4}|[*]{4})[\s-]*([0-9]{4})\b/i,
     );
 
-    const fullNumberMatch = rawText.match(
+    const fullNumberMatch = frontText.match(
       /\b[0-9]{4}[\s-]*[0-9]{4}[\s-]*[0-9]{4}\b/,
     );
 
@@ -181,18 +211,52 @@ export class OcrService {
     if (maskedMatch) {
       aadhaarNumberMasked = `XXXX XXXX ${maskedMatch[1]}`;
     } else if (fullNumberMatch) {
-      const lastFour = fullNumberMatch[0].replace(/\D/g, "").slice(-4);
+      const lastFour = fullNumberMatch[0]
+        .replace(/\D/g, "")
+        .slice(-4);
 
       aadhaarNumberMasked = `XXXX XXXX ${lastFour}`;
+    }
+
+    const addressMatch = backText.match(
+      /\bAddress\s*[:\-]?\s*([\s\S]*?)(?=\n\s*(?:VID\b|Mobile\b|Phone\b|www\.|help@)|$)/i,
+    );
+
+    let address: string | null =
+      addressMatch?.[1]
+        ?.split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .join(", ")
+        .replace(/\s+/g, " ")
+        .trim() ?? null;
+
+    const pincodeMatch = backText.match(
+      /\b(?:PIN\s*CODE|PIN|POSTAL\s*CODE)\s*[:\-]?\s*(\d{6})\b/i,
+    ) ?? backText.match(
+      /\b(\d{6})\s*$/,
+    );
+
+    const pincode = pincodeMatch?.[1] ?? null;
+
+    if (address) {
+      address = address
+        .replace(/\b(?:PIN\s*CODE|PIN|POSTAL\s*CODE)\s*[:\-]?\s*\d{6}\b/gi, "")
+        .replace(/\b\d{6}\b/g, "")
+        .replace(/\s*,\s*,+/g, ",")
+        .replace(/^[,\s]+|[,\s]+$/g, "")
+        .trim() || null;
     }
 
     return {
       name,
       aadhaarNumberMasked,
+      address,
+      pincode,
     };
   }
 
-  private validateAadhaarDocument(rawText: string): void {
+  private validateAadhaarFrontDocument(rawText: string): void {
     const hasAadhaarIndicator =
       /\baadhaar\b|\baadhar\b|\buidai\b|unique identification authority/i.test(
         rawText,
@@ -200,14 +264,31 @@ export class OcrService {
 
     const hasIdentityDetails =
       /\b\d{4}[\s-]*\d{4}[\s-]*\d{4}\b/.test(rawText) ||
-      /\b(?:dob|date of birth|male|female|address|s\/o|d\/o|w\/o|c\/o)\b/i.test(
+      /\b(?:dob|date of birth|male|female|gender)\b/i.test(
         rawText,
       );
 
     if (!hasAadhaarIndicator || !hasIdentityDetails) {
       throw new AppError(
         StatusCodes.UNPROCESSABLE_ENTITY,
-        "The uploaded image does not appear to be a readable Aadhaar document. Please upload the correct image.",
+        "The front image does not appear to be a readable Aadhaar document.",
+      );
+    }
+  }
+
+  private validateAadhaarBackDocument(rawText: string): void {
+    const hasAadhaarIndicator =
+      /\baadhaar\b|\baadhar\b|\buidai\b|unique identification authority/i.test(
+        rawText,
+      );
+
+    const hasAddressIndicator =
+      /\baddress\b/i.test(rawText);
+
+    if (!hasAadhaarIndicator || !hasAddressIndicator) {
+      throw new AppError(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        "The back image does not appear to be a readable Aadhaar address document.",
       );
     }
   }

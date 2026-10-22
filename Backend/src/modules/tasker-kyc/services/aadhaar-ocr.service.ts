@@ -10,7 +10,7 @@ export class AadhaarOcrService implements IAadhaarOcrService {
         @inject(TYPES.OcrService) private readonly ocrService: OcrService
     ) {}
 
-    async extractAadhaarDetails(imageBuffer: Buffer): Promise<AadhaarOcrResult> {
-        return this.ocrService.extractAadhaarDetails(imageBuffer)
+    async extractAadhaarDetails(frontImageBuffer: Buffer,backImageBuffer: Buffer): Promise<AadhaarOcrResult> {
+        return this.ocrService.extractAadhaarDetails(frontImageBuffer, backImageBuffer)
     }
 }

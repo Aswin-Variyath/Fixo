@@ -85,8 +85,15 @@ export class TaskerKycController {
     extractAadhaarDetails = async(req:Request,res:Response):Promise<void> => {
         const userId = req.user?.userId
         if(!userId) throw new AppError(StatusCodes.UNAUTHORIZED,"Authentication required")
-        if(!req.file) throw new AppError(StatusCodes.BAD_REQUEST,"Aadhaar image is required")
-        const result:AadhaarOcrResponse  = await this.aadhaarOcrService.extractAadhaarDetails(req.file.buffer)
+        const files = req.files as | {
+            frontDocument?:Express.Multer.File[]
+            backDocument?: Express.Multer.File[]
+        } | undefined
+        const frontDocument = files?.frontDocument?.[0]
+        const backDocument = files?.backDocument?.[0]
+        if(!frontDocument || !backDocument) throw new AppError(StatusCodes.BAD_REQUEST,"Both Aadhaar front and back images are required")
+        const result: AadhaarOcrResponse = await this.aadhaarOcrService.extractAadhaarDetails(frontDocument.buffer, backDocument.buffer)
         res.status(StatusCodes.OK).json(successResponse("Aadhaar details extracted successfully", result))
     }
+
 }

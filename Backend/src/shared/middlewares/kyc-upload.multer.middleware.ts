@@ -63,3 +63,28 @@ export const kycUpload: typeof upload = (req, res, next) => {
         next();
     });
 };
+
+
+export const aadhaarKycUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+    files: 2,
+  },
+  fileFilter: (_req, file, callback) => {
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      callback(
+        new AppError(
+          StatusCodes.BAD_REQUEST,
+          "Only JPEG and PNG files are allowed",
+        ),
+      );
+      return;
+    }
+
+    callback(null, true);
+  },
+}).fields([
+  { name: "frontDocument", maxCount: 1 },
+  { name: "backDocument", maxCount: 1 },
+]);
