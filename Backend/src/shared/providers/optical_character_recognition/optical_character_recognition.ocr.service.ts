@@ -144,154 +144,189 @@ export class OcrService {
     };
   }
 
-  async extractAadhaarDetails(
-    frontImageBuffer: Buffer,
-    backImageBuffer: Buffer,
-  ): Promise<AadhaarOcrResult> {
-    const frontText = await this.extractText(
-      frontImageBuffer,
-      "aadhaar-front.jpg",
+
+async extractAadhaarDetails(
+  frontImageBuffer: Buffer,
+  backImageBuffer: Buffer,
+): Promise<AadhaarOcrResult> {
+  const frontText = await this.extractText(
+    frontImageBuffer,
+    "aadhaar-front.jpg",
+  );
+
+  const backText = await this.extractText(
+    backImageBuffer,
+    "aadhaar-back.jpg",
+  );
+
+  this.validateAadhaarFrontDocument(frontText);
+  this.validateAadhaarBackDocument(backText);
+
+  const lines = frontText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const labelledNameMatch = frontText.match(
+    /^\s*Name\s*[:\-]\s*(.+?)\s*$/im,
+  );
+
+  const excludedNameLine =
+    /aadhaar|uidai|unique identification|government|authority|india|dob|date of birth|male|female|gender|mobile|phone|address|enrolment|enrollment|issue date|download date|help@|www\.|^\d+$/i;
+
+  const nameLine = lines.find((line) => {
+    const candidate = line
+      .replace(/^(?:name)\s*[:\-]\s*/i, "")
+      .trim();
+
+    return (
+      /^[A-Z][A-Z .'-]{2,50}$/i.test(candidate) &&
+      !excludedNameLine.test(candidate) &&
+      !/\d/.test(candidate) &&
+      !/^(?:S\/O|D\/O|W\/O|C\/O)\b/i.test(candidate)
     );
+  });
 
-    const backText = await this.extractText(
-      backImageBuffer,
-      "aadhaar-back.jpg",
-    );
+  const extractedName =
+    labelledNameMatch?.[1]?.trim() ??
+    nameLine?.replace(/^(?:name)\s*[:\-]\s*/i, "").trim() ??
+    null;
 
-    this.validateAadhaarFrontDocument(frontText);
-    this.validateAadhaarBackDocument(backText);
+  const name =
+    extractedName && !excludedNameLine.test(extractedName)
+      ? extractedName
+      : null;
 
-    const lines = frontText
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean);
+  const maskedMatch = frontText.match(
+    /\b(?:X{4}|[*]{4})[\s-]*(?:X{4}|[*]{4})[\s-]*([0-9]{4})\b/i,
+  );
 
-    const labelledNameMatch = frontText.match(
-      /^\s*Name\s*[:\-]\s*(.+?)\s*$/im,
-    );
+  const fullNumberMatch = frontText.match(
+    /\b[0-9]{4}[\s-]*[0-9]{4}[\s-]*[0-9]{4}\b/,
+  );
 
-    const excludedNameLine =
-      /aadhaar|uidai|unique identification|government|authority|india|dob|date of birth|male|female|gender|mobile|phone|address|enrolment|enrollment|issue date|download date|help@|www\.|^\d+$/i;
+  let aadhaarNumberMasked: string | null = null;
 
-    const nameLine = lines.find((line) => {
-      const candidate = line
-        .replace(/^(?:name)\s*[:\-]\s*/i, "")
-        .trim();
+  if (maskedMatch) {
+    aadhaarNumberMasked = `XXXX XXXX ${maskedMatch[1]}`;
+  } else if (fullNumberMatch) {
+    const lastFour = fullNumberMatch[0]
+      .replace(/\D/g, "")
+      .slice(-4);
 
-      return (
-        /^[A-Z][A-Z .'-]{2,50}$/i.test(candidate) &&
-        !excludedNameLine.test(candidate) &&
-        !/\d/.test(candidate) &&
-        !/^(?:S\/O|D\/O|W\/O|C\/O)\b/i.test(candidate)
-      );
-    });
+    aadhaarNumberMasked = `XXXX XXXX ${lastFour}`;
+  }
 
-    const extractedName =
-      labelledNameMatch?.[1]?.trim() ??
-      nameLine
-        ?.replace(/^(?:name)\s*[:\-]\s*/i, "")
-        .trim() ??
-      null;
+  const addressMatch = backText.match(
+    /\bAddress\s*[:\-]?\s*([\s\S]*?)(?=\n\s*(?:VID\b|Mobile\b|Phone\b|1947\b|help@|www\.|uidai\.gov\.in|unique identification authority)|\s+(?:1947|help@|www\.|uidai\.gov\.in)\b|$)/i,
+  );
 
-    const name =
-      extractedName && !excludedNameLine.test(extractedName)
-        ? extractedName
-        : null;
+  const rawAddress = addressMatch?.[1] ?? "";
 
-    const maskedMatch = frontText.match(
-      /\b(?:X{4}|[*]{4})[\s-]*(?:X{4}|[*]{4})[\s-]*([0-9]{4})\b/i,
-    );
-
-    const fullNumberMatch = frontText.match(
-      /\b[0-9]{4}[\s-]*[0-9]{4}[\s-]*[0-9]{4}\b/,
-    );
-
-    let aadhaarNumberMasked: string | null = null;
-
-    if (maskedMatch) {
-      aadhaarNumberMasked = `XXXX XXXX ${maskedMatch[1]}`;
-    } else if (fullNumberMatch) {
-      const lastFour = fullNumberMatch[0]
-        .replace(/\D/g, "")
-        .slice(-4);
-
-      aadhaarNumberMasked = `XXXX XXXX ${lastFour}`;
-    }
-
-    const addressMatch = backText.match(
-      /\bAddress\s*[:\-]?\s*([\s\S]*?)(?=\n\s*(?:VID\b|Mobile\b|Phone\b|www\.|help@)|$)/i,
-    );
-
-    let address: string | null =
-      addressMatch?.[1]
-        ?.split(/\r?\n/)
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .join(", ")
-        .replace(/\s+/g, " ")
-        .trim() ?? null;
-
-    const pincodeMatch = backText.match(
+  const pincodeMatch =
+    rawAddress.match(/\b(\d{6})\b/) ??
+    backText.match(
       /\b(?:PIN\s*CODE|PIN|POSTAL\s*CODE)\s*[:\-]?\s*(\d{6})\b/i,
-    ) ?? backText.match(
-      /\b(\d{6})\s*$/,
     );
 
-    const pincode = pincodeMatch?.[1] ?? null;
+  const pincode = pincodeMatch?.[1] ?? null;
 
-    if (address) {
-      address = address
-        .replace(/\b(?:PIN\s*CODE|PIN|POSTAL\s*CODE)\s*[:\-]?\s*\d{6}\b/gi, "")
-        .replace(/\b\d{6}\b/g, "")
-        .replace(/\s*,\s*,+/g, ",")
-        .replace(/^[,\s]+|[,\s]+$/g, "")
-        .trim() || null;
-    }
+  const addressLines = rawAddress
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter(
+      (line) =>
+        !/\b(?:1947|help@|www\.|uidai\.gov\.in|mobile|phone|VID)\b/i.test(
+          line,
+        ) &&
+        !/unique identification authority/i.test(line),
+    );
 
-    return {
-      name,
-      aadhaarNumberMasked,
-      address,
-      pincode,
-    };
+  const address: string | null =
+    addressLines
+      .join(", ")
+      .replace(/\b\d{6}\b/g, "")
+      .replace(/\s*,\s*,+/g, ",")
+      .replace(/\s+/g, " ")
+      .replace(/^[,\s-]+|[,\s-]+$/g, "")
+      .trim() || null;
+
+  return {
+    name,
+    aadhaarNumberMasked,
+    address,
+    pincode,
+  };
+}
+
+
+
+private validateAadhaarFrontDocument(rawText: string): void {
+  const normalizedText = rawText
+    .normalize("NFKC")
+    .replace(/[|]/g, "I");
+
+  const hasAadhaarIndicator =
+    /\baadhaar\b|\baadhar\b|\buidai\b|unique\s+identification\s+authority/i.test(
+      normalizedText,
+    );
+
+  const hasGovernmentIndicator =
+    /government\s+of\s+india|bharat\s+sarkar|भारत\s*सरकार/i.test(
+      normalizedText,
+    );
+
+  const hasIdentityDetails =
+    /\b\d{4}[\s-]*\d{4}[\s-]*\d{4}\b/.test(normalizedText) ||
+    /\b(?:dob|date\s+of\s+birth|year\s+of\s+birth|male|female|gender)\b/i.test(
+      normalizedText,
+    );
+
+  const hasStrongDocumentIndicator =
+    hasAadhaarIndicator || hasGovernmentIndicator;
+
+  if (!hasIdentityDetails || !hasStrongDocumentIndicator) {
+    throw new AppError(
+      StatusCodes.UNPROCESSABLE_ENTITY,
+      "The front image does not appear to be a readable Aadhaar document.",
+    );
   }
+}
 
-  private validateAadhaarFrontDocument(rawText: string): void {
-    const hasAadhaarIndicator =
-      /\baadhaar\b|\baadhar\b|\buidai\b|unique identification authority/i.test(
-        rawText,
-      );
 
-    const hasIdentityDetails =
-      /\b\d{4}[\s-]*\d{4}[\s-]*\d{4}\b/.test(rawText) ||
-      /\b(?:dob|date of birth|male|female|gender)\b/i.test(
-        rawText,
-      );
 
-    if (!hasAadhaarIndicator || !hasIdentityDetails) {
-      throw new AppError(
-        StatusCodes.UNPROCESSABLE_ENTITY,
-        "The front image does not appear to be a readable Aadhaar document.",
-      );
-    }
+private validateAadhaarBackDocument(rawText: string): void {
+  const normalizedText = rawText.normalize("NFKC");
+
+  const hasAadhaarIndicator =
+    /\baadhaar\b|\baadhar\b|\buidai\b|unique\s+identification\s+authority/i.test(
+      normalizedText,
+    );
+
+  const hasGovernmentIndicator =
+    /government\s+of\s+india|bharat\s+sarkar|भारत\s*सरकार/i.test(
+      normalizedText,
+    );
+
+  const hasAddressIndicator = /\baddress\b/i.test(normalizedText);
+
+  const hasPincode = /\b\d{6}\b/.test(normalizedText);
+
+  const hasStrongDocumentIndicator =
+    hasAadhaarIndicator || hasGovernmentIndicator;
+
+  if (
+    !hasStrongDocumentIndicator ||
+    (!hasAddressIndicator && !hasPincode)
+  ) {
+    throw new AppError(
+      StatusCodes.UNPROCESSABLE_ENTITY,
+      "The back image does not appear to be a readable Aadhaar address document.",
+    );
   }
+}
 
-  private validateAadhaarBackDocument(rawText: string): void {
-    const hasAadhaarIndicator =
-      /\baadhaar\b|\baadhar\b|\buidai\b|unique identification authority/i.test(
-        rawText,
-      );
-
-    const hasAddressIndicator =
-      /\baddress\b/i.test(rawText);
-
-    if (!hasAadhaarIndicator || !hasAddressIndicator) {
-      throw new AppError(
-        StatusCodes.UNPROCESSABLE_ENTITY,
-        "The back image does not appear to be a readable Aadhaar address document.",
-      );
-    }
-  }
 
   private validatePassbookDocument(rawText: string): void {
     const hasBankIndicator =
