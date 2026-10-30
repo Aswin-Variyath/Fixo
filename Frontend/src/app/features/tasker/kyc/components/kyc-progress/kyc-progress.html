@@ -1,0 +1,85 @@
+<nav aria-label="KYC Progress Steps" class="mb-10 w-full">
+  <!-- Mobile Compact Progress Indicator -->
+  <div class="md:hidden bg-surface-container/90 rounded-2xl p-4 shadow-lg mb-4">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-label-sm text-label-sm text-sky-blue uppercase">
+        Step {{ currentStep() }} of {{ steps.length }}
+      </span>
+      <span class="font-body-md text-body-md font-semibold text-white">
+        {{ currentStepTitle() }}
+      </span>
+    </div>
+    <div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+      <div
+        class="h-full bg-gradient-to-r from-royal-blue to-sky-blue transition-all duration-300"
+        [style.width]="mobileProgressWidth()"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Desktop / Tablet Stepper Track -->
+  <div
+    class="hidden md:flex items-center justify-between relative bg-surface-container/60 backdrop-blur-xl p-3 rounded-2xl shadow-xl"
+  >
+    <!-- Connecting Line Background -->
+    <div class="absolute left-16 right-16 top-1/2 -translate-y-1/2 h-0.5 bg-outline-variant/40 -z-0"></div>
+    <div
+      class="absolute left-16 top-1/2 -translate-y-1/2 h-0.5 bg-gradient-to-r from-royal-blue to-sky-blue -z-0 transition-all duration-500"
+      [style.width]="desktopLineWidth()"
+    ></div>
+
+    <!-- Step Buttons -->
+    @for (step of steps; track step.number) {
+      <button
+        type="button"
+        class="step-btn group relative z-10 flex items-center gap-3.5 px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer"
+        [class.bg-surface-container-high]="step.number === currentStep()"
+        [class.shadow-md]="step.number === currentStep()"
+        [class.bg-surface-container-high/40]="step.number < currentStep()"
+        [class.hover:bg-surface-container-high/70]="step.number < currentStep()"
+        [class.bg-surface-container/50]="step.number > currentStep()"
+        [class.hover:bg-surface-container-high/60]="step.number > currentStep()"
+        (click)="onStepClick(step.number)"
+      >
+        <!-- Step Indicator Circle -->
+        <div
+          class="step-indicator w-9 h-9 rounded-full flex items-center justify-center font-label-sm text-label-sm font-semibold transition-all duration-300"
+          [class.bg-gradient-to-br]="step.number === currentStep()"
+          [class.from-royal-blue]="step.number === currentStep()"
+          [class.to-sky-blue]="step.number === currentStep()"
+          [class.text-white]="step.number === currentStep()"
+          [class.shadow-[0_0_16px_rgba(46,74,209,0.5)]]="step.number === currentStep()"
+          [class.bg-emerald-500/20]="step.number < currentStep()"
+          [class.text-emerald-400]="step.number < currentStep()"
+          [class.bg-surface-variant]="step.number > currentStep()"
+          [class.text-on-surface-variant]="step.number > currentStep()"
+        >
+          <span class="step-icon material-symbols-outlined text-[18px]">
+            {{ step.number < currentStep() ? 'check' : step.icon }}
+          </span>
+        </div>
+
+        <!-- Step Text -->
+        <div class="text-left">
+          <div
+            class="font-label-sm text-label-sm uppercase leading-none mb-1"
+            [class.text-sky-blue]="step.number === currentStep()"
+            [class.text-emerald-400]="step.number < currentStep()"
+            [class.text-on-surface-variant]="step.number > currentStep()"
+          >
+            {{ step.subLabel }}
+          </div>
+          <div
+            class="font-body-md text-body-md tracking-tight"
+            [class.font-semibold]="step.number <= currentStep()"
+            [class.text-white]="step.number <= currentStep()"
+            [class.font-medium]="step.number > currentStep()"
+            [class.text-on-surface-variant]="step.number > currentStep()"
+          >
+            {{ step.title }}
+          </div>
+        </div>
+      </button>
+    }
+  </div>
+</nav>

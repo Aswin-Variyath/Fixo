@@ -1,0 +1,5 @@
+/* Scoped styles for Aadhaar verification */
+:host {
+  display: block;
+  width: 100%;
+}

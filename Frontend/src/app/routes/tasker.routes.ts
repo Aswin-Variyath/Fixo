@@ -4,6 +4,10 @@ import { roleGuard } from '../core/guards/role-guard';
 
 export const taskerRouters: Routes = [
   {
+    path: 'tasker/kyc',
+    loadComponent: () => import('../features/tasker/kyc/kyc').then((m) => m.Kyc),
+  },
+  {
     path: 'tasker/dashboard',
     canActivate: [authGuard, roleGuard('tasker')],
     loadComponent: () =>

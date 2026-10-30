@@ -1,0 +1,453 @@
+<!-- QA State Switcher Toolbar -->
+<div class="mb-8 p-3 rounded-2xl bg-surface-container border border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-md">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-sky-blue text-sm">tune</span>
+    <span class="text-xs font-mono text-on-surface-variant font-medium uppercase tracking-wider">UI Mock States:</span>
+  </div>
+  <div class="flex flex-wrap items-center gap-1.5">
+    <button
+      type="button"
+      (click)="setKycState('empty')"
+      [class]="bankState() === 'empty'
+        ? 'px-3 py-1 rounded-full text-xs bg-surface-container-highest text-white font-semibold shadow-sm border border-white/20'
+        : 'px-3 py-1 rounded-full text-xs text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+    >
+      Empty Form
+    </button>
+    <button
+      type="button"
+      (click)="setKycState('uploaded')"
+      [class]="bankState() === 'uploaded'
+        ? 'px-3 py-1 rounded-full text-xs bg-surface-container-highest text-white font-semibold shadow-sm border border-white/20'
+        : 'px-3 py-1 rounded-full text-xs text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+    >
+      Passbook Uploaded
+    </button>
+    <button
+      type="button"
+      (click)="setKycState('validated')"
+      [class]="bankState() === 'validated'
+        ? 'px-3 py-1 rounded-full text-xs bg-surface-container-highest text-white font-semibold shadow-sm border border-white/20'
+        : 'px-3 py-1 rounded-full text-xs text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+    >
+      Validated (Default)
+    </button>
+    <button
+      type="button"
+      (click)="setKycState('mismatch')"
+      [class]="bankState() === 'mismatch'
+        ? 'px-3 py-1 rounded-full text-xs bg-rose-500/20 text-rose-300 font-semibold shadow-sm border border-rose-500/40'
+        : 'px-3 py-1 rounded-full text-xs text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+    >
+      Name Mismatch Alert
+    </button>
+  </div>
+</div>
+
+<!-- Section Heading & Security Badge -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-5 border-b border-white/10 mb-8">
+  <div>
+    <h2 class="font-headline font-bold text-2xl sm:text-3xl text-white tracking-tight">
+      Add Your Bank Details
+    </h2>
+    <p class="text-sm text-on-surface-variant mt-1 max-w-2xl">
+      Provide your bank account information and upload the front page of your bank passbook so we can verify your payout details.
+    </p>
+  </div>
+  <div class="self-start sm:self-auto inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-sky-blue/30 bg-royal-blue/10 text-sky-blue text-xs font-mono font-medium shadow-sm">
+    <span class="material-symbols-outlined text-sm">lock</span>
+    <span>256-Bit Encrypted Bank Verification</span>
+  </div>
+</div>
+
+<!-- Dynamic Validation Error Alert Banner (Mismatch State) -->
+@if (bankState() === 'mismatch') {
+  <div class="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30 backdrop-blur-md text-rose-100 mb-8 animate-fadeIn">
+    <div class="flex items-start gap-3">
+      <span class="material-symbols-outlined text-rose-400 text-2xl shrink-0 mt-0.5">error</span>
+      <div class="space-y-1">
+        <p class="text-sm font-semibold text-rose-300">Name Mismatch Detected</p>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          The account holder name provided must match <span class="font-semibold text-white">Ramesh Kumar</span> as verified in your Aadhaar KYC. Providing a different family member or commercial entity account will fail verification.
+        </p>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Main Two-Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
+  <!-- Left Column: Form (7 cols) -->
+  <div class="lg:col-span-7 bg-surface-container border border-white/10 backdrop-blur-xl rounded-2xl p-5 sm:p-7 space-y-6 shadow-2xl">
+    <div class="flex items-center justify-between pb-4 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-royal-blue/20 border border-sky-blue/30 text-sky-blue flex items-center justify-center shadow-inner">
+          <span class="material-symbols-outlined text-[22px]">account_balance</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-lg sm:text-xl font-bold text-white tracking-tight">Bank Account Information</h3>
+          <p class="text-xs text-on-surface-variant">Primary savings or current account for weekly payouts</p>
+        </div>
+      </div>
+      <span class="text-[11px] px-2.5 py-1 rounded-full bg-surface-container-high border border-white/10 text-on-surface-variant font-medium">INR (₹)</span>
+    </div>
+
+    <form class="space-y-5" (submit)="$event.preventDefault()">
+      <!-- Field 1: Account Holder Name -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-xs">
+          <label class="font-medium text-white" for="acc-holder">Account Holder Name</label>
+          @if (bankState() !== 'mismatch') {
+            <span class="font-mono text-[11px] text-sky-blue flex items-center gap-1">
+              <span class="material-symbols-outlined text-[13px]">lock</span> Aadhaar Matched
+            </span>
+          } @else {
+            <span class="font-mono text-[11px] text-rose-400 flex items-center gap-1 font-semibold">
+              <span class="material-symbols-outlined text-[13px]">warning</span> Mismatch
+            </span>
+          }
+        </div>
+        <div class="relative">
+          <input
+            id="acc-holder"
+            type="text"
+            [value]="accountHolder()"
+            (input)="accountHolder.set($any($event.target).value)"
+            class="w-full px-4 py-3 rounded-xl bg-surface-container-high border text-white text-sm focus:outline-none transition-all placeholder:text-outline"
+            [class.border-white-10]="bankState() !== 'mismatch'"
+            [class.border-rose-500-60]="bankState() === 'mismatch'"
+            [class.focus:border-sky-blue-60]="bankState() !== 'mismatch'"
+            [class.focus:border-rose-500]="bankState() === 'mismatch'"
+            placeholder="Enter name as shown in bank records"
+          />
+          <div class="absolute right-3.5 top-1/2 -translate-y-1/2">
+            @if (bankState() === 'mismatch') {
+              <span class="material-symbols-outlined text-[20px] text-rose-400">warning</span>
+            } @else if (bankState() === 'empty') {
+              <span class="material-symbols-outlined text-[20px] text-outline">verified</span>
+            } @else {
+              <span class="material-symbols-outlined text-[20px] text-emerald-400">check_circle</span>
+            }
+          </div>
+        </div>
+        @if (bankState() === 'mismatch') {
+          <p class="font-mono text-[11px] text-rose-400 font-semibold">
+            Account holder does not match Aadhaar verified name (Ramesh Kumar).
+          </p>
+        } @else {
+          <p class="font-mono text-[11px] text-on-surface-variant">
+            Must match <strong class="text-white font-semibold">Ramesh Kumar</strong> as verified in Aadhaar Step 1.
+          </p>
+        }
+      </div>
+
+      <!-- Field 2: Bank Name -->
+      <div class="space-y-1.5">
+        <label class="text-xs font-medium text-white" for="bank-name">Bank Name</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">account_balance</span>
+          <input
+            id="bank-name"
+            type="text"
+            [value]="bankName()"
+            (input)="bankName.set($any($event.target).value)"
+            class="w-full pl-11 pr-4 py-3 rounded-xl bg-surface-container-high border border-white/10 text-white text-sm focus:border-sky-blue/60 focus:bg-[#343439] focus:outline-none transition-all placeholder:text-outline"
+            placeholder="Enter your bank name"
+          />
+        </div>
+      </div>
+
+      <!-- Field 3 & 4: Account Numbers Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-white" for="acc-num">Bank Account Number</label>
+          <div class="relative">
+            <input
+              id="acc-num"
+              [type]="showAccNum() ? 'text' : 'password'"
+              [value]="accountNumber()"
+              (input)="accountNumber.set($any($event.target).value)"
+              class="w-full pl-4 pr-11 py-3 rounded-xl bg-surface-container-high border border-white/10 text-white font-mono text-sm focus:border-sky-blue/60 focus:bg-[#343439] focus:outline-none transition-all placeholder:text-outline tracking-wider"
+              placeholder="Enter account number"
+            />
+            <button
+              type="button"
+              (click)="showAccNum.set(!showAccNum())"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-white transition-colors"
+              title="Toggle visibility"
+            >
+              <span class="material-symbols-outlined text-[18px]">
+                {{ showAccNum() ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-white" for="acc-num-confirm">Confirm Account Number</label>
+          <div class="relative">
+            <input
+              id="acc-num-confirm"
+              [type]="showConfirmAccNum() ? 'text' : 'password'"
+              [value]="confirmAccountNumber()"
+              (input)="confirmAccountNumber.set($any($event.target).value)"
+              class="w-full pl-4 pr-11 py-3 rounded-xl bg-surface-container-high border border-white/10 text-white font-mono text-sm focus:border-sky-blue/60 focus:bg-[#343439] focus:outline-none transition-all placeholder:text-outline tracking-wider"
+              placeholder="Re-enter account number"
+            />
+            <button
+              type="button"
+              (click)="showConfirmAccNum.set(!showConfirmAccNum())"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-white transition-colors"
+              title="Toggle visibility"
+            >
+              <span class="material-symbols-outlined text-[18px]">
+                {{ showConfirmAccNum() ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match Confirmation Subtext -->
+      @if (accountNumbersMatch()) {
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high border border-emerald-500/20">
+          <span class="material-symbols-outlined text-emerald-400 text-[18px]">check_circle</span>
+          <span class="font-mono text-xs text-emerald-300 font-medium">Account numbers match and meet 11-16 digit checksum</span>
+        </div>
+      } @else if (accountNumber() && confirmAccountNumber()) {
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-500/10 border border-rose-500/30">
+          <span class="material-symbols-outlined text-rose-400 text-[18px]">error</span>
+          <span class="font-mono text-xs text-rose-300 font-medium">Account numbers do not match</span>
+        </div>
+      }
+
+      <!-- Field 5 & 6: IFSC & Branch -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-white" for="ifsc-code">IFSC Code</label>
+          <div class="relative">
+            <input
+              id="ifsc-code"
+              type="text"
+              maxlength="11"
+              [value]="ifscCode()"
+              (input)="ifscCode.set($any($event.target).value.toUpperCase())"
+              class="w-full uppercase px-4 py-3 rounded-xl bg-surface-container-high border border-white/10 text-white font-mono text-sm focus:border-sky-blue/60 focus:bg-[#343439] focus:outline-none transition-all placeholder:text-outline tracking-widest"
+              placeholder="e.g. SBIN0001234"
+            />
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs text-sky-blue font-semibold bg-royal-blue/20 border border-sky-blue/30 px-2 py-0.5 rounded">SBI</span>
+          </div>
+          <p class="font-mono text-[10px] text-outline">11-character alphanumeric code printed on your passbook</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-medium text-white" for="branch-name">Branch Name</label>
+          <input
+            id="branch-name"
+            type="text"
+            [value]="branchName()"
+            (input)="branchName.set($any($event.target).value)"
+            class="w-full px-4 py-3 rounded-xl bg-surface-container-high border border-white/10 text-white text-sm focus:border-sky-blue/60 focus:bg-[#343439] focus:outline-none transition-all placeholder:text-outline"
+            placeholder="Enter your bank branch"
+          />
+          <p class="font-mono text-[10px] text-outline">Auto-resolved via Reserve Bank IFSC Directory</p>
+        </div>
+      </div>
+
+      <!-- Bank Security Micro-Notice -->
+      <div class="p-3.5 rounded-xl bg-surface-container-high/80 border border-white/5 flex items-start gap-3">
+        <span class="material-symbols-outlined text-sky-blue text-[18px] shrink-0 mt-0.5">shield_lock</span>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          <strong class="text-white font-medium">Bank Grade Privacy:</strong> Fixo uses RBI-compliant account validation. We never request debit card numbers, ATM PIN, CVV, or net-banking passwords.
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Right Column: Passbook Upload & Guidelines (5 cols) -->
+  <div class="lg:col-span-5 space-y-6">
+    <!-- Top Card: Upload Bank Passbook -->
+    <div class="bg-surface-container border border-white/10 backdrop-blur-xl rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl">
+      <div class="space-y-1 pb-3 border-b border-white/10">
+        <div class="flex items-center justify-between">
+          <h3 class="font-headline text-base sm:text-lg font-bold text-white tracking-tight">Upload Bank Passbook</h3>
+          <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-royal-blue/20 text-sky-blue border border-sky-blue/30 font-medium uppercase">Front Page</span>
+        </div>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          Upload a clear photo or scan of the first page showing account number, holder name, and IFSC code.
+        </p>
+      </div>
+
+      <!-- Empty Upload Dropzone View -->
+      @if (bankState() === 'empty') {
+        <div
+          role="button"
+          tabindex="0"
+          (click)="triggerPassbookUpload()"
+          (keydown.enter)="triggerPassbookUpload()"
+          (keydown.space)="triggerPassbookUpload()"
+          class="flex flex-col items-center justify-center p-8 rounded-xl bg-surface-container-high/60 border-2 border-dashed border-white/15 text-center hover:border-sky-blue/50 hover:bg-surface-container-high transition-all cursor-pointer group"
+        >
+          <div class="w-14 h-14 rounded-2xl bg-royal-blue/20 border border-sky-blue/30 text-sky-blue flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-[0_0_20px_rgba(124,196,250,0.2)]">
+            <span class="material-symbols-outlined text-[30px]">upload_file</span>
+          </div>
+          <p class="text-sm font-semibold text-white mb-1">Click to upload or drag &amp; drop</p>
+          <p class="font-mono text-xs text-outline mb-3">Accepted formats: JPG, JPEG, PNG • Max 1 MB</p>
+          <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-high border border-white/10 text-white font-mono text-xs group-hover:bg-gradient-to-r group-hover:from-royal-blue group-hover:to-sky-blue transition-colors shadow-sm">
+            <span class="material-symbols-outlined text-[16px]">add_photo_alternate</span> Select Passbook Image
+          </span>
+        </div>
+      } @else {
+        <!-- Uploaded Passbook Preview Card -->
+        <div class="space-y-4">
+          <div class="relative rounded-xl overflow-hidden bg-surface-container-high border border-white/10 p-3 shadow-inner">
+            <div class="relative w-full h-44 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+              <!-- Passbook Document Visual -->
+              <div
+                class="absolute inset-0 bg-cover bg-center"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1t_xF4-FHMihcUEtV4cdawBMP1Udr8JMDJ9EjxuPn2Llpxt_KfjV0bBW7A2Xq080shFhBKP2HXM-ac2n1jh46cOtAX-gBri6a8HRDCMqtckknBeMSDEZF9u4xxr5YpKMFWfSUxlWxtIqhhvdvUx_FS6p2RK4-LC_8yQzbaqx_c56Q8q0Sb9aSLIZfjU42Im2Z1jJ3vANeu5x-n8GanWMVDrEe0jct7OeTYqPT6nc')"
+              ></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              <div class="absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 border border-white/15 backdrop-blur-md">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-mono text-[11px] text-emerald-300 font-semibold">Front Page Ready</span>
+              </div>
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-white">
+                <div class="flex items-center gap-2 bg-black/70 border border-white/10 px-3 py-1.5 rounded-lg backdrop-blur-md">
+                  <span class="material-symbols-outlined text-sky-blue text-[18px]">description</span>
+                  <div class="leading-none">
+                    <p class="font-mono text-xs font-medium truncate max-w-[150px]">passbook_front_page.jpg</p>
+                    <span class="text-[10px] text-outline font-mono">640 KB • 2400x1600</span>
+                  </div>
+                </div>
+                <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg">
+                  <span class="material-symbols-outlined text-[16px] font-bold">check</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Action Buttons -->
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              (click)="triggerPassbookUpload()"
+              class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-surface-container-high border border-white/10 hover:border-white/25 text-white transition-all text-xs font-medium"
+            >
+              <span class="material-symbols-outlined text-[16px]">sync</span>
+              <span>Replace Image</span>
+            </button>
+            <button
+              type="button"
+              (click)="setKycState('empty')"
+              class="px-3.5 py-2 rounded-xl bg-surface-container-high border border-white/10 hover:border-rose-500/40 hover:bg-rose-500/20 hover:text-rose-300 text-on-surface-variant transition-all text-xs"
+              title="Remove passbook"
+            >
+              <span class="material-symbols-outlined text-[16px]">delete</span>
+            </button>
+          </div>
+          <p class="font-mono text-[10px] text-outline text-center">
+            Only 1 passbook front page allowed • Encrypted cloud storage
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- Middle Card: Before You Submit Checklist -->
+    <div class="bg-surface-container border border-white/10 backdrop-blur-xl rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-sky-blue">checklist</span>
+          <h4 class="font-headline text-base font-bold text-white">Before You Submit</h4>
+        </div>
+        <span class="text-[10px] font-mono text-outline uppercase">Verification Rules</span>
+      </div>
+      <ul class="space-y-3 text-xs text-on-surface-variant">
+        <li class="flex items-start gap-3">
+          <div class="w-5 h-5 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xs">check</span>
+          </div>
+          <div><strong class="text-white font-semibold">Front page only:</strong> Upload strictly the first page with account particulars.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-5 h-5 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xs">check</span>
+          </div>
+          <div><strong class="text-white font-semibold">Legible details:</strong> Account holder name and account number must be razor-sharp.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-5 h-5 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xs">check</span>
+          </div>
+          <div><strong class="text-white font-semibold">Visible IFSC &amp; Bank:</strong> Bank emblem, branch address, and IFSC must be distinct.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-5 h-5 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xs">check</span>
+          </div>
+          <div><strong class="text-white font-semibold">No glare or shadows:</strong> Avoid flash reflection, tilted angles, or fingers covering text.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-5 h-5 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xs">check</span>
+          </div>
+          <div><strong class="text-white font-semibold">Account holder match:</strong> Account must strictly belong to <span class="text-sky-blue font-semibold">Ramesh Kumar</span>.</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bottom Card: Bank Verification Pipeline Status -->
+    <div class="bg-surface-container border border-white/10 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-xl flex items-center justify-between gap-4">
+      <div class="space-y-0.5">
+        <p class="font-mono text-[10px] text-outline uppercase tracking-wider">Verification Pipeline</p>
+        <p class="text-xs text-on-surface-variant">
+          Bank details and passbook will be verified after final submission.
+        </p>
+      </div>
+      <div class="shrink-0 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[11px] font-semibold flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        <span>Pending Submission</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Navigation Bar -->
+<div class="pt-6 pb-12 border-t border-white/10 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+  <button
+    type="button"
+    (click)="onBack()"
+    class="inline-flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-white transition-all px-4 py-2 rounded-xl hover:bg-white/5"
+  >
+    <span class="material-symbols-outlined text-sm">arrow_back</span>
+    <span>Back to Selfie Verification</span>
+  </button>
+  <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
+    <button
+      type="button"
+      (click)="saveDraft()"
+      class="text-sm font-medium text-outline hover:text-on-surface-variant transition hidden sm:inline-block px-3 py-2 rounded-lg hover:bg-white/5"
+    >
+      Save Draft
+    </button>
+    <button
+      type="button"
+      (click)="onContinue()"
+      [disabled]="bankState() === 'empty' || bankState() === 'mismatch'"
+      [class]="bankState() === 'empty' || bankState() === 'mismatch'
+        ? 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white/50 bg-white/10 cursor-not-allowed opacity-60'
+        : 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-royal-blue to-sky-blue shadow-[0_0_24px_rgba(46,74,209,0.4)] hover:shadow-[0_0_32px_rgba(124,196,250,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer'"
+    >
+      <span>Continue to Review &amp; Submit</span>
+      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </button>
+  </div>
+</div>
+
+<!-- Toast notification for UI actions -->
+@if (toastMessage()) {
+  <div class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-surface-container-highest border border-sky-blue/40 text-white shadow-2xl flex items-center gap-2 animate-bounce">
+    <span class="material-symbols-outlined text-sky-blue text-sm">info</span>
+    <span class="text-xs font-medium">{{ toastMessage() }}</span>
+  </div>
+}

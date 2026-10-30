@@ -1,0 +1,161 @@
+<div class="bg-surface-container border border-white/10 backdrop-blur-xl rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+  <!-- Section Heading -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-2xl">verified_user</span>
+      </div>
+      <div>
+        <h2 class="font-headline text-2xl font-bold text-white tracking-tight">Review &amp; Final Confirmation</h2>
+        <p class="text-sm text-on-surface-variant">All three verification steps have been collected and are ready for submission.</p>
+      </div>
+    </div>
+    <div class="self-start sm:self-auto inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-mono font-medium">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>Ready to Submit</span>
+    </div>
+  </div>
+
+  @if (isSubmitted()) {
+    <!-- Success Banner when user clicks Submit -->
+    <div class="p-6 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-white space-y-3 animate-fadeIn">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-emerald-400 text-3xl">check_circle</span>
+        <div>
+          <h3 class="text-lg font-bold text-emerald-300">KYC Packet Submitted Successfully!</h3>
+          <p class="text-xs text-on-surface-variant">Reference ID: <span class="font-mono text-white font-semibold">FIXO-KYC-2026-9842</span></p>
+        </div>
+      </div>
+      <p class="text-sm text-on-surface-variant leading-relaxed">
+        Our automated compliance system is reviewing your Aadhaar OCR, facial biometric match, and bank IFSC details. Estimated turnaround time is under 2 hours.
+      </p>
+      <div class="pt-2 flex items-center gap-3">
+        <button
+          type="button"
+          (click)="onRestart()"
+          class="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-container-high border border-white/10 text-white hover:bg-white/10 transition-colors"
+        >
+          Restart Demo Flow
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Summary Grid of 3 Steps -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <!-- Summary Card 1: Aadhaar -->
+    <div class="p-5 rounded-2xl bg-surface-container-high border border-white/10 space-y-3 flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono text-emerald-400 font-semibold uppercase tracking-wider">Step 01 • Complete</span>
+          <span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+        </div>
+        <h3 class="text-base font-semibold text-white">Aadhaar Verification</h3>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          Front and Back Aadhaar cards scanned. Holder: <strong class="text-white">Ramesh Kumar</strong> (9876-XXXX-1234).
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="onEditStep(1)"
+        class="inline-flex items-center gap-1.5 text-xs text-sky-blue hover:text-white transition-colors font-medium self-start pt-2"
+      >
+        <span class="material-symbols-outlined text-sm">edit</span>
+        <span>Edit Aadhaar details</span>
+      </button>
+    </div>
+
+    <!-- Summary Card 2: Selfie -->
+    <div class="p-5 rounded-2xl bg-surface-container-high border border-white/10 space-y-3 flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono text-emerald-400 font-semibold uppercase tracking-wider">Step 02 • Complete</span>
+          <span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+        </div>
+        <h3 class="text-base font-semibold text-white">Live Selfie Verification</h3>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          Biometric face match 98.4%. Liveness and anti-spoofing passed successfully.
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="onEditStep(2)"
+        class="inline-flex items-center gap-1.5 text-xs text-sky-blue hover:text-white transition-colors font-medium self-start pt-2"
+      >
+        <span class="material-symbols-outlined text-sm">photo_camera</span>
+        <span>Retake selfie</span>
+      </button>
+    </div>
+
+    <!-- Summary Card 3: Bank -->
+    <div class="p-5 rounded-2xl bg-surface-container-high border border-white/10 space-y-3 flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono text-emerald-400 font-semibold uppercase tracking-wider">Step 03 • Complete</span>
+          <span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+        </div>
+        <h3 class="text-base font-semibold text-white">Bank Details &amp; Passbook</h3>
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          SBI Kozhikode (SBIN0008421). Account matching Ramesh Kumar. Passbook front page uploaded.
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="onEditStep(3)"
+        class="inline-flex items-center gap-1.5 text-xs text-sky-blue hover:text-white transition-colors font-medium self-start pt-2"
+      >
+        <span class="material-symbols-outlined text-sm">account_balance</span>
+        <span>Edit bank details</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Agreement Notice -->
+  <div class="p-4 rounded-xl bg-royal-blue/10 border border-sky-blue/20 text-xs text-on-surface-variant flex items-start gap-3">
+    <span class="material-symbols-outlined text-sky-blue text-lg shrink-0 mt-0.5">shield</span>
+    <p class="leading-relaxed">
+      By submitting this verification packet, you certify that the documents uploaded belong to you and agree to Fixo's
+      <span class="text-white font-medium">Tasker Terms of Service</span> and
+      <span class="text-white font-medium">Privacy Policy</span>. Automated background checks take 2–4 hours.
+    </p>
+  </div>
+
+  <!-- Bottom Navigation Buttons -->
+  <div class="pt-6 border-t border-white/10 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+    <button
+      type="button"
+      (click)="onBack()"
+      class="inline-flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-white px-4 py-2 rounded-xl hover:bg-white/5 transition-all"
+    >
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+      <span>Back to Bank Details</span>
+    </button>
+
+    <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+      <button
+        type="button"
+        (click)="onRestart()"
+        class="text-sm font-medium text-outline hover:text-on-surface-variant transition hidden sm:inline-block px-3 py-2 rounded-lg hover:bg-white/5"
+      >
+        Restart Flow
+      </button>
+
+      <button
+        type="button"
+        (click)="onSubmit()"
+        [disabled]="isSubmitted()"
+        [class]="isSubmitted()
+          ? 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30'
+          : 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-royal-blue to-sky-blue shadow-[0_0_24px_rgba(46,74,209,0.4)] hover:shadow-[0_0_32px_rgba(124,196,250,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer'"
+      >
+        @if (isSubmitted()) {
+          <span class="material-symbols-outlined text-sm text-emerald-400">check</span>
+          <span>Submitted</span>
+        } @else {
+          <span>Submit Verification Packet</span>
+          <span class="material-symbols-outlined text-sm">send</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>

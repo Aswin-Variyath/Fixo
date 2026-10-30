@@ -1,0 +1,526 @@
+<section class="step-panel flex flex-col gap-8 transition-opacity duration-300 w-full" id="step-2">
+  <!-- Interactive Preview State Switcher (QA Test Harness) -->
+  <div class="rounded-2xl bg-surface-container/60 border border-glass-stroke p-3.5 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div class="flex items-center gap-2 font-mono text-on-surface-variant">
+      <span class="material-symbols-outlined text-sky-blue text-sm">tune</span>
+      <span class="text-white font-semibold">PREVIEW CAMERA STATE:</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-1.5 font-mono">
+      <button
+        type="button"
+        class="px-2.5 py-1 rounded-lg border text-xs transition-colors cursor-pointer"
+        [class.border-sky-blue/50]="cameraState() === 'permission'"
+        [class.bg-royal-blue/20]="cameraState() === 'permission'"
+        [class.text-sky-blue]="cameraState() === 'permission'"
+        [class.font-semibold]="cameraState() === 'permission'"
+        [class.border-glass-stroke]="cameraState() !== 'permission'"
+        [class.text-on-surface-variant]="cameraState() !== 'permission'"
+        [class.hover:text-white]="cameraState() !== 'permission'"
+        (click)="setCameraState('permission')"
+      >
+        1. Permission Needed
+      </button>
+
+      <button
+        type="button"
+        class="px-2.5 py-1 rounded-lg border text-xs transition-colors cursor-pointer"
+        [class.border-rose-500/50]="cameraState() === 'denied'"
+        [class.bg-rose-500/20]="cameraState() === 'denied'"
+        [class.text-rose-300]="cameraState() === 'denied'"
+        [class.font-semibold]="cameraState() === 'denied'"
+        [class.border-glass-stroke]="cameraState() !== 'denied'"
+        [class.text-on-surface-variant]="cameraState() !== 'denied'"
+        [class.hover:text-white]="cameraState() !== 'denied'"
+        (click)="setCameraState('denied')"
+      >
+        2. Denied
+      </button>
+
+      <button
+        type="button"
+        class="px-2.5 py-1 rounded-lg border text-xs transition-colors cursor-pointer"
+        [class.border-sky-blue/50]="cameraState() === 'live'"
+        [class.bg-royal-blue/20]="cameraState() === 'live'"
+        [class.text-sky-blue]="cameraState() === 'live'"
+        [class.font-semibold]="cameraState() === 'live'"
+        [class.border-glass-stroke]="cameraState() !== 'live'"
+        [class.text-on-surface-variant]="cameraState() !== 'live'"
+        [class.hover:text-white]="cameraState() !== 'live'"
+        (click)="setCameraState('live')"
+      >
+        3. Live View (Default)
+      </button>
+
+      <button
+        type="button"
+        class="px-2.5 py-1 rounded-lg border text-xs transition-colors cursor-pointer"
+        [class.border-sky-blue/50]="cameraState() === 'captured'"
+        [class.bg-royal-blue/20]="cameraState() === 'captured'"
+        [class.text-sky-blue]="cameraState() === 'captured'"
+        [class.font-semibold]="cameraState() === 'captured'"
+        [class.border-glass-stroke]="cameraState() !== 'captured'"
+        [class.text-on-surface-variant]="cameraState() !== 'captured'"
+        [class.hover:text-white]="cameraState() !== 'captured'"
+        (click)="setCameraState('captured')"
+      >
+        4. Selfie Captured
+      </button>
+
+      <button
+        type="button"
+        class="px-2.5 py-1 rounded-lg border text-xs transition-colors cursor-pointer"
+        [class.border-emerald-500/50]="cameraState() === 'confirmed'"
+        [class.bg-emerald-500/20]="cameraState() === 'confirmed'"
+        [class.text-emerald-300]="cameraState() === 'confirmed'"
+        [class.font-semibold]="cameraState() === 'confirmed'"
+        [class.border-glass-stroke]="cameraState() !== 'confirmed'"
+        [class.text-on-surface-variant]="cameraState() !== 'confirmed'"
+        [class.hover:text-white]="cameraState() !== 'confirmed'"
+        (click)="setCameraState('confirmed')"
+      >
+        5. Confirmed (Ready)
+      </button>
+    </div>
+  </div>
+
+  <!-- Section Header -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h2 class="font-headline-lg text-[28px] leading-tight text-white mb-2 font-bold tracking-tight">
+        Verify Your Identity
+      </h2>
+      <p class="font-body-md text-body-md text-on-surface-variant">
+        Take a clear, well-lit selfie to confirm you match the photo on your Aadhaar card.
+      </p>
+    </div>
+    <div
+      class="flex items-center gap-2 self-start md:self-auto px-3.5 py-1.5 rounded-full bg-surface-container-high text-xs text-sky-blue font-label-sm border border-glass-stroke"
+    >
+      <span class="material-symbols-outlined text-[16px]">face</span>
+      AI Facial Liveness Detection
+    </div>
+  </div>
+
+  <!-- 2-COLUMN MAIN SELFIE CAPTURE WORKSPACE -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- LEFT COLUMN: CAMERA PREVIEW & CAPTURE VIEWPORT (7 Cols) -->
+    <div class="lg:col-span-7 flex flex-col gap-4">
+      <!-- Camera Container Card -->
+      <div class="bg-surface-container border border-glass-stroke rounded-2xl p-4 sm:p-5 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+        <!-- Viewport Header Info -->
+        <div class="flex items-center justify-between mb-3 text-xs">
+          <div class="flex items-center gap-2 font-mono">
+            <span
+              class="w-2.5 h-2.5 rounded-full"
+              [class.bg-emerald-400]="cameraState() === 'live' || cameraState() === 'confirmed'"
+              [class.animate-pulse]="cameraState() === 'live'"
+              [class.bg-amber-400]="cameraState() === 'permission'"
+              [class.bg-rose-500]="cameraState() === 'denied'"
+              [class.bg-sky-blue]="cameraState() === 'captured'"
+            ></span>
+            <span class="text-on-surface-variant font-medium">
+              @switch (cameraState()) {
+                @case ('live') { Live Feed • Ready to Capture }
+                @case ('permission') { Camera Permission Required }
+                @case ('denied') { Access Blocked }
+                @case ('captured') { Selfie Frame Recorded • Review Image }
+                @case ('confirmed') { Selfie Confirmed • Ready to Proceed }
+              }
+            </span>
+          </div>
+          <button
+            type="button"
+            class="flex items-center gap-1 text-on-surface-variant hover:text-white px-2.5 py-1 rounded-lg border border-glass-stroke bg-surface-container-high/60 transition text-xs font-mono cursor-pointer"
+            (click)="toggleCameraLens()"
+          >
+            <span class="material-symbols-outlined text-sm">cameraswitch</span>
+            <span class="hidden sm:inline">{{ isFlipped() ? 'Rear Camera' : 'Front Camera' }}</span>
+          </button>
+        </div>
+
+        <!-- Vertical Viewport (3:4 ratio container) -->
+        <div class="relative w-full aspect-[3/4] max-h-[460px] mx-auto bg-[#0a0c10] rounded-xl border border-glass-stroke overflow-hidden flex flex-col items-center justify-center shadow-inner group">
+          <!-- Flash Overlay during simulated capture -->
+          @if (isFlashing()) {
+            <div class="absolute inset-0 bg-white z-50 transition-opacity duration-200"></div>
+          }
+
+          <!-- STATE A: LIVE CAMERA FEED -->
+          @if (cameraState() === 'live') {
+            <div class="absolute inset-0 flex flex-col items-center justify-between p-4 z-10">
+              <!-- Dark high-tech gradient with ambient light -->
+              <div class="absolute inset-0 bg-gradient-to-b from-[#0f1422] via-[#090c14] to-[#0d121f] opacity-95"></div>
+              <div class="absolute inset-0 bg-[radial-gradient(#2E4AD1_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
+
+              <!-- Top Status Guidance Pill -->
+              <div class="relative z-20 px-3 py-1 rounded-full bg-black/60 border border-glass-stroke backdrop-blur-md text-xs text-white flex items-center gap-2 shadow-lg">
+                <span class="material-symbols-outlined text-sky-blue text-sm">face</span>
+                <span>Position your face inside the oval frame</span>
+              </div>
+
+              <!-- Center Oval Alignment Guide with Corner Markers -->
+              <div class="relative z-20 my-auto flex items-center justify-center w-full max-w-[240px] aspect-[3/4]">
+                <!-- Outer glow aura -->
+                <div class="absolute inset-0 rounded-[50%] border-2 border-dashed border-sky-blue/40 animate-pulse-subtle"></div>
+
+                <!-- Inner Oval frame -->
+                <div class="relative w-full h-full rounded-[50%] border-2 border-sky-blue/80 shadow-[0_0_30px_rgba(124,196,250,0.25)] flex flex-col items-center justify-between py-6 overflow-hidden">
+                  <!-- Eye alignment horizon line -->
+                  <div class="w-full flex items-center justify-between px-3 opacity-60">
+                    <span class="h-0.5 w-4 bg-sky-blue"></span>
+                    <span class="text-[9px] font-mono text-sky-blue uppercase tracking-wider">Eye Level</span>
+                    <span class="h-0.5 w-4 bg-sky-blue"></span>
+                  </div>
+
+                  <!-- Neutral person silhouette watermark -->
+                  <div class="opacity-20 text-white flex flex-col items-center pointer-events-none">
+                    <span class="material-symbols-outlined text-7xl font-extralight">person</span>
+                  </div>
+
+                  <!-- Chin alignment marker -->
+                  <div class="w-8 h-1 rounded-full bg-sky-blue/60"></div>
+
+                  <!-- Dynamic scan beam -->
+                  <div class="scan-guide"></div>
+                </div>
+
+                <!-- 4 Outer Corner Bracket Alignment Markers -->
+                <div class="absolute -top-3 -left-3 w-5 h-5 border-t-2 border-l-2 border-sky-blue rounded-tl-sm"></div>
+                <div class="absolute -top-3 -right-3 w-5 h-5 border-t-2 border-r-2 border-sky-blue rounded-tr-sm"></div>
+                <div class="absolute -bottom-3 -left-3 w-5 h-5 border-b-2 border-l-2 border-sky-blue rounded-bl-sm"></div>
+                <div class="absolute -bottom-3 -right-3 w-5 h-5 border-b-2 border-r-2 border-sky-blue rounded-br-sm"></div>
+              </div>
+
+              <!-- Bottom lighting check -->
+              <div class="relative z-20 text-center mb-1">
+                <span class="text-[11px] text-on-surface-variant bg-black/60 px-3 py-1 rounded-full border border-glass-stroke backdrop-blur-sm">
+                  Lighting check: <span class="text-emerald-400 font-medium">Good illumination</span>
+                </span>
+              </div>
+            </div>
+          }
+
+          <!-- STATE B: PERMISSION PROMPT -->
+          @if (cameraState() === 'permission') {
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-[#0e1017]">
+              <div class="w-16 h-16 rounded-2xl bg-royal-blue/20 border border-sky-blue/40 flex items-center justify-center text-sky-blue mb-4 shadow-lg shadow-royal-blue/20">
+                <span class="material-symbols-outlined text-3xl">photo_camera</span>
+              </div>
+              <h3 class="font-headline-lg font-bold text-lg text-white mb-2">Allow Camera Access</h3>
+              <p class="text-xs text-on-surface-variant max-w-xs mb-5 leading-relaxed font-body-md">
+                We need temporary access to your camera so you can capture your selfie for identity verification.
+              </p>
+              <button
+                type="button"
+                class="px-5 py-2.5 rounded-full bg-gradient-to-r from-royal-blue to-sky-blue text-white text-xs font-semibold shadow-lg hover:shadow-sky-blue/30 transition hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+                (click)="setCameraState('live')"
+              >
+                <span class="material-symbols-outlined text-sm">videocam</span>
+                <span>Enable Camera</span>
+              </button>
+              <span class="text-[10px] text-outline mt-3">We never record video or store unauthorized footage.</span>
+            </div>
+          }
+
+          <!-- STATE C: PERMISSION DENIED -->
+          @if (cameraState() === 'denied') {
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-[#0e1017]">
+              <div class="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 mb-4">
+                <span class="material-symbols-outlined text-3xl">videocam_off</span>
+              </div>
+              <h3 class="font-headline-lg font-bold text-lg text-white mb-2">Camera Access Blocked</h3>
+              <p class="text-xs text-on-surface-variant max-w-xs mb-5 leading-relaxed font-body-md">
+                Permission was denied or is blocked in browser settings. Please allow camera permissions in your address bar and tap retry.
+              </p>
+              <button
+                type="button"
+                class="px-5 py-2.5 rounded-full bg-surface-container-high border border-glass-stroke text-white text-xs font-semibold hover:border-white/40 transition flex items-center gap-2 cursor-pointer"
+                (click)="setCameraState('live')"
+              >
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                <span>Try Again</span>
+              </button>
+            </div>
+          }
+
+          <!-- STATE D & E: CAPTURED / CONFIRMED -->
+          @if (cameraState() === 'captured' || cameraState() === 'confirmed') {
+            <div class="absolute inset-0 flex flex-col items-center justify-between p-4 z-10 bg-[#0a0d14]">
+              <!-- Top Badge -->
+              <div
+                class="relative z-20 px-3 py-1 rounded-full border backdrop-blur-md text-xs flex items-center gap-1.5 shadow-lg"
+                [class.bg-emerald-950/80]="cameraState() === 'confirmed'"
+                [class.border-emerald-500/40]="cameraState() === 'confirmed'"
+                [class.text-emerald-300]="cameraState() === 'confirmed'"
+                [class.bg-surface-container-high/90]="cameraState() === 'captured'"
+                [class.border-glass-stroke]="cameraState() === 'captured'"
+                [class.text-sky-blue]="cameraState() === 'captured'"
+              >
+                <span class="material-symbols-outlined text-sm">check_circle</span>
+                <span>{{ cameraState() === 'confirmed' ? 'Selfie Confirmed • Ready for Step 3' : 'Selfie Captured • Ready for Confirmation' }}</span>
+              </div>
+
+              <!-- Captured Portrait Frame -->
+              <div class="relative z-20 my-auto flex flex-col items-center justify-center w-full max-w-[230px] aspect-[3/4] rounded-2xl border-2 border-emerald-500/60 bg-gradient-to-b from-[#182033] to-[#0c101c] shadow-[0_0_35px_rgba(16,185,129,0.2)] overflow-hidden p-4">
+                <div class="relative w-full h-full flex flex-col items-center justify-center">
+                  <div class="w-24 h-24 rounded-full bg-royal-blue/30 border-2 border-white/20 flex items-center justify-center mb-2 shadow-inner">
+                    <span class="material-symbols-outlined text-5xl text-on-surface">person</span>
+                  </div>
+                  <div class="w-36 h-14 rounded-t-full bg-royal-blue/20 border-t border-white/10"></div>
+
+                  <!-- Metadata Watermark -->
+                  <div class="absolute bottom-1 left-1 right-1 text-center bg-black/60 backdrop-blur-md py-1 px-2 rounded text-[10px] font-mono text-emerald-400 border border-glass-stroke">
+                    JPG • 1080x1440 • 24-bit RGB
+                  </div>
+                </div>
+
+                <div class="absolute top-3 right-3 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg">
+                  <span class="material-symbols-outlined text-sm font-bold">done</span>
+                </div>
+              </div>
+
+              <!-- Actions row inside Viewport -->
+              <div class="relative z-20 w-full flex items-center justify-center gap-3 mb-1">
+                <button
+                  type="button"
+                  class="px-3.5 py-1.5 rounded-full bg-surface-container-high border border-glass-stroke text-xs text-on-surface-variant hover:text-white transition flex items-center gap-1.5 cursor-pointer"
+                  (click)="setCameraState('live')"
+                >
+                  <span class="material-symbols-outlined text-sm">cached</span>
+                  <span>Retake Selfie</span>
+                </button>
+                @if (cameraState() !== 'confirmed') {
+                  <button
+                    type="button"
+                    class="px-4 py-1.5 rounded-full bg-gradient-to-r from-royal-blue to-sky-blue text-xs text-white font-semibold shadow-md hover:scale-105 active:scale-95 transition flex items-center gap-1.5 cursor-pointer"
+                    (click)="confirmSelfie()"
+                  >
+                    <span class="material-symbols-outlined text-sm">verified</span>
+                    <span>Use This Selfie</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Bottom Control Deck of the Card -->
+        <div class="mt-4 pt-4 border-t border-glass-stroke flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-xs text-on-surface-variant flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-sky-blue">info</span>
+            <span>Keep your eyes open and look directly into the camera lens.</span>
+          </div>
+
+          <!-- Master Capture Button (Shown in Live Mode) -->
+          @if (cameraState() === 'live') {
+            <div>
+              <button
+                type="button"
+                class="group relative inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-gradient-to-r from-royal-blue to-sky-blue text-white text-xs sm:text-sm font-semibold shadow-[0_0_20px_rgba(46,74,209,0.4)] hover:shadow-[0_0_30px_rgba(124,196,250,0.6)] hover:scale-105 active:scale-95 transition cursor-pointer"
+                (click)="captureSelfie()"
+              >
+                <span class="w-3.5 h-3.5 rounded-full bg-white group-hover:scale-125 transition"></span>
+                <span>Capture Selfie</span>
+              </button>
+            </div>
+          }
+
+          <!-- Confirmed Status Text (Shown when selfie is accepted) -->
+          @if (cameraState() === 'confirmed') {
+            <div class="flex items-center gap-2 text-xs font-mono text-emerald-400">
+              <span class="material-symbols-outlined text-base">check_circle</span>
+              <span class="font-semibold">Selfie Captured Successfully</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Security Privacy Guarantee Note -->
+      <div class="px-4 py-3 rounded-xl bg-surface-container-low border border-glass-stroke flex items-center gap-3 text-xs text-on-surface-variant">
+        <span class="material-symbols-outlined text-base text-sky-blue/70">shield_lock</span>
+        <span>Biometric &amp; photo data is encrypted via 256-bit AES in compliance with national privacy frameworks.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: GUIDELINES & AADHAAR REFERENCE (5 Cols) -->
+    <div class="lg:col-span-5 flex flex-col gap-6">
+      <!-- CARD 1: SELFIE CAPTURE GUIDELINES (Checklist) -->
+      <div class="bg-surface-container border border-glass-stroke rounded-2xl p-5 sm:p-6 shadow-xl relative backdrop-blur-xl">
+        <div class="flex items-center justify-between mb-4 border-b border-glass-stroke pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-sky-blue">checklist</span>
+            <h3 class="font-headline-lg font-bold text-base sm:text-lg text-white">
+              Selfie Capture Guidelines
+            </h3>
+          </div>
+          <span class="text-[10px] font-mono text-on-surface-variant uppercase">Verification Rules</span>
+        </div>
+
+        <p class="text-xs text-on-surface-variant mb-4 leading-relaxed font-body-md">
+          Follow these rules to ensure your photo matches identity verification standards and prevents onboarding delays:
+        </p>
+
+        <ul class="space-y-3.5 font-body-md">
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">wb_sunny</span>
+            </div>
+            <div class="text-xs">
+              <span class="font-semibold text-white">Good lighting:</span>
+              <span class="text-on-surface-variant"> Keep your face clearly visible in evenly distributed natural light. Avoid harsh shadows or strong backlighting.</span>
+            </div>
+          </li>
+
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">visibility</span>
+            </div>
+            <div class="text-xs">
+              <span class="font-semibold text-white">Look at the camera:</span>
+              <span class="text-on-surface-variant"> Face the camera directly at eye-level with a neutral expression and mouth closed.</span>
+            </div>
+          </li>
+
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">no_accounts</span>
+            </div>
+            <div class="text-xs">
+              <span class="font-semibold text-white">Keep face unobstructed:</span>
+              <span class="text-on-surface-variant"> Remove sunglasses, hats, masks, or anything covering your forehead or facial boundaries.</span>
+            </div>
+          </li>
+
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">center_focus_strong</span>
+            </div>
+            <div class="text-xs">
+              <span class="font-semibold text-white">Stay within the frame:</span>
+              <span class="text-on-surface-variant"> Position your entire head and chin inside the on-screen oval guide. Do not stand too close or too far.</span>
+            </div>
+          </li>
+
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-royal-blue/20 border border-sky-blue/30 flex items-center justify-center text-sky-blue shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">camera</span>
+            </div>
+            <div class="text-xs">
+              <span class="font-semibold text-white">Use a recent live selfie:</span>
+              <span class="text-on-surface-variant"> Capture your selfie directly through the camera. Photos of existing paper photos are rejected.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CARD 2: AADHAAR REFERENCE CARD (Connected to Step 1) -->
+      <div class="bg-surface-container border border-glass-stroke rounded-2xl p-5 shadow-xl relative backdrop-blur-xl">
+        <div class="flex items-center justify-between mb-3 border-b border-glass-stroke pb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-400">badge</span>
+            <h3 class="font-headline-lg font-bold text-sm sm:text-base text-white">
+              Identity Reference
+            </h3>
+          </div>
+          <span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Aadhaar Details Submitted
+          </span>
+        </div>
+
+        <p class="text-xs text-on-surface-variant mb-4 leading-relaxed font-body-md">
+          Your captured selfie will be associated with the Aadhaar identity details verified in Step 1.
+        </p>
+
+        <!-- Aadhaar Summary Box -->
+        <div class="bg-surface-container-lowest rounded-xl p-3.5 border border-glass-stroke space-y-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-on-surface-variant">Verified Name</span>
+            <span class="text-white font-medium">Ramesh Kumar</span>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-on-surface-variant">Aadhaar Card</span>
+            <span class="font-mono text-white">XXXX XXXX 8942</span>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-on-surface-variant">Document Images</span>
+            <span class="text-emerald-400 text-[11px] font-mono flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span> Front &amp; Back Uploaded
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-3 flex items-center justify-between text-[11px] text-on-surface-variant">
+          <span>Need to change document details?</span>
+          <button
+            type="button"
+            class="text-sky-blue hover:underline flex items-center gap-0.5 cursor-pointer"
+            (click)="onBack()"
+          >
+            <span>Edit Step 1</span>
+            <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM STEP NAVIGATION (Consistent with Aadhaar page) -->
+  <div class="flex items-center justify-between pt-4 border-t border-glass-stroke">
+    <!-- Back to Aadhaar button -->
+    <button
+      type="button"
+      class="px-6 py-2.5 rounded-full text-sm font-medium text-on-surface-variant hover:text-white hover:bg-white/5 transition-colors flex items-center gap-1.5 cursor-pointer"
+      (click)="onBack()"
+    >
+      <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+      <span>Back to Aadhaar</span>
+    </button>
+
+    <!-- Save Draft & Continue actions -->
+    <div class="flex items-center gap-4">
+      <button
+        type="button"
+        class="px-5 py-2.5 rounded-full text-sm font-medium text-on-surface-variant hover:text-white hover:bg-white/5 transition-colors hidden sm:inline-block cursor-pointer"
+        (click)="triggerToast('Draft saved successfully!')"
+      >
+        Save Draft
+      </button>
+
+      <!-- Primary CTA: Continue to Bank Verification -->
+      <button
+        type="button"
+        class="px-8 py-3.5 rounded-full font-body-md text-sm font-semibold transition-all flex items-center gap-2"
+        [class.bg-gradient-to-r]="cameraState() === 'confirmed'"
+        [class.from-royal-blue]="cameraState() === 'confirmed'"
+        [class.to-sky-blue]="cameraState() === 'confirmed'"
+        [class.text-white]="cameraState() === 'confirmed'"
+        [class.shadow-[0_4px_24px_rgba(46,74,209,0.4)]]="cameraState() === 'confirmed'"
+        [class.hover:scale-[1.02]]="cameraState() === 'confirmed'"
+        [class.active:scale-[0.98]]="cameraState() === 'confirmed'"
+        [class.cursor-pointer]="cameraState() === 'confirmed'"
+        [class.bg-surface-container-high]="cameraState() !== 'confirmed'"
+        [class.text-on-surface-variant/50]="cameraState() !== 'confirmed'"
+        [class.cursor-not-allowed]="cameraState() !== 'confirmed'"
+        [disabled]="cameraState() !== 'confirmed'"
+        [title]="cameraState() === 'confirmed' ? 'Proceed to Step 3: Bank Details' : 'Please capture and confirm your selfie to proceed'"
+        (click)="onContinue()"
+      >
+        <span>Continue to Bank Verification</span>
+        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Toast -->
+@if (toastMessage()) {
+  <div class="fixed bottom-6 right-6 z-50 transition-all duration-300 pointer-events-none">
+    <div
+      class="px-4 py-2.5 rounded-xl bg-surface-container-high/90 text-white font-body-md text-xs shadow-xl flex items-center gap-2 backdrop-blur-md border border-glass-stroke"
+    >
+      <span class="material-symbols-outlined text-sky-blue text-[18px]">info</span>
+      <span>{{ toastMessage() }}</span>
+    </div>
+  </div>
+}

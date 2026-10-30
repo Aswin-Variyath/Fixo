@@ -1,0 +1,101 @@
+<div class="min-h-screen flex flex-col bg-surface text-on-surface">
+  <!-- Shared Application Navbar (fixed top-0 w-full h-20 z-50) -->
+  <app-navbar />
+
+  <!-- Main Content Area: Clears the 80px (h-20) fixed navbar with pt-20 -->
+  <main class="flex-1 w-full pt-20">
+    <div class="max-w-container-max mx-auto px-gutter py-8 space-y-8">
+
+      <!-- Temporary QA Navigation Toolbar for quick review of all 3 KYC steps -->
+      <div class="p-3.5 rounded-2xl bg-surface-container border border-sky-blue/30 shadow-xl flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-royal-blue/30 text-sky-blue text-xs font-mono font-bold">QA</span>
+          <div class="text-xs">
+            <span class="font-semibold text-white">KYC Preview Bar:</span>
+            <span class="text-on-surface-variant ml-1 hidden sm:inline">Switch between converted Stitch screens</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button
+            type="button"
+            (click)="goToStep(1)"
+            [class]="currentStep() === 1
+              ? 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-royal-blue to-sky-blue text-white shadow-md'
+              : 'px-3.5 py-1.5 rounded-xl text-xs font-medium text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+          >
+            1. Aadhaar
+          </button>
+          <button
+            type="button"
+            (click)="goToStep(2)"
+            [class]="currentStep() === 2
+              ? 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-royal-blue to-sky-blue text-white shadow-md'
+              : 'px-3.5 py-1.5 rounded-xl text-xs font-medium text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+          >
+            2. Selfie
+          </button>
+          <button
+            type="button"
+            (click)="goToStep(3)"
+            [class]="currentStep() === 3
+              ? 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-royal-blue to-sky-blue text-white shadow-md'
+              : 'px-3.5 py-1.5 rounded-xl text-xs font-medium text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+          >
+            3. Bank Details
+          </button>
+          <button
+            type="button"
+            (click)="goToStep(4)"
+            [class]="currentStep() === 4
+              ? 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-royal-blue to-sky-blue text-white shadow-md'
+              : 'px-3.5 py-1.5 rounded-xl text-xs font-medium text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors'"
+          >
+            4. Review
+          </button>
+        </div>
+      </div>
+
+      <!-- Main KYC Header / Title Area -->
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-royal-blue/10 border border-sky-blue/30 text-sky-blue text-xs font-mono font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-sky-blue animate-pulse"></span>
+          Tasker Onboarding Verification
+        </div>
+        <h1 class="font-headline font-bold text-3xl sm:text-4xl text-white tracking-tight">
+          Complete Your KYC Verification
+        </h1>
+        <p class="text-sm sm:text-base text-on-surface-variant max-w-2xl">
+          To maintain trust, compliance, and instant weekly payouts on Fixo, complete all 4 verification steps. Your information is protected with bank-grade encryption.
+        </p>
+      </div>
+
+      <!-- Shared Standardized KYC Progress Indicator (Consistent across all steps) -->
+      <app-kyc-progress [currentStep]="currentStep()" />
+
+      <!-- Dynamic Step Content -->
+      @switch (currentStep()) {
+        @case (1) {
+          <app-aadhaar-verification (continue)="goToStep(2)" />
+        }
+        @case (2) {
+          <app-selfie-verification (back)="goToStep(1)" (continue)="goToStep(3)" />
+        }
+        @case (3) {
+          <app-bank-details-verification (back)="goToStep(2)" (continue)="goToStep(4)" />
+        }
+        @case (4) {
+          <app-review-submit
+            (back)="goToStep(3)"
+            (editStep)="goToStep($event)"
+            (restart)="goToStep(1)"
+          />
+        }
+      }
+
+    </div>
+  </main>
+
+  <!-- Shared Application Footer -->
+  <app-footer />
+</div>
